@@ -174,3 +174,42 @@ CREATE TABLE [dbo].[Notas](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
+
+/*** Foreign keys ***/
+
+ALTER TABLE [dbo].[Usuarios] WITH CHECK ADD CONSTRAINT [FK_Usuarios_Responsable] FOREIGN KEY([responsable])
+REFERENCES [dbo].[Usuarios] ([idUsuario])
+GO
+ALTER TABLE [dbo].[LogrosUsuarios] WITH CHECK ADD CONSTRAINT [FK_UsuariosLogros_IdUsuario] FOREIGN KEY([idUsuario])
+REFERENCES [dbo].[Usuarios] ([idUsuario])
+GO
+ALTER TABLE [dbo].[LogrosUsuarios] WITH CHECK ADD CONSTRAINT [FK_UsuariosLogros_IdLogro] FOREIGN KEY([idLogro])
+REFERENCES [dbo].[Logros] ([idLogro])
+GO
+ALTER TABLE [dbo].[Equipos] WITH CHECK ADD CONSTRAINT [FK_Equipos_Admin] FOREIGN KEY([admin])
+REFERENCES [dbo].[Usuarios] ([idUsuario])
+GO
+ALTER TABLE [dbo].[UsuariosEquipos] WITH CHECK ADD CONSTRAINT [FK_UsuariosEquipos_IdUsuario] FOREIGN KEY([idUsuario])
+REFERENCES [dbo].[Usuarios] ([idUsuario])
+GO
+ALTER TABLE [dbo].[UsuariosEquipos] WITH CHECK ADD CONSTRAINT [FK_UsuariosEquipos_IdEquipo] FOREIGN KEY([idEquipo])
+REFERENCES [dbo].[Equipos] ([idEquipo])
+GO
+ALTER TABLE [dbo].[Pizarras] WITH CHECK ADD CONSTRAINT [FK_Pizarras_Equipo] FOREIGN KEY([equipo])
+REFERENCES [dbo].[Equipos] ([idEquipo])
+GO
+ALTER TABLE [dbo].[ValoresPizarras] WITH CHECK ADD CONSTRAINT [FK_ValoresPizarras_IdValor] FOREIGN KEY([idValor])
+REFERENCES [dbo].[Valores] ([idValor])
+GO
+ALTER TABLE [dbo].[ValoresPizarras] WITH CHECK ADD CONSTRAINT [FK_ValoresPizarras_IdPizarra] FOREIGN KEY([idPizarra])
+REFERENCES [dbo].[Pizarras] ([idPizarra])
+GO
+ALTER TABLE [dbo].[Notas] WITH CHECK ADD CONSTRAINT [FK_Notas_Pizarra] FOREIGN KEY([pizarra])
+REFERENCES [dbo].[Pizarras] ([idPizarra])
+GO
+ALTER TABLE [dbo].[Notas] WITH CHECK ADD CONSTRAINT [FK_Notas_Valor] FOREIGN KEY([valor])
+REFERENCES [dbo].[Valores] ([idValor])
+GO
+ALTER TABLE [dbo].[Notas] WITH CHECK ADD CONSTRAINT [FK_Notas_Usuario] FOREIGN KEY([usuario])
+REFERENCES [dbo].[Usuarios] ([idUsuario])
+GO
