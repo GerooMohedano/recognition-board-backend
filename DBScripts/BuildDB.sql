@@ -21,3 +21,156 @@ GO
 
 USE [OnBoardDataBase]
 GO
+
+/****** Object:  Table Usuarios ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Usuarios](
+	[idUsuario] [int] NOT NULL,
+	[nombre] [varchar](50) NOT NULL,
+	[contrasenia] [varchar](30) NOT NULL,
+	[adminGrupo] [bit] NOT NULL,
+	[adminGeneral] [bit] NOT NULL,
+	[responsable] [int] NULL,
+	[mail] [varchar](50) NULL,
+	[fotoPerfil] [image] NULL,
+ CONSTRAINT [PK_Usuarios] PRIMARY KEY CLUSTERED 
+(
+	[idUsuario] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+/****** Object:  Table Logros ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Logros](
+	[idLogro] [int] NOT NULL,
+	[nombre] [varchar](50) NOT NULL,
+	[descripcion] [varchar](150) NOT NULL,
+	[foto] [image] NULL,
+ CONSTRAINT [PK_Logros] PRIMARY KEY CLUSTERED 
+(
+	[idLogro] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+/****** Object:  Table LogrosUsuarios ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[LogrosUsuarios](
+	[idLogro] [int] NOT NULL,
+	[idUsuario] [int] NOT NULL,
+	[fecha] [date] NOT NULL,
+ CONSTRAINT [PK_LogrosUsuarios] PRIMARY KEY CLUSTERED 
+(
+	[idLogro] ASC,
+	[idUsuario] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+/****** Object:  Table Equipos ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Equipos](
+	[idEquipo] [int] NOT NULL,
+	[nombre] [varchar](30) NOT NULL,
+	[admin] [int] NOT NULL,
+ CONSTRAINT [PK_Equipos] PRIMARY KEY CLUSTERED 
+(
+	[idEquipo] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+/****** Object:  Table UsuariosEquipos ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[UsuariosEquipos](
+	[idEquipo] [int] NOT NULL,
+	[idUsuario] [int] NOT NULL,
+ CONSTRAINT [PK_UsuariosEquipos] PRIMARY KEY CLUSTERED 
+(
+	[idEquipo] ASC,
+	[idUsuario] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+/****** Object:  Table Pizarras ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Pizarras](
+	[idPizarra] [int] NOT NULL,
+	[sprint] [varchar](8) NOT NULL,
+	[equipo] [int] NOT NULL,
+ CONSTRAINT [PK_Pizarras] PRIMARY KEY CLUSTERED 
+(
+	[idPizarra] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+/****** Object:  Table Valores ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Valores](
+	[idValor] [int] NOT NULL,
+	[nombre] [varchar](30) NOT NULL,
+ CONSTRAINT [PK_Valores] PRIMARY KEY CLUSTERED 
+(
+	[idValor] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+/****** Object:  Table ValoresPizarras ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ValoresPizarras](
+	[idValor] [int] NOT NULL,
+	[idPizarra] [int] NOT NULL,
+ CONSTRAINT [PK_ValoresPizarras] PRIMARY KEY CLUSTERED 
+(
+	[idValor] ASC,
+	[idPizarra] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+/****** Object:  Table Notas ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Notas](
+	[idNota] [int] NOT NULL,
+	[pizarra] [int] NOT NULL,
+	[usuario] [int] NOT NULL,
+	[valor] [int] NOT NULL,
+	[nota] [varchar](300) NULL,
+	[positividad] [int] NOT NULL,
+ CONSTRAINT [PK_Notas] PRIMARY KEY CLUSTERED 
+(
+	[idNota] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
