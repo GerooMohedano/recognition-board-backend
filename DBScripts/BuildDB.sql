@@ -213,3 +213,11 @@ GO
 ALTER TABLE [dbo].[Notas] WITH CHECK ADD CONSTRAINT [FK_Notas_Usuario] FOREIGN KEY([usuario])
 REFERENCES [dbo].[Usuarios] ([idUsuario])
 GO
+
+/*** Default ***/
+ALTER TABLE [dbo].[Usuarios] ADD CONSTRAINT [DF_Usuarios_Contrasenia]  DEFAULT (('sovos123')) FOR [contrasenia]
+GO
+
+/*** Check ***/
+ALTER TABLE [dbo].[Notas] ADD CONSTRAINT [CK_Notas_Positividad] CHECK (([positividad] = -1 OR [positividad] = 1))
+GO
