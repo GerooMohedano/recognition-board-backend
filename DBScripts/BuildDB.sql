@@ -221,3 +221,116 @@ GO
 /*** Check ***/
 ALTER TABLE [dbo].[Notas] ADD CONSTRAINT [CK_Notas_Positividad] CHECK (([positividad] = -1 OR [positividad] = 1))
 GO
+
+
+/*** Index ***/
+
+
+/* 
+ * INDEX: IX_idUsuario 
+ */
+
+CREATE UNIQUE INDEX IX_idUsuario  ON Usuarios(idUsuario)
+go
+
+
+/* 
+ * INDEX: IX_idEquipo
+ */
+
+CREATE UNIQUE INDEX IX_idEquipo  ON Equipos(idEquipo)
+go
+
+/* 
+ * INDEX: IX_idPizarra 
+ */
+
+CREATE UNIQUE INDEX IX_idPizarra  ON Pizarras(idPizarra)
+go
+
+/* 
+ * INDEX: IX_idLogro
+ */
+
+CREATE UNIQUE INDEX IX_idLogro ON Logros(idLogro)
+go
+
+/* 
+ * INDEX: IX_idValor
+ */
+
+CREATE UNIQUE INDEX IX_idValor  ON Valores(idValor)
+go
+
+/* 
+ * INDEX: IX_idNota
+ */
+
+CREATE UNIQUE INDEX IX_idNota  ON Notas(idNota)
+go
+
+/*** Index compuestos ***/
+
+/* 
+ * INDEX: IX_idLogroUsuario
+ */
+
+CREATE INDEX IX_idLogroUsuario ON LogrosUsuarios(idLogro)
+go
+
+/* 
+ * INDEX: IX_idUsuarioLogro 
+ */
+
+CREATE INDEX IX_idUsuarioLogro ON LogrosUsuarios(idUsuario)
+go
+
+/* 
+ * INDEX: IX_idUsuarioEquipo
+ */
+
+CREATE INDEX IX_idUsuarioEquipo ON UsuariosEquipos(idUsuario)
+go
+
+/* 
+ * INDEX: IX_idEquipoUsuario
+ */
+
+CREATE INDEX IX_idEquipoUsuario ON UsuariosEquipos(idEquipo)
+go
+
+/* 
+ * INDEX: IX_idValorPizarra
+ */
+
+CREATE INDEX IX_idValorPizarra ON ValoresPizarras(idValor)
+go
+
+/* 
+ * INDEX: IX_idPizarraValor
+ */
+
+CREATE INDEX IX_idPizarraValor ON ValoresPizarras(idPizarra)
+go
+
+
+/* 
+ * INDEX: IX_idPizarraNota
+ */
+
+CREATE INDEX IX_idPizarraNota ON Notas(idPizarra)
+go
+
+/* 
+ * INDEX: IX_idValorNota
+ */
+
+CREATE INDEX IX_idValorNota ON Notas(idValor)
+go
+
+/* 
+ * INDEX: IX_idUsuarioNota
+ */
+
+CREATE INDEX IX_idUsuarioNota ON Notas(idUsuario)
+go
