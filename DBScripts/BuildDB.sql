@@ -222,6 +222,13 @@ GO
 ALTER TABLE [dbo].[Notas] ADD CONSTRAINT [CK_Notas_Positividad] CHECK (([positividad] = -1 OR [positividad] = 1))
 GO
 
+/*** Unique ***/
+
+CREATE UNIQUE INDEX IX_Mail ON Usuarios(mail)
+GO
+
+CREATE UNIQUE INDEX IX_Nombre ON Usuarios(nombre)
+GO
 
 /*** Index ***/
 
