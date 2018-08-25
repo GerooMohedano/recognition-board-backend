@@ -230,7 +230,7 @@ GO
  * INDEX: IX_idUsuario 
  */
 
-CREATE UNIQUE INDEX IX_idUsuario  ON Usuarios(idUsuario)
+CREATE UNIQUE INDEX IX_idUsuario ON Usuarios(idUsuario)
 go
 
 
@@ -238,14 +238,14 @@ go
  * INDEX: IX_idEquipo
  */
 
-CREATE UNIQUE INDEX IX_idEquipo  ON Equipos(idEquipo)
+CREATE UNIQUE INDEX IX_idEquipo ON Equipos(idEquipo)
 go
 
 /* 
  * INDEX: IX_idPizarra 
  */
 
-CREATE UNIQUE INDEX IX_idPizarra  ON Pizarras(idPizarra)
+CREATE UNIQUE INDEX IX_idPizarra ON Pizarras(idPizarra)
 go
 
 /* 
@@ -259,14 +259,14 @@ go
  * INDEX: IX_idValor
  */
 
-CREATE UNIQUE INDEX IX_idValor  ON Valores(idValor)
+CREATE UNIQUE INDEX IX_idValor ON Valores(idValor)
 go
 
 /* 
  * INDEX: IX_idNota
  */
 
-CREATE UNIQUE INDEX IX_idNota  ON Notas(idNota)
+CREATE UNIQUE INDEX IX_idNota ON Notas(idNota)
 go
 
 /*** Index compuestos ***/
@@ -318,19 +318,19 @@ go
  * INDEX: IX_idPizarraNota
  */
 
-CREATE INDEX IX_idPizarraNota ON Notas(idPizarra)
+CREATE INDEX IX_idPizarraNota ON Notas(pizarra)
 go
 
 /* 
  * INDEX: IX_idValorNota
  */
 
-CREATE INDEX IX_idValorNota ON Notas(idValor)
+CREATE INDEX IX_idValorNota ON Notas(valor)
 go
 
 /* 
  * INDEX: IX_idUsuarioNota
  */
 
-CREATE INDEX IX_idUsuarioNota ON Notas(idUsuario)
+CREATE INDEX IX_idUsuarioNota ON Notas(usuario)
 go
