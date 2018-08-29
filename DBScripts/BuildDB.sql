@@ -118,6 +118,7 @@ CREATE TABLE [dbo].[Pizarras](
 	[idPizarra] [int] NOT NULL,
 	[sprint] [varchar](8) NOT NULL,
 	[equipo] [int] NOT NULL,
+	[fecha] [datetime]
  CONSTRAINT [PK_Pizarras] PRIMARY KEY CLUSTERED 
 (
 	[idPizarra] ASC
@@ -140,18 +141,18 @@ CREATE TABLE [dbo].[Valores](
 ) ON [PRIMARY]
 GO
 
-/****** Object:  Table ValoresPizarras ******/
+/****** Object:  Table equipoValor ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[ValoresPizarras](
+CREATE TABLE [dbo].[EquipoValor](
+	[idEquipo] [int] NOT NULL,
 	[idValor] [int] NOT NULL,
-	[idPizarra] [int] NOT NULL,
- CONSTRAINT [PK_ValoresPizarras] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_EquipoValor] PRIMARY KEY CLUSTERED 
 (
 	[idValor] ASC,
-	[idPizarra] ASC
+	[idEquipo] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -167,8 +168,7 @@ CREATE TABLE [dbo].[Notas](
 	[usuario] [int] NOT NULL,
 	[valor] [int] NOT NULL,
 	[nota] [varchar](300) NULL,
-	[positividad] [int] NOT NULL,
- CONSTRAINT [PK_Notas] PRIMARY KEY CLUSTERED 
+	[positividad] [int] NOT NULL, CONSTRAINT [PK_Notas] PRIMARY KEY CLUSTERED 
 (
 	[idNota] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -198,11 +198,11 @@ GO
 ALTER TABLE [dbo].[Pizarras] WITH CHECK ADD CONSTRAINT [FK_Pizarras_Equipo] FOREIGN KEY([equipo])
 REFERENCES [dbo].[Equipos] ([idEquipo])
 GO
-ALTER TABLE [dbo].[ValoresPizarras] WITH CHECK ADD CONSTRAINT [FK_ValoresPizarras_IdValor] FOREIGN KEY([idValor])
+ALTER TABLE [dbo].[EquipoValor] WITH CHECK ADD CONSTRAINT [FK_EquipoValor_IdValor] FOREIGN KEY([idValor])
 REFERENCES [dbo].[Valores] ([idValor])
 GO
-ALTER TABLE [dbo].[ValoresPizarras] WITH CHECK ADD CONSTRAINT [FK_ValoresPizarras_IdPizarra] FOREIGN KEY([idPizarra])
-REFERENCES [dbo].[Pizarras] ([idPizarra])
+ALTER TABLE [dbo].[EquipoValor] WITH CHECK ADD CONSTRAINT [FK_EquipoValor_IdEquipo] FOREIGN KEY([idEquipo])
+REFERENCES [dbo].[Equipos] ([idEquipo])
 GO
 ALTER TABLE [dbo].[Notas] WITH CHECK ADD CONSTRAINT [FK_Notas_Pizarra] FOREIGN KEY([pizarra])
 REFERENCES [dbo].[Pizarras] ([idPizarra])
@@ -222,13 +222,7 @@ GO
 ALTER TABLE [dbo].[Notas] ADD CONSTRAINT [CK_Notas_Positividad] CHECK (([positividad] = -1 OR [positividad] = 1))
 GO
 
-/*** Unique ***/
 
-CREATE UNIQUE INDEX IX_Mail ON Usuarios(mail)
-GO
-
-CREATE UNIQUE INDEX IX_Nombre ON Usuarios(nombre)
-GO
 
 /*** Index ***/
 
@@ -240,6 +234,11 @@ GO
 CREATE UNIQUE INDEX IX_idUsuario ON Usuarios(idUsuario)
 go
 
+CREATE UNIQUE INDEX IX_Mail ON Usuarios(mail)
+GO
+
+CREATE UNIQUE INDEX IX_Nombre ON Usuarios(nombre)
+GO
 
 /* 
  * INDEX: IX_idEquipo
@@ -248,6 +247,8 @@ go
 CREATE UNIQUE INDEX IX_idEquipo ON Equipos(idEquipo)
 go
 
+CREATE UNIQUE INDEX IX_NombreEquipo ON Equipos(nombre)
+go
 /* 
  * INDEX: IX_idPizarra 
  */
@@ -269,6 +270,9 @@ go
 CREATE UNIQUE INDEX IX_idValor ON Valores(idValor)
 go
 
+CREATE UNIQUE INDEX IX_nombreValor ON Valores(nombre)
+go
+
 /* 
  * INDEX: IX_idNota
  */
@@ -276,7 +280,28 @@ go
 CREATE UNIQUE INDEX IX_idNota ON Notas(idNota)
 go
 
-/*** Index compuestos ***/
+/* 
+ * INDEX: IX_idValorNota
+ */
+
+CREATE INDEX IX_idValorNota ON Notas(valor)
+go
+
+/* 
+ * INDEX: IX_idUsuarioNota
+ */
+
+CREATE INDEX IX_idUsuarioNota ON Notas(usuario)
+go
+
+/* 
+ * INDEX: IX_idPizarraNota
+ */
+
+CREATE INDEX IX_idPizarraNota ON Notas(pizarra)
+go
+
+/*** Index compuestos (de unión) ***/
 
 /* 
  * INDEX: IX_idLogroUsuario
@@ -306,38 +331,17 @@ go
 CREATE INDEX IX_idEquipoUsuario ON UsuariosEquipos(idEquipo)
 go
 
+
 /* 
- * INDEX: IX_idValorPizarra
+ * INDEX: IX_idEquipoValorEquipo
  */
 
-CREATE INDEX IX_idValorPizarra ON ValoresPizarras(idValor)
+CREATE INDEX IX_idEquipoValorEquipo ON EquipoValor(idEquipo)
 go
 
 /* 
- * INDEX: IX_idPizarraValor
+ * INDEX: IX_idEquipoValorValor
  */
 
-CREATE INDEX IX_idPizarraValor ON ValoresPizarras(idPizarra)
-go
-
-
-/* 
- * INDEX: IX_idPizarraNota
- */
-
-CREATE INDEX IX_idPizarraNota ON Notas(pizarra)
-go
-
-/* 
- * INDEX: IX_idValorNota
- */
-
-CREATE INDEX IX_idValorNota ON Notas(valor)
-go
-
-/* 
- * INDEX: IX_idUsuarioNota
- */
-
-CREATE INDEX IX_idUsuarioNota ON Notas(usuario)
+CREATE INDEX IX_idEquipoValorValor ON EquipoValor(idValor)
 go
