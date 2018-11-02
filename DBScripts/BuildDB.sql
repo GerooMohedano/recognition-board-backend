@@ -29,12 +29,11 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Usuarios](
 	[idUsuario] [int] NOT NULL,
-	[nombre] [varchar](50) NOT NULL,
+	[nombre] [string](50) NOT NULL,
 	[contrasenia] [varchar](30) NOT NULL,
-	[adminGrupo] [bit] NOT NULL,
-	[adminGeneral] [bit] NOT NULL,
+	[rol] [string] NOT NULL,
 	[responsable] [int] NULL,
-	[mail] [varchar](50) NULL,
+	[mail] [string](50) NULL,
 	[fotoPerfil] [image] NULL,
  CONSTRAINT [PK_Usuarios] PRIMARY KEY CLUSTERED 
 (
@@ -50,8 +49,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Logros](
 	[idLogro] [int] NOT NULL,
-	[nombre] [varchar](50) NOT NULL,
-	[descripcion] [varchar](150) NOT NULL,
+	[nombre] [string](50) NOT NULL,
+	[descripcion] [string](150) NOT NULL,
 	[foto] [image] NULL,
  CONSTRAINT [PK_Logros] PRIMARY KEY CLUSTERED 
 (
@@ -84,7 +83,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Equipos](
 	[idEquipo] [int] NOT NULL,
-	[nombre] [varchar](30) NOT NULL,
+	[nombre] [string](30) NOT NULL,
+	[imagen] [image] NULL,
 	[admin] [int] NOT NULL,
  CONSTRAINT [PK_Equipos] PRIMARY KEY CLUSTERED 
 (
@@ -115,10 +115,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Pizarras](
-	[idPizarra] [int] NOT NULL,
-	[sprint] [varchar](8) NOT NULL,
+	[idPizarra] [string] NOT NULL,
+	[titulo] [int] NOT NULL,
 	[equipo] [int] NOT NULL,
-	[fecha] [datetime]
+	[fechaInicio] [datetime],
+	[fechaFin] [datetime],
  CONSTRAINT [PK_Pizarras] PRIMARY KEY CLUSTERED 
 (
 	[idPizarra] ASC
@@ -133,7 +134,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Valores](
 	[idValor] [int] NOT NULL,
-	[nombre] [varchar](30) NOT NULL,
+	[nombre] [string](30) NOT NULL,
  CONSTRAINT [PK_Valores] PRIMARY KEY CLUSTERED 
 (
 	[idValor] ASC
@@ -167,7 +168,7 @@ CREATE TABLE [dbo].[Notas](
 	[pizarra] [int] NOT NULL,
 	[usuario] [int] NOT NULL,
 	[valor] [int] NOT NULL,
-	[nota] [varchar](300) NULL,
+	[nota] [string](300) NULL,
 	[positividad] [int] NOT NULL, CONSTRAINT [PK_Notas] PRIMARY KEY CLUSTERED 
 (
 	[idNota] ASC
@@ -175,6 +176,37 @@ CREATE TABLE [dbo].[Notas](
 ) ON [PRIMARY]
 GO
 
+/****** Object:  Table Empresas ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+
+CREATE TABLE [dbo].[Empresas](
+	[idEmpresa] [int] NOT NULL,
+	[nombre] [int] NOT NULL,
+	[direccion] [int] NOT NULL,
+	[telefono] [int] NOT NULL,
+	[logo] [image](300) NULL, CONSTRAINT [PK_Empresas] PRIMARY KEY CLUSTERED 
+(
+	[idEmpresas] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+/****** Object:  Table EmpresasValores ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+
+CREATE TABLE [dbo].[EmpresasValores](
+	[idEmpresa] [int] NOT NULL,
+	[idValor] [int] NOT NULL, CONSTRAINT [PK_EmpresasValores] PRIMARY KEY CLUSTERED 
+(
+	[idEmpresa] ASC,
+	[idValor] ASC,
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
 /*** Foreign keys ***/
 
 ALTER TABLE [dbo].[Usuarios] WITH CHECK ADD CONSTRAINT [FK_Usuarios_Responsable] FOREIGN KEY([responsable])
@@ -212,6 +244,15 @@ REFERENCES [dbo].[Valores] ([idValor])
 GO
 ALTER TABLE [dbo].[Notas] WITH CHECK ADD CONSTRAINT [FK_Notas_Usuario] FOREIGN KEY([usuario])
 REFERENCES [dbo].[Usuarios] ([idUsuario])
+GO
+ALTER TABLE [dbo].[Empresas] WITH CHECK ADD CONSTRAINT [FK_Empresas_idEmpresa] FOREIGN KEY([idEmpresa])
+REFERENCES [dbo].[Empresas] ([idEmpresa])
+GO
+ALTER TABLE [dbo].[EmpresasValores] WITH CHECK ADD CONSTRAINT [FK_EmpresasValores_idEmpresa] FOREIGN KEY([idEmpresa])
+REFERENCES [dbo].[Empresas] ([idEmpresa])
+GO
+ALTER TABLE [dbo].[EmpresasValores] WITH CHECK ADD CONSTRAINT [FK_EmpresasValores_idValor] FOREIGN KEY([idValor])
+REFERENCES [dbo].[Valores] ([idValor])
 GO
 
 /*** Default ***/
@@ -344,4 +385,26 @@ go
  */
 
 CREATE INDEX IX_idEquipoValorValor ON EquipoValor(idValor)
+go
+
+---
+/* 
+ * INDEX: IX_idEmpresa
+ */
+
+CREATE INDEX IX_idEmpresa ON Empresas(idEmpresa)
+go
+
+/* 
+ * INDEX: IX_idEmpresaValorEmpresa
+ */
+
+CREATE INDEX IX_idEmpresaValorEmpresa ON EmpresasValores(idEmpresa)
+go
+
+/* 
+ * INDEX: IX_idEmpresaValorValor
+ */
+
+CREATE INDEX IX_idEmpresaValorValor ON EmpresasValores(idValor)
 go
