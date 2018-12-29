@@ -31,7 +31,7 @@ CREATE TABLE [dbo].[Usuarios](
 	[idUsuario] [int] NOT NULL,
 	[nombre] [string](50) NOT NULL,
 	[contrasenia] [varchar](30) NOT NULL,
-	[rol] [string] NOT NULL,
+	[active] [bit] NOT NULL,
 	[responsable] [int] NULL,
 	[mail] [string](50) NULL,
 	[fotoPerfil] [image] NULL,
@@ -342,7 +342,7 @@ go
 CREATE INDEX IX_idPizarraNota ON Notas(pizarra)
 go
 
-/*** Index compuestos (de unión) ***/
+/*** Index compuestos (de uniï¿½n) ***/
 
 /* 
  * INDEX: IX_idLogroUsuario
