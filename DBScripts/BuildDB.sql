@@ -29,12 +29,11 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Usuarios](
 	[idUsuario] [int] NOT NULL,
-	[nombre] [string](50) NOT NULL,
+	[nombre] [varchar](50) NOT NULL,
 	[contrasenia] [varchar](30) NOT NULL,
-	[active] [bit] NOT NULL,
-	[responsable] [int] NULL,
-	[mail] [string](50) NULL,
+	[mail] [varchar](50) NULL,
 	[fotoPerfil] [image] NULL,
+	[adminGeneral] [bit] NOT NULL,
  CONSTRAINT [PK_Usuarios] PRIMARY KEY CLUSTERED 
 (
 	[idUsuario] ASC
@@ -49,8 +48,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Logros](
 	[idLogro] [int] NOT NULL,
-	[nombre] [string](50) NOT NULL,
-	[descripcion] [string](150) NOT NULL,
+	[nombre] [varchar](50) NOT NULL,
+	[descripcion] [varchar](150) NOT NULL,
 	[foto] [image] NULL,
  CONSTRAINT [PK_Logros] PRIMARY KEY CLUSTERED 
 (
@@ -83,9 +82,10 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Equipos](
 	[idEquipo] [int] NOT NULL,
-	[nombre] [string](30) NOT NULL,
+	[nombre] [varchar](30) NOT NULL,
 	[imagen] [image] NULL,
-	[admin] [int] NOT NULL,
+	[estado] [varchar](30) NOT NULL,
+	[idEmpresa] [int] NOT NULL,
  CONSTRAINT [PK_Equipos] PRIMARY KEY CLUSTERED 
 (
 	[idEquipo] ASC
@@ -101,6 +101,8 @@ GO
 CREATE TABLE [dbo].[UsuariosEquipos](
 	[idEquipo] [int] NOT NULL,
 	[idUsuario] [int] NOT NULL,
+	[rol] [varchar](30) NOT  NULL,
+	[estado] [varchar](30) NOT NULL,
  CONSTRAINT [PK_UsuariosEquipos] PRIMARY KEY CLUSTERED 
 (
 	[idEquipo] ASC,
@@ -115,9 +117,9 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Pizarras](
-	[idPizarra] [string] NOT NULL,
+	[idPizarra] [int] NOT NULL,
 	[titulo] [int] NOT NULL,
-	[equipo] [int] NOT NULL,
+	[idEquipo] [int] NOT NULL,
 	[fechaInicio] [datetime],
 	[fechaFin] [datetime],
  CONSTRAINT [PK_Pizarras] PRIMARY KEY CLUSTERED 
@@ -134,7 +136,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Valores](
 	[idValor] [int] NOT NULL,
-	[nombre] [string](30) NOT NULL,
+	[nombre] [varchar](30) NOT NULL,
  CONSTRAINT [PK_Valores] PRIMARY KEY CLUSTERED 
 (
 	[idValor] ASC
@@ -147,9 +149,10 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[EquipoValor](
+CREATE TABLE [dbo].[EquiposValores](
 	[idEquipo] [int] NOT NULL,
 	[idValor] [int] NOT NULL,
+	[estado] [varchar](30) NOT NULL,
  CONSTRAINT [PK_EquipoValor] PRIMARY KEY CLUSTERED 
 (
 	[idValor] ASC,
@@ -165,11 +168,12 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Notas](
 	[idNota] [int] NOT NULL,
-	[pizarra] [int] NOT NULL,
-	[usuario] [int] NOT NULL,
-	[valor] [int] NOT NULL,
-	[nota] [string](300) NULL,
-	[positividad] [int] NOT NULL, CONSTRAINT [PK_Notas] PRIMARY KEY CLUSTERED 
+	[idPizarra] [int] NOT NULL,
+	[idAutor] [int] NOT NULL,
+	[idDestinatario] [int] NOT NULL,
+	[idValor] [int] NOT NULL,
+	[descripcion] [varchar](300) NULL,
+	[puntuacion] [int] NOT NULL, CONSTRAINT [PK_Notas] PRIMARY KEY CLUSTERED 
 (
 	[idNota] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -186,9 +190,23 @@ CREATE TABLE [dbo].[Empresas](
 	[nombre] [int] NOT NULL,
 	[direccion] [int] NOT NULL,
 	[telefono] [int] NOT NULL,
-	[logo] [image](300) NULL, CONSTRAINT [PK_Empresas] PRIMARY KEY CLUSTERED 
+	[estado] [varchar](30) NOT NULL,
+	[logo] [image] NULL, CONSTRAINT [PK_Empresas] PRIMARY KEY CLUSTERED 
 (
-	[idEmpresas] ASC
+	[idEmpresa] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+/****** Object:  Table UsuariosEmpresas ******/
+CREATE TABLE [dbo].[UsuariosEmpresas](
+	[idEmpresa] [int] NOT NULL,
+	[idUsuario] [int] NOT NULL,
+	[rol] [varchar](30) NOT NULL,
+	CONSTRAINT [PK_UsuariosEmpresas] PRIMARY KEY CLUSTERED 
+(
+	[idEmpresa] ASC,
+	[idUsuario] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -203,23 +221,20 @@ CREATE TABLE [dbo].[EmpresasValores](
 	[idValor] [int] NOT NULL, CONSTRAINT [PK_EmpresasValores] PRIMARY KEY CLUSTERED 
 (
 	[idEmpresa] ASC,
-	[idValor] ASC,
+	[idValor] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 /*** Foreign keys ***/
 
-ALTER TABLE [dbo].[Usuarios] WITH CHECK ADD CONSTRAINT [FK_Usuarios_Responsable] FOREIGN KEY([responsable])
-REFERENCES [dbo].[Usuarios] ([idUsuario])
-GO
 ALTER TABLE [dbo].[LogrosUsuarios] WITH CHECK ADD CONSTRAINT [FK_UsuariosLogros_IdUsuario] FOREIGN KEY([idUsuario])
 REFERENCES [dbo].[Usuarios] ([idUsuario])
 GO
 ALTER TABLE [dbo].[LogrosUsuarios] WITH CHECK ADD CONSTRAINT [FK_UsuariosLogros_IdLogro] FOREIGN KEY([idLogro])
 REFERENCES [dbo].[Logros] ([idLogro])
 GO
-ALTER TABLE [dbo].[Equipos] WITH CHECK ADD CONSTRAINT [FK_Equipos_Admin] FOREIGN KEY([admin])
-REFERENCES [dbo].[Usuarios] ([idUsuario])
+ALTER TABLE [dbo].[Equipos] WITH CHECK ADD CONSTRAINT [FK_Equipos_IdEmpresa] FOREIGN KEY([idEmpresa])
+REFERENCES [dbo].[Empresas] ([idEmpresa])
 GO
 ALTER TABLE [dbo].[UsuariosEquipos] WITH CHECK ADD CONSTRAINT [FK_UsuariosEquipos_IdUsuario] FOREIGN KEY([idUsuario])
 REFERENCES [dbo].[Usuarios] ([idUsuario])
@@ -227,26 +242,26 @@ GO
 ALTER TABLE [dbo].[UsuariosEquipos] WITH CHECK ADD CONSTRAINT [FK_UsuariosEquipos_IdEquipo] FOREIGN KEY([idEquipo])
 REFERENCES [dbo].[Equipos] ([idEquipo])
 GO
-ALTER TABLE [dbo].[Pizarras] WITH CHECK ADD CONSTRAINT [FK_Pizarras_Equipo] FOREIGN KEY([equipo])
+ALTER TABLE [dbo].[Pizarras] WITH CHECK ADD CONSTRAINT [FK_Pizarras_Equipo] FOREIGN KEY([idEquipo])
 REFERENCES [dbo].[Equipos] ([idEquipo])
 GO
-ALTER TABLE [dbo].[EquipoValor] WITH CHECK ADD CONSTRAINT [FK_EquipoValor_IdValor] FOREIGN KEY([idValor])
+ALTER TABLE [dbo].[EquiposValores] WITH CHECK ADD CONSTRAINT [FK_EquiposValores_IdValor] FOREIGN KEY([idValor])
 REFERENCES [dbo].[Valores] ([idValor])
 GO
-ALTER TABLE [dbo].[EquipoValor] WITH CHECK ADD CONSTRAINT [FK_EquipoValor_IdEquipo] FOREIGN KEY([idEquipo])
+ALTER TABLE [dbo].[EquiposValores] WITH CHECK ADD CONSTRAINT [FK_EquiposValores_IdEquipo] FOREIGN KEY([idEquipo])
 REFERENCES [dbo].[Equipos] ([idEquipo])
 GO
-ALTER TABLE [dbo].[Notas] WITH CHECK ADD CONSTRAINT [FK_Notas_Pizarra] FOREIGN KEY([pizarra])
+ALTER TABLE [dbo].[Notas] WITH CHECK ADD CONSTRAINT [FK_Notas_Pizarra] FOREIGN KEY([idPizarra])
 REFERENCES [dbo].[Pizarras] ([idPizarra])
 GO
-ALTER TABLE [dbo].[Notas] WITH CHECK ADD CONSTRAINT [FK_Notas_Valor] FOREIGN KEY([valor])
+ALTER TABLE [dbo].[Notas] WITH CHECK ADD CONSTRAINT [FK_Notas_Valor] FOREIGN KEY([idValor])
 REFERENCES [dbo].[Valores] ([idValor])
 GO
-ALTER TABLE [dbo].[Notas] WITH CHECK ADD CONSTRAINT [FK_Notas_Usuario] FOREIGN KEY([usuario])
+ALTER TABLE [dbo].[Notas] WITH CHECK ADD CONSTRAINT [FK_Notas_Autor] FOREIGN KEY([idAutor])
 REFERENCES [dbo].[Usuarios] ([idUsuario])
 GO
-ALTER TABLE [dbo].[Empresas] WITH CHECK ADD CONSTRAINT [FK_Empresas_idEmpresa] FOREIGN KEY([idEmpresa])
-REFERENCES [dbo].[Empresas] ([idEmpresa])
+ALTER TABLE [dbo].[Notas] WITH CHECK ADD CONSTRAINT [FK_Notas_Destinatario] FOREIGN KEY([idDestinatario])
+REFERENCES [dbo].[Usuarios] ([idUsuario])
 GO
 ALTER TABLE [dbo].[EmpresasValores] WITH CHECK ADD CONSTRAINT [FK_EmpresasValores_idEmpresa] FOREIGN KEY([idEmpresa])
 REFERENCES [dbo].[Empresas] ([idEmpresa])
@@ -254,16 +269,46 @@ GO
 ALTER TABLE [dbo].[EmpresasValores] WITH CHECK ADD CONSTRAINT [FK_EmpresasValores_idValor] FOREIGN KEY([idValor])
 REFERENCES [dbo].[Valores] ([idValor])
 GO
+ALTER TABLE [dbo].[UsuariosEmpresas] WITH CHECK ADD CONSTRAINT [FK_UsuariosEmpresas_idUsuario] FOREIGN KEY([idUsuario])
+REFERENCES [dbo].[Usuarios] ([idUsuario])
+GO
+ALTER TABLE [dbo].[UsuariosEmpresas] WITH CHECK ADD CONSTRAINT [FK_UsuariosEmpresas_idEmpresa] FOREIGN KEY([idEmpresa])
+REFERENCES [dbo].[Empresas] ([idEmpresa])
+GO
 
 /*** Default ***/
-ALTER TABLE [dbo].[Usuarios] ADD CONSTRAINT [DF_Usuarios_Contrasenia]  DEFAULT (('sovos123')) FOR [contrasenia]
+ALTER TABLE [dbo].[Usuarios] ADD CONSTRAINT [DF_Usuarios_Contrasenia] DEFAULT (('sovos123')) FOR [contrasenia]
+GO
+ALTER TABLE [dbo].[Usuarios] ADD CONSTRAINT [DF_Usuarios_AdminGeneral] DEFAULT ((0)) FOR [adminGeneral]
+GO
+ALTER TABLE [dbo].[UsuariosEquipos] ADD CONSTRAINT [DF_UsuariosEquipos_Rol] DEFAULT (('usuario')) FOR [rol]
+GO
+ALTER TABLE [dbo].[UsuariosEmpresas] ADD CONSTRAINT [DF_UsuariosEmpresas_Rol] DEFAULT (('usuario')) FOR [rol]
+GO
+ALTER TABLE [dbo].[Equipos] ADD CONSTRAINT [DF_Equipos_Estado] DEFAULT (('activo')) FOR [estado]
+GO
+ALTER TABLE [dbo].[UsuariosEquipos] ADD CONSTRAINT [DF_UsuariosEquipos_Estado] DEFAULT (('activo')) FOR [estado]
+GO
+ALTER TABLE [dbo].[EquiposValores] ADD CONSTRAINT [DF_EquiposValores_Estado] DEFAULT (('activo')) FOR [estado]
+GO
+ALTER TABLE [dbo].[Empresas] ADD CONSTRAINT [DF_Empresas_Estado] DEFAULT (('activo')) FOR [estado]
 GO
 
 /*** Check ***/
-ALTER TABLE [dbo].[Notas] ADD CONSTRAINT [CK_Notas_Positividad] CHECK (([positividad] = -1 OR [positividad] = 1))
+ALTER TABLE [dbo].[Notas] ADD CONSTRAINT [CK_Notas_Puntuacion] CHECK (([puntuacion] = -1 OR [puntuacion] = 1))
 GO
-
-
+ALTER TABLE [dbo].[Equipos] ADD CONSTRAINT [CK_Equipos_Estado] CHECK (([estado] = 'activo' OR [estado] = 'inactivo'))
+GO
+ALTER TABLE [dbo].[UsuariosEquipos] ADD CONSTRAINT [CK_UsuariosEquipos_Estado] CHECK (([estado] = 'activo' OR [estado] = 'inactivo'))
+GO
+ALTER TABLE [dbo].[EquiposValores] ADD CONSTRAINT [CK_EquiposValores_Estado] CHECK (([estado] = 'activo' OR [estado] = 'inactivo'))
+GO
+ALTER TABLE [dbo].[Empresas] ADD CONSTRAINT [CK_Empresas_Estado] CHECK (([estado] = 'activo' OR [estado] = 'inactivo'))
+GO
+ALTER TABLE [dbo].[UsuariosEmpresas] ADD CONSTRAINT [CK_UsuariosEmpresas_Rol] CHECK (([rol] = 'usuario' OR [rol] = 'adminEmpresa'))
+GO
+ALTER TABLE [dbo].[UsuariosEquipos] ADD CONSTRAINT [CK_UsuariosEquipos_Rol] CHECK (([rol] = 'usuario' OR [rol] = 'adminEquipo'))
+GO
 
 /*** Index ***/
 
@@ -325,24 +370,31 @@ go
  * INDEX: IX_idValorNota
  */
 
-CREATE INDEX IX_idValorNota ON Notas(valor)
+CREATE INDEX IX_idValorNota ON Notas(idValor)
 go
 
 /* 
  * INDEX: IX_idUsuarioNota
  */
 
-CREATE INDEX IX_idUsuarioNota ON Notas(usuario)
+CREATE INDEX IX_idAutorNota ON Notas(idAutor)
+go
+
+/* 
+ * INDEX: IX_idUsuarioNota
+ */
+
+CREATE INDEX IX_idDestinatarioNota ON Notas(idDestinatario)
 go
 
 /* 
  * INDEX: IX_idPizarraNota
  */
 
-CREATE INDEX IX_idPizarraNota ON Notas(pizarra)
+CREATE INDEX IX_idPizarraNota ON Notas(idPizarra)
 go
 
-/*** Index compuestos (de uni�n) ***/
+/*** Index compuestos (de union) ***/
 
 /* 
  * INDEX: IX_idLogroUsuario
@@ -374,17 +426,17 @@ go
 
 
 /* 
- * INDEX: IX_idEquipoValorEquipo
+ * INDEX: IX_idEquipoEquiposValores
  */
 
-CREATE INDEX IX_idEquipoValorEquipo ON EquipoValor(idEquipo)
+CREATE INDEX IX_idEquiposValoresEquipo ON EquiposValores(idEquipo)
 go
 
 /* 
  * INDEX: IX_idEquipoValorValor
  */
 
-CREATE INDEX IX_idEquipoValorValor ON EquipoValor(idValor)
+CREATE INDEX IX_idEquiposValoresValor ON EquiposValores(idValor)
 go
 
 ---
