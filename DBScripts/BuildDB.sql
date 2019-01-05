@@ -31,7 +31,7 @@ CREATE TABLE [dbo].[Usuarios](
 	[idUsuario] [int] NOT NULL,
 	[nombre] [varchar](50) NOT NULL,
 	[contrasenia] [varchar](30) NOT NULL,
-	[mail] [varchar](50) NULL,
+	[mail] [varchar](50) NOT NULL,
 	[fotoPerfil] [image] NULL,
 	[adminGeneral] [bit] NOT NULL,
  CONSTRAINT [PK_Usuarios] PRIMARY KEY CLUSTERED 
@@ -101,7 +101,7 @@ GO
 CREATE TABLE [dbo].[UsuariosEquipos](
 	[idEquipo] [int] NOT NULL,
 	[idUsuario] [int] NOT NULL,
-	[rol] [varchar](30) NOT  NULL,
+	[rol] [varchar](30) NOT NULL,
 	[estado] [varchar](30) NOT NULL,
  CONSTRAINT [PK_UsuariosEquipos] PRIMARY KEY CLUSTERED 
 (
@@ -118,10 +118,10 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Pizarras](
 	[idPizarra] [int] NOT NULL,
-	[titulo] [int] NOT NULL,
+	[titulo] [varchar](30) NOT NULL,
 	[idEquipo] [int] NOT NULL,
-	[fechaInicio] [datetime],
-	[fechaFin] [datetime],
+	[fechaInicio] [datetime] NOT NULL,
+	[fechaFin] [datetime] NOT NULL,
  CONSTRAINT [PK_Pizarras] PRIMARY KEY CLUSTERED 
 (
 	[idPizarra] ASC
@@ -187,9 +187,9 @@ SET QUOTED_IDENTIFIER ON
 
 CREATE TABLE [dbo].[Empresas](
 	[idEmpresa] [int] NOT NULL,
-	[nombre] [int] NOT NULL,
-	[direccion] [int] NOT NULL,
-	[telefono] [int] NOT NULL,
+	[nombre] [varchar](100) NOT NULL,
+	[direccion] [int] NULL,
+	[telefono] [int] NULL,
 	[estado] [varchar](30) NOT NULL,
 	[logo] [image] NULL, CONSTRAINT [PK_Empresas] PRIMARY KEY CLUSTERED 
 (
