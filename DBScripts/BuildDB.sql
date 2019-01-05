@@ -225,6 +225,41 @@ CREATE TABLE [dbo].[EmpresasValores](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
+
+/****** Object:  Table Condiciones ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+
+CREATE TABLE [dbo].[Condiciones](
+	[idCondicion] [int] NOT NULL,
+	[idValor] [int] NOT NULL,
+	[puntuacion] [int] NOT NULL,
+	[modificador] [bit] NOT NULL,
+	[excluyente][bit] NOT NULL,
+	CONSTRAINT [PK_Condiciones] PRIMARY KEY CLUSTERED 
+(
+	[idCondicion] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+/****** Object:  Table LogrosCondiciones ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+
+CREATE TABLE [dbo].[LogrosCondiciones](
+	[idCondicion] [int] NOT NULL,
+	[idLogro] [int] NOT NULL,
+	CONSTRAINT [PK_LogrosCondiciones] PRIMARY KEY CLUSTERED 
+(
+	[idCondicion] ASC,
+	[idLogro] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
 /*** Foreign keys ***/
 
 ALTER TABLE [dbo].[LogrosUsuarios] WITH CHECK ADD CONSTRAINT [FK_UsuariosLogros_IdUsuario] FOREIGN KEY([idUsuario])
@@ -275,6 +310,15 @@ GO
 ALTER TABLE [dbo].[UsuariosEmpresas] WITH CHECK ADD CONSTRAINT [FK_UsuariosEmpresas_idEmpresa] FOREIGN KEY([idEmpresa])
 REFERENCES [dbo].[Empresas] ([idEmpresa])
 GO
+ALTER TABLE [dbo].[Condiciones] WITH CHECK ADD CONSTRAINT [FK_Condiciones_idValor] FOREIGN KEY([idValor])
+REFERENCES [dbo].[Valores] ([idValor])
+GO
+ALTER TABLE [dbo].[LogrosCondiciones] WITH CHECK ADD CONSTRAINT [FK_LogrosCondiciones_idLogro] FOREIGN KEY([idLogro])
+REFERENCES [dbo].[Logros] ([idLogro])
+GO
+ALTER TABLE [dbo].[LogrosCondiciones] WITH CHECK ADD CONSTRAINT [FK_LogrosCondiciones_idCondicion] FOREIGN KEY([idCondicion])
+REFERENCES [dbo].[Condiciones] ([idCondicion])
+GO
 
 /*** Default ***/
 ALTER TABLE [dbo].[Usuarios] ADD CONSTRAINT [DF_Usuarios_Contrasenia] DEFAULT (('sovos123')) FOR [contrasenia]
@@ -292,6 +336,10 @@ GO
 ALTER TABLE [dbo].[EquiposValores] ADD CONSTRAINT [DF_EquiposValores_Estado] DEFAULT (('activo')) FOR [estado]
 GO
 ALTER TABLE [dbo].[Empresas] ADD CONSTRAINT [DF_Empresas_Estado] DEFAULT (('activo')) FOR [estado]
+GO
+ALTER TABLE [dbo].[Condiciones] ADD CONSTRAINT [DF_Condiciones_Modificador] DEFAULT ((1)) FOR [modificador]
+GO
+ALTER TABLE [dbo].[Condiciones] ADD CONSTRAINT [DF_Condiciones_Excluyente] DEFAULT ((0)) FOR [excluyente]
 GO
 
 /*** Check ***/
