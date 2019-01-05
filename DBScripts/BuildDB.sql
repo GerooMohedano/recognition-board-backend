@@ -101,7 +101,7 @@ GO
 CREATE TABLE [dbo].[UsuariosEquipos](
 	[idEquipo] [int] NOT NULL,
 	[idUsuario] [int] NOT NULL,
-	[rol] [varchar](30) NOT NULL,
+	[rol] [bit] NOT NULL,
 	[estado] [varchar](30) NOT NULL,
  CONSTRAINT [PK_UsuariosEquipos] PRIMARY KEY CLUSTERED 
 (
@@ -202,7 +202,7 @@ GO
 CREATE TABLE [dbo].[UsuariosEmpresas](
 	[idEmpresa] [int] NOT NULL,
 	[idUsuario] [int] NOT NULL,
-	[rol] [varchar](30) NOT NULL,
+	[rol] [bit] NOT NULL,
 	CONSTRAINT [PK_UsuariosEmpresas] PRIMARY KEY CLUSTERED 
 (
 	[idEmpresa] ASC,
@@ -325,9 +325,9 @@ ALTER TABLE [dbo].[Usuarios] ADD CONSTRAINT [DF_Usuarios_Contrasenia] DEFAULT ((
 GO
 ALTER TABLE [dbo].[Usuarios] ADD CONSTRAINT [DF_Usuarios_AdminGeneral] DEFAULT ((0)) FOR [adminGeneral]
 GO
-ALTER TABLE [dbo].[UsuariosEquipos] ADD CONSTRAINT [DF_UsuariosEquipos_Rol] DEFAULT (('usuario')) FOR [rol]
+ALTER TABLE [dbo].[UsuariosEquipos] ADD CONSTRAINT [DF_UsuariosEquipos_Rol] DEFAULT ((0)) FOR [rol]
 GO
-ALTER TABLE [dbo].[UsuariosEmpresas] ADD CONSTRAINT [DF_UsuariosEmpresas_Rol] DEFAULT (('usuario')) FOR [rol]
+ALTER TABLE [dbo].[UsuariosEmpresas] ADD CONSTRAINT [DF_UsuariosEmpresas_Rol] DEFAULT ((0)) FOR [rol]
 GO
 ALTER TABLE [dbo].[Equipos] ADD CONSTRAINT [DF_Equipos_Estado] DEFAULT (('activo')) FOR [estado]
 GO
@@ -352,10 +352,6 @@ GO
 ALTER TABLE [dbo].[EquiposValores] ADD CONSTRAINT [CK_EquiposValores_Estado] CHECK (([estado] = 'activo' OR [estado] = 'inactivo'))
 GO
 ALTER TABLE [dbo].[Empresas] ADD CONSTRAINT [CK_Empresas_Estado] CHECK (([estado] = 'activo' OR [estado] = 'inactivo'))
-GO
-ALTER TABLE [dbo].[UsuariosEmpresas] ADD CONSTRAINT [CK_UsuariosEmpresas_Rol] CHECK (([rol] = 'usuario' OR [rol] = 'adminEmpresa'))
-GO
-ALTER TABLE [dbo].[UsuariosEquipos] ADD CONSTRAINT [CK_UsuariosEquipos_Rol] CHECK (([rol] = 'usuario' OR [rol] = 'adminEquipo'))
 GO
 
 /*** Index ***/
