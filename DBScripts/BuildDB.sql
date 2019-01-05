@@ -63,7 +63,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[LogrosUsuarios](
-	[idLogro] [int] IDENTITY(1,1) NOT NULL,
+	[idLogro] [int] NOT NULL,
 	[idUsuario] [int] NOT NULL,
 	[fecha] [date] NOT NULL,
  CONSTRAINT [PK_LogrosUsuarios] PRIMARY KEY CLUSTERED 
@@ -98,7 +98,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[UsuariosEquipos](
-	[idEquipo] [int] IDENTITY(1,1) NOT NULL,
+	[idEquipo] [int] NOT NULL,
 	[idUsuario] [int] NOT NULL,
 	[rol] [bit] NOT NULL,
 	[estado] [varchar](30) NOT NULL,
@@ -149,7 +149,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[EquiposValores](
-	[idEquipo] [int] IDENTITY(1,1) NOT NULL,
+	[idEquipo] [int] NOT NULL,
 	[idValor] [int] NOT NULL,
 	[estado] [varchar](30) NOT NULL,
  CONSTRAINT [PK_EquipoValor] PRIMARY KEY CLUSTERED 
