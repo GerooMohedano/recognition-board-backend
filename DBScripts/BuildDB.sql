@@ -21,14 +21,13 @@ GO
 
 USE [OnBoardDataBase]
 GO
-
 /****** Object:  Table Usuarios ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Usuarios](
-	[idUsuario] [int] NOT NULL,
+	[idUsuario] [int] IDENTITY(1,1) NOT NULL,
 	[nombre] [varchar](50) NOT NULL,
 	[contrasenia] [varchar](30) NOT NULL,
 	[mail] [varchar](50) NOT NULL,
@@ -47,7 +46,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Logros](
-	[idLogro] [int] NOT NULL,
+	[idLogro] [int] IDENTITY(1,1)  NOT NULL,
 	[nombre] [varchar](50) NOT NULL,
 	[descripcion] [varchar](150) NOT NULL,
 	[foto] [image] NULL,
@@ -64,7 +63,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[LogrosUsuarios](
-	[idLogro] [int] NOT NULL,
+	[idLogro] [int] IDENTITY(1,1) NOT NULL,
 	[idUsuario] [int] NOT NULL,
 	[fecha] [date] NOT NULL,
  CONSTRAINT [PK_LogrosUsuarios] PRIMARY KEY CLUSTERED 
@@ -81,7 +80,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Equipos](
-	[idEquipo] [int] NOT NULL,
+	[idEquipo] [int] IDENTITY(1,1) NOT NULL,
 	[nombre] [varchar](30) NOT NULL,
 	[imagen] [image] NULL,
 	[estado] [varchar](30) NOT NULL,
@@ -99,7 +98,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[UsuariosEquipos](
-	[idEquipo] [int] NOT NULL,
+	[idEquipo] [int] IDENTITY(1,1) NOT NULL,
 	[idUsuario] [int] NOT NULL,
 	[rol] [bit] NOT NULL,
 	[estado] [varchar](30) NOT NULL,
@@ -117,7 +116,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Pizarras](
-	[idPizarra] [int] NOT NULL,
+	[idPizarra] [int] IDENTITY(1,1) NOT NULL,
 	[titulo] [varchar](30) NOT NULL,
 	[idEquipo] [int] NOT NULL,
 	[fechaInicio] [datetime] NOT NULL,
@@ -135,7 +134,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Valores](
-	[idValor] [int] NOT NULL,
+	[idValor] [int] IDENTITY(1,1) NOT NULL,
 	[nombre] [varchar](30) NOT NULL,
  CONSTRAINT [PK_Valores] PRIMARY KEY CLUSTERED 
 (
@@ -150,7 +149,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[EquiposValores](
-	[idEquipo] [int] NOT NULL,
+	[idEquipo] [int] IDENTITY(1,1) NOT NULL,
 	[idValor] [int] NOT NULL,
 	[estado] [varchar](30) NOT NULL,
  CONSTRAINT [PK_EquipoValor] PRIMARY KEY CLUSTERED 
@@ -167,7 +166,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Notas](
-	[idNota] [int] NOT NULL,
+	[idNota] [int] IDENTITY(1,1) NOT NULL,
 	[idPizarra] [int] NOT NULL,
 	[idAutor] [int] NOT NULL,
 	[idDestinatario] [int] NOT NULL,
@@ -186,7 +185,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 
 CREATE TABLE [dbo].[Empresas](
-	[idEmpresa] [int] NOT NULL,
+	[idEmpresa] [int] IDENTITY(1,1) NOT NULL,
 	[nombre] [varchar](100) NOT NULL,
 	[direccion] [int] NULL,
 	[telefono] [int] NULL,
@@ -232,7 +231,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 
 CREATE TABLE [dbo].[Condiciones](
-	[idCondicion] [int] NOT NULL,
+	[idCondicion] [int] IDENTITY(1,1) NOT NULL,
 	[idValor] [int] NOT NULL,
 	[puntuacion] [int] NOT NULL,
 	[modificador] [bit] NOT NULL,
