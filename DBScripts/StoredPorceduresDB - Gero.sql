@@ -72,6 +72,44 @@ BEGIN
 END
 GO
 
+/***** Activar valor de equipo *****/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF EXISTS(select * from sys.procedures where name='EquiposValores_Activate')
+DROP PROCEDURE EquiposValores_Activate
+GO
+CREATE PROCEDURE [EquiposValores_Activate]
+	@idValor int,
+	@idEquipo int
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	UPDATE [dbo].[EquiposValores] SET [estado] = 'activo' WHERE [idValor] = @idValor AND [idEquipo] = @idEquipo
+END
+GO
+
+/***** Desactivar miembro de equipo *****/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF EXISTS(select * from sys.procedures where name='EquiposValores_Desactivate')
+DROP PROCEDURE EquiposValores_Desactivate
+GO
+CREATE PROCEDURE [EquiposValores_Desactivate]
+	@idValor int,
+	@idEquipo int
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	UPDATE [dbo].[EquiposValores] SET [estado] = 'inactivo' WHERE [idValor] = @idValor AND [idEquipo] = @idEquipo
+END
+GO
+
 /***** Buscar Perfil *****/
 SET ANSI_NULLS ON
 GO
@@ -195,5 +233,96 @@ BEGIN
 	FROM Pizarras INNER JOIN Equipos ON Pizarras.idEquipo = Equipos.idEquipo
 	WHERE Equipos.idEquipo = @idEquipo
 	ORDER BY FechaInicio ASC
+END
+GO
+
+/***** Consultar pizarra activa de un equipo *****/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF EXISTS(select * from sys.procedures where name='ConsultarPizarraActivaEquipo')
+DROP PROCEDURE ConsultarPizarraActivaEquipo
+GO
+CREATE PROCEDURE [ConsultarPizarraActivaEquipo]
+	@idEquipo int
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT Equipos.nombre, Pizarras.titulo, Pizarras.fechaInicio, Pizarras.fechaFin
+	FROM Pizarras INNER JOIN Equipos ON Pizarras.idEquipo = Equipos.idEquipo
+	WHERE Equipos.idEquipo = @idEquipo AND GETDATE() BETWEEN Pizarras.fechaInicio AND Pizarras.fechaFin
+	ORDER BY FechaInicio ASC
+END
+GO
+
+/***** Consultar pizarra activa de un usuario *****/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF EXISTS(select * from sys.procedures where name='ConsultarPizarraActivaUsuario')
+DROP PROCEDURE ConsultarPizarraActivaUsuario
+GO
+CREATE PROCEDURE [ConsultarPizarraActivaUsuario]
+	@idUsuario int
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT Usuarios.nombre, Pizarras.titulo, Pizarras.fechaInicio, Pizarras.fechaFin, Equipos.nombre
+	FROM Usuarios INNER JOIN UsuariosEquipos ON Usuarios.idUsuario = UsuariosEquipos.idUsuario
+	INNER JOIN Equipos ON UsuariosEquipos.idEquipo = Equipos.idEquipo
+	INNER JOIN Pizarras ON Equipos.idEquipo = Pizarras.idEquipo
+	WHERE Usuarios.idUsuario = @idUsuario AND GETDATE() BETWEEN Pizarras.fechaInicio AND Pizarras.fechaFin
+	ORDER BY Equipos.nombre ASC
+END
+GO
+
+/***** Consultar evaluacion de equipo *****/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF EXISTS(select * from sys.procedures where name='ConsultarEvaluacionEquipo')
+DROP PROCEDURE ConsultarEvaluacionEquipo
+GO
+CREATE PROCEDURE [ConsultarEvaluacionEquipo]
+	@idEquipo int
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT Equipos.nombre, SUM(Notas.puntuacion) AS 'Total', Valores.nombre
+	FROM Equipos INNER JOIN Pizarras ON Equipos.idEquipo = Pizarras.idEquipo
+	INNER JOIN Notas ON Pizarras.idPizarra = Notas.idPizarra
+	INNER JOIN Valores ON Notas.idValor = Valores.idValor
+	WHERE Equipos.idEquipo = @idEquipo
+	GROUP BY Valores.nombre, Equipos.nombre
+END
+GO
+
+/***** Consultar evaluacion de empresa *****/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF EXISTS(select * from sys.procedures where name='ConsultarEvaluacionEmpresa')
+DROP PROCEDURE ConsultarEvaluacionEmpresa
+GO
+CREATE PROCEDURE [ConsultarEvaluacionEmpresa]
+	@idEmpresa int
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT Empresas.nombre, SUM(Notas.puntuacion) AS 'Total', Valores.nombre
+	FROM Equipos INNER JOIN Pizarras ON Equipos.idEquipo = Pizarras.idEquipo
+	INNER JOIN Notas ON Pizarras.idPizarra = Notas.idPizarra
+	INNER JOIN Valores ON Notas.idValor = Valores.idValor
+	INNER JOIN Empresas ON Equipos.idEmpresa = Empresas.idEmpresa
+	WHERE Empresas.idEmpresa = @idEmpresa
+	GROUP BY Valores.nombre, Empresas.nombre
 END
 GO
