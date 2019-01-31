@@ -1,7 +1,7 @@
 USE [OnBoardDataBase]
 GO
 
-ALTER procedure [Usuarios_Insert]
+CREATE procedure [Usuarios_Insert]
 @nombre varchar(50),
 @contraseña varchar(30),
 @mail varchar(30),
@@ -13,7 +13,7 @@ begin
 		values (@nombre,@contraseña,@mail,@fotoPerfil,@adminGeneral)
 end
 GO
-ALTER procedure [Usuarios_Update]
+CREATE procedure [Usuarios_Update]
 @idUsuario int,
 @nombre varchar(50),
 @contrasenia varchar(30),
@@ -381,7 +381,7 @@ BEGIN
 END
 go
 
-alter procedure [Usuarios_Delete]
+CREATE procedure [Usuarios_Delete]
 @idUsuario int
 as
 begin
