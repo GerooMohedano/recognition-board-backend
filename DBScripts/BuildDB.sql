@@ -21,6 +21,10 @@ GO
 
 USE [OnBoardDataBase]
 GO
+
+
+USE [OnBoardDataBase]
+GO
 /****** Object:  Table Usuarios ******/
 SET ANSI_NULLS ON
 GO
