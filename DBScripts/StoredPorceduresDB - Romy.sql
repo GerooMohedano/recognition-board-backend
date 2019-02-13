@@ -76,7 +76,7 @@ END
 GO
 
 IF EXISTS(select * from sys.procedures where name='Empresas_Update')
-DROP PROCEDURE Usuarios_Update
+DROP PROCEDURE Empresas_Update
 GO
 CREATE PROCEDURE [dbo].[Empresas_Update]
 	@idEmpresa int,
@@ -544,7 +544,7 @@ begin
 		delete from dbo.LogrosUsuarios where idUsuario = @idUsuario
 		delete from dbo.UsuariosEmpresas where idUsuario = @idUsuario
 		delete from dbo.UsuariosEquipos where idUsuario = @idUsuario
-	EN TRY
+	END TRY
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()
 		RAISERROR(@error,11,1)
@@ -696,7 +696,7 @@ begin
 end
 go
 
-IF EXISTS(select * from sys.procedures where name='Auditoria')
+IF EXISTS(select * from sys.tables where name='Auditoria')
 DROP TABLE Auditoria
 GO
 create table Auditoria(
@@ -714,8 +714,8 @@ go
 /* Trigger: Insertar                                              */
 /*==============================================================*/
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaUsuario_Insertar')
-	DROP trigger AuditoriaUsuario_Insertarr
+	IF EXISTS(select * from sys.triggers where name='AuditoriaUsuario_Insertar')
+	DROP trigger AuditoriaUsuario_Insertar
 	GO
 	CREATE trigger [AuditoriaUsuario_Insertar]
 	ON Usuarios
@@ -728,7 +728,7 @@ go
 
 	GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaEquipo_Insertar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaEquipo_Insertar')
 	DROP trigger AuditoriaEquipo_Insertar
 	GO
 	CREATE trigger [AuditoriaEquipo_Insertar]
@@ -742,7 +742,7 @@ go
 
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaEmpresas_Insertar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaEmpresas_Insertar')
 	DROP trigger AuditoriaEmpresas_Insertar
 	GO
 	CREATE trigger [AuditoriaEmpresas_Insertar]
@@ -756,7 +756,7 @@ GO
 
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaLogros_Insertar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaLogros_Insertar')
 	DROP trigger AuditoriaLogros_Insertar
 	GO
 	CREATE trigger [AuditoriaLogros_Insertar]
@@ -770,7 +770,7 @@ GO
 
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaCondiciones_Insertar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaCondiciones_Insertar')
 	DROP trigger AuditoriaCondiciones_Insertar
 	GO
 	CREATE trigger [AuditoriaCondiciones_Insertar]
@@ -784,7 +784,7 @@ GO
 
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaNotas_Insertar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaNotas_Insertar')
 	DROP trigger AuditoriaNotas_Insertar
 	GO
 	CREATE trigger [AuditoriaNotas_Insertar]
@@ -798,7 +798,7 @@ GO
 
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaPizarras_Insertar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaPizarras_Insertar')
 	DROP trigger AuditoriaPizarras_Insertar
 	GO
 	CREATE trigger [AuditoriaPizarras_Insertar]
@@ -812,7 +812,7 @@ GO
 
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaValores_Insertar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaValores_Insertar')
 	DROP trigger AuditoriaValores_Insertar
 	GO
 	CREATE trigger [AuditoriaValores_Insertar]
@@ -826,7 +826,7 @@ GO
 GO
 
 -- tablas intermedias 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaEmpresasValores_Insertar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaEmpresasValores_Insertar')
 	DROP trigger AuditoriaEmpresasValores_Insertar
 	GO
 	CREATE trigger [AuditoriaEmpresasValores_Insertar]
@@ -839,7 +839,7 @@ GO
 		END;
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaEquiposValores_Insertar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaEquiposValores_Insertar')
 	DROP trigger AuditoriaEquiposValores_Insertar
 	GO
 	CREATE trigger [AuditoriaEquiposValores_Insertar]
@@ -852,7 +852,7 @@ GO
 		END;
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaLogrosCondiciones_Insertar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaLogrosCondiciones_Insertar')
 	DROP trigger AuditoriaLogrosCondiciones_Insertar
 	GO
 	CREATE trigger [AuditoriaLogrosCondiciones_Insertar]
@@ -865,7 +865,7 @@ GO
 		END;
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaLogrosUsuarios_Insertar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaLogrosUsuarios_Insertar')
 	DROP trigger AuditoriaLogrosUsuarios_Insertar
 	GO
 	CREATE trigger [AuditoriaLogrosUsuarios_Insertar]
@@ -878,7 +878,7 @@ GO
 		END;
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaUsuariosEmpresas_Insertar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaUsuariosEmpresas_Insertar')
 	DROP trigger AuditoriaUsuariosEmpresas_Insertar
 	GO
 	CREATE trigger [AuditoriaUsuariosEmpresas_Insertar]
@@ -890,7 +890,7 @@ GO
 		'NINGUNA',GETDATE() from inserted
 		END;
 GO
-	IF EXISTS(select * from sys.procedures where name='AuditoriaUsuariosEquipos_Insertar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaUsuariosEquipos_Insertar')
 	DROP trigger AuditoriaUsuariosEquipos_Insertar
 	GO
 	CREATE trigger [AuditoriaUsuariosEquipos_Insertar]
@@ -906,7 +906,7 @@ GO
 /* Trigger: Actualizar                                          */
 /*==============================================================*/
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaUsuarios_Actualizar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaUsuarios_Actualizar')
 	DROP trigger AuditoriaUsuarios_Actualizar
 	GO
 	CREATE trigger [AuditoriaUsuarios_Actualizar]
@@ -920,7 +920,7 @@ GO
 
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaEquipos_Actualizar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaEquipos_Actualizar')
 	DROP trigger AuditoriaEquipos_Actualizar
 	GO
 	CREATE trigger [AuditoriaEquipos_Actualizar]
@@ -934,7 +934,7 @@ GO
 
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaEmpresas_Actualizar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaEmpresas_Actualizar')
 	DROP trigger AuditoriaEmpresas_Actualizar
 	GO
 	CREATE trigger [AuditoriaEmpresas_Actualizar]
@@ -948,7 +948,7 @@ GO
 
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaLogros_Actualizar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaLogros_Actualizar')
 	DROP trigger AuditoriaLogros_Actualizar
 	GO
 	CREATE trigger [AuditoriaLogros_Actualizar]
@@ -962,7 +962,7 @@ GO
 
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaNotas_Actualizar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaNotas_Actualizar')
 	DROP trigger AuditoriaNotas_Actualizar
 	GO
 	CREATE trigger [AuditoriaNotas_Actualizar]
@@ -975,7 +975,7 @@ GO
 		END;
 
 GO
-	IF EXISTS(select * from sys.procedures where name='AuditoriaPizarras_Actualizar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaPizarras_Actualizar')
 	DROP trigger AuditoriaPizarras_Actualizar
 	GO
 	CREATE trigger [AuditoriaPizarras_Actualizar]
@@ -988,7 +988,7 @@ GO
 		END;
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaValores_Actualizar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaValores_Actualizar')
 	DROP trigger AuditoriaValores_Actualizar
 	GO
 	CREATE trigger [AuditoriaValores_Actualizar]
@@ -1001,7 +1001,7 @@ GO
 		END;
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaCondiciones_Actualizar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaCondiciones_Actualizar')
 	DROP trigger AuditoriaCondiciones_Actualizar
 	GO
 	CREATE trigger [AuditoriaCondiciones_Actualizar]
@@ -1015,7 +1015,7 @@ GO
 GO
 --tablas intermedias
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaEmpresasValores_Actualizar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaEmpresasValores_Actualizar')
 	DROP trigger AuditoriaEmpresasValores_Actualizar
 	GO
 	CREATE trigger [AuditoriaEmpresasValores_Actualizar]
@@ -1028,7 +1028,7 @@ GO
 		END;
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaEquiposValores_Actualizar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaEquiposValores_Actualizar')
 	DROP trigger AuditoriaEquiposValores_Actualizar
 	GO
 	CREATE trigger [AuditoriaEquiposValores_Actualizar]
@@ -1041,7 +1041,7 @@ GO
 		END;
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaLogrosCondiciones_Actualizar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaLogrosCondiciones_Actualizar')
 	DROP trigger AuditoriaLogrosCondiciones_Actualizar
 	GO
 	CREATE trigger [AuditoriaLogrosCondiciones_Actualizar]
@@ -1054,7 +1054,7 @@ GO
 		END;
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaLogrosUsuarios_Actualizar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaLogrosUsuarios_Actualizar')
 	DROP trigger AuditoriaLogrosUsuarios_Actualizar
 	GO
 	CREATE trigger [AuditoriaLogrosUsuarios_Actualizar]
@@ -1066,7 +1066,7 @@ GO
 		(select idLogro+''+idUsuario from deleted),GETDATE() from inserted
 		END;
 GO
-	IF EXISTS(select * from sys.procedures where name='AuditoriaUsuariosEmpresas_Actualizar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaUsuariosEmpresas_Actualizar')
 	DROP trigger AuditoriaUsuariosEmpresas_Actualizar
 	GO
 	CREATE trigger [AuditoriaUsuariosEmpresas_Actualizar]
@@ -1079,7 +1079,7 @@ GO
 		END;
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaUsuariosEquipos_Actualizar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaUsuariosEquipos_Actualizar')
 	DROP trigger AuditoriaUsuariosEquipos_Actualizar
 	GO
 	CREATE trigger [AuditoriaUsuariosEquipos_Actualizar]
@@ -1095,7 +1095,7 @@ GO
 /* Trigger: Eliminar                                              */
 /*==============================================================*/
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaUsuarios_Eliminar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaUsuarios_Eliminar')
 	DROP trigger AuditoriaUsuarios_Eliminar
 	GO
 		CREATE trigger [AuditoriaUsuarios_Eliminar]
@@ -1107,7 +1107,7 @@ GO
 		'NINGUNA',GETDATE() from deleted
 		END;
 GO
-	IF EXISTS(select * from sys.procedures where name='AuditoriaEquipos_Eliminar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaEquipos_Eliminar')
 	DROP trigger AuditoriaEquipos_Eliminar
 	GO
 		CREATE trigger [AuditoriaEquipos_Eliminar]
@@ -1119,7 +1119,7 @@ GO
 		'NINGUNA',GETDATE() from deleted
 		END;
 GO
-	IF EXISTS(select * from sys.procedures where name='AuditoriaEmpresas_Eliminar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaEmpresas_Eliminar')
 	DROP trigger AuditoriaEmpresas_Eliminar
 	GO
 		CREATE trigger [AuditoriaEmpresas_Eliminar]
@@ -1131,7 +1131,7 @@ GO
 		'NINGUNA',GETDATE() from deleted
 		END;
 GO
-	IF EXISTS(select * from sys.procedures where name='AuditoriaLogros_Eliminar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaLogros_Eliminar')
 	DROP trigger AuditoriaLogros_Eliminar
 	GO
 		CREATE trigger [AuditoriaLogros_Eliminar]
@@ -1143,7 +1143,7 @@ GO
 		'NINGUNA',GETDATE() from deleted
 		END;
 GO
-	IF EXISTS(select * from sys.procedures where name='AuditoriaNotas_Eliminar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaNotas_Eliminar')
 	DROP trigger AuditoriaNotas_Eliminar
 	GO
 		CREATE trigger [AuditoriaNotas_Eliminar]
@@ -1155,7 +1155,7 @@ GO
 		'NINGUNA',GETDATE() from deleted
 		END;
 GO
-	IF EXISTS(select * from sys.procedures where name='AuditoriaPizarras_Eliminar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaPizarras_Eliminar')
 	DROP trigger AuditoriaPizarras_Eliminar
 	GO
 		CREATE trigger [AuditoriaPizarras_Eliminar]
@@ -1168,7 +1168,7 @@ GO
 		END;
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaValores_Eliminar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaValores_Eliminar')
 	DROP trigger AuditoriaValores_Eliminar
 	GO
 		CREATE trigger [AuditoriaValores_Eliminar]
@@ -1181,7 +1181,7 @@ GO
 		END;
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaCondiciones_Eliminar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaCondiciones_Eliminar')
 	DROP trigger AuditoriaCondiciones_Eliminar
 	GO
 		CREATE trigger [AuditoriaCondiciones_Eliminar]
@@ -1195,7 +1195,7 @@ GO
 GO
 --tablas intermedias
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaEmpresasValores_Eliminar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaEmpresasValores_Eliminar')
 	DROP trigger AuditoriaEmpresasValores_Eliminar
 	GO
 		CREATE trigger [AuditoriaEmpresasValores_Eliminar]
@@ -1208,7 +1208,7 @@ GO
 		END;
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaEquiposValores_Eliminar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaEquiposValores_Eliminar')
 	DROP trigger AuditoriaEquiposValores_Eliminar
 	GO
 		CREATE trigger [AuditoriaEquiposValores_Eliminar]
@@ -1221,7 +1221,7 @@ GO
 		END;
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaLogrosCondiciones_Eliminar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaLogrosCondiciones_Eliminar')
 	DROP trigger AuditoriaLogrosCondiciones_Eliminar
 	GO
 		CREATE trigger [AuditoriaLogrosCondiciones_Eliminar]
@@ -1234,7 +1234,7 @@ GO
 		END;
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaLogrosUsuarios_Eliminar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaLogrosUsuarios_Eliminar')
 	DROP trigger AuditoriaLogrosUsuarios_Eliminar
 	GO
 		CREATE trigger [AuditoriaLogrosUsuarios_Eliminar]
@@ -1247,7 +1247,7 @@ GO
 		END;
 GO
 
-	IF EXISTS(select * from sys.procedures where name='AuditoriaUsuariosEmpresas_Eliminar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaUsuariosEmpresas_Eliminar')
 	DROP trigger AuditoriaUsuariosEmpresas_Eliminar
 	GO
 		CREATE trigger [AuditoriaUsuariosEmpresas_Eliminar]
@@ -1259,7 +1259,7 @@ GO
 		'NINGUNA',GETDATE() from deleted
 		END;
 GO
-	IF EXISTS(select * from sys.procedures where name='AuditoriaUsuariosEquipos_Eliminar')
+	IF EXISTS(select * from sys.triggers where name='AuditoriaUsuariosEquipos_Eliminar')
 	DROP trigger AuditoriaUsuariosEquipos_Eliminar
 	GO
 		CREATE trigger [AuditoriaUsuariosEquipos_Eliminar]
@@ -1271,3 +1271,280 @@ GO
 		'NINGUNA',GETDATE() from deleted
 		END;
 GO
+
+/*==============================================================*/
+/*Listados y busquedas                                            */
+/*==============================================================*/
+
+
+IF EXISTS(select * from sys.procedures where name='Listar_Empresas')
+DROP PROCEDURE Listar_Empresas
+GO
+create procedure [Listar_Empresas]
+as
+begin
+	BEGIN TRY
+		Select E.idEmpresa, E.nombre from Empresas E
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
+IF EXISTS(select * from sys.procedures where name='Buscar_Empresa')
+DROP PROCEDURE Buscar_Empresa
+GO
+create procedure [Buscar_Empresa]
+@nombre varchar(30)
+as
+begin
+	BEGIN TRY
+		Select E.idEmpresa, E.nombre from Empresas E where E.nombre = @nombre
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
+IF EXISTS(select * from sys.procedures where name='Listar_Equipos')
+DROP PROCEDURE Listar_Equipos
+GO
+create procedure [Listar_Equipos]
+as
+begin
+	BEGIN TRY
+		Select E.idEquipo, E.nombre from Equipos E
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
+IF EXISTS(select * from sys.procedures where name='Listar_EquiposPorEmpresa')
+DROP PROCEDURE Listar_EquiposPorEmpresa
+GO
+create procedure [Listar_EquiposPorEmpresa]
+@idEmpresa int
+as
+begin
+	BEGIN TRY
+		Select Empresas.nombre, E.nombre 
+		from Equipos E inner join Empresas on E.idEmpresa = Empresas.idEmpresa
+	    where E.idEmpresa = @idEmpresa
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
+IF EXISTS(select * from sys.procedures where name='Buscar_Equipo')
+DROP PROCEDURE Buscar_Equipo
+GO
+create procedure [Buscar_Equipo]
+@nombre varchar(30)
+as
+begin
+	BEGIN TRY
+		Select E.nombre from Equipos E where E.nombre = @nombre
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
+IF EXISTS(select * from sys.procedures where name='Listar_Usuarios')
+DROP PROCEDURE Listar_Usuarios
+GO
+create procedure [Listar_Usuarios]
+as
+begin
+	BEGIN TRY
+		Select u.idUsuario,u.nombre from Usuarios U
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
+IF EXISTS(select * from sys.procedures where name='Listar_UsuariosPorEmpresa')
+DROP PROCEDURE Listar_UsuariosPorEmpresa
+GO
+create procedure [Listar_UsuariosPorEmpresa]
+@idEmpresa int
+as
+begin
+	BEGIN TRY
+		Select u.idUsuario, Usuarios.nombre 
+		from UsuariosEmpresas U inner join Usuarios on u.idUsuario = Usuarios.idUsuario
+	    where u.idEmpresa = @idEmpresa
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
+IF EXISTS(select * from sys.procedures where name='Listar_UsuariosPorEquipo')
+DROP PROCEDURE Listar_UsuariosPorEquipo
+GO
+create procedure [Listar_UsuariosPorEquipo]
+@idEquipo int
+as
+begin
+	BEGIN TRY
+		Select u.idUsuario, Usuarios.nombre 
+		from UsuariosEquipos U inner join Usuarios on u.idUsuario = Usuarios.idUsuario
+	    where u.idEquipo = @idEquipo
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
+IF EXISTS(select * from sys.procedures where name='Listar_UsuariosPorRol')
+DROP PROCEDURE Listar_UsuariosPorRol
+GO
+create procedure [Listar_UsuariosPorRol]
+@rol bit
+as
+begin
+	BEGIN TRY
+		Select u.idUsuario, Usuarios.nombre 
+		from UsuariosEmpresas U inner join Usuarios on u.idUsuario = Usuarios.idUsuario
+	    where u.rol = @rol
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
+IF EXISTS(select * from sys.procedures where name='Buscar_Usuario')
+DROP PROCEDURE Buscar_Usuario
+GO
+create procedure [Buscar_Usuario]
+@nombre varchar(30)
+as
+begin
+	BEGIN TRY
+		Select u.idUsuario,u.nombre from Usuarios U where u.nombre = @nombre
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
+IF EXISTS(select * from sys.procedures where name='Buscar_UsuarioPorMail')
+DROP PROCEDURE Buscar_UsuarioPorMail
+GO
+create procedure [Buscar_UsuarioPorMail]
+@mail varchar(50)
+as
+begin
+	BEGIN TRY
+		Select u.idUsuario, U.nombre
+		from Usuarios U
+	    where u.mail = @mail
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
+IF EXISTS(select * from sys.procedures where name='Listar_LogrosDeUnUsuario')
+DROP PROCEDURE Listar_LogrosDeUnUsuario
+GO
+create procedure [Listar_LogrosDeUnUsuario]
+@idUsuario int
+as
+begin
+	BEGIN TRY
+		Select Usuarios.nombre as Usuario, logros.nombre as Logro
+		from LogrosUsuarios L inner join Usuarios on L.idUsuario = Usuarios.idUsuario
+		inner join logros on l.idLogro=logros.idLogro
+	    where l.idUsuario = @idUsuario
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
+IF EXISTS(select * from sys.procedures where name='Listar_ValoresDeUnEquipo')
+DROP PROCEDURE Listar_ValoresDeUnEquipo
+GO
+create procedure [Listar_ValoresDeUnEquipo]
+@idEquipo int
+as
+begin
+	BEGIN TRY
+		Select Valores.nombre as Valor, eq.nombre 
+		from EquiposValores E inner join Equipos EQ on e.idEquipo = EQ.idEquipo
+		inner join Valores on e.idValor = Valores.idValor
+	    where e.idEquipo = @idEquipo
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
+IF EXISTS(select * from sys.procedures where name='Listar_NotasDeUnUsuario')
+DROP PROCEDURE Listar_NotasDeUnUsuario
+GO
+create procedure [Listar_NotasDeUnUsuario]
+@idUsuario int
+as
+begin
+	BEGIN TRY
+		Select n.idNota,n.descripcion, Usuarios.nombre as Destinatario
+		from Notas N inner join Usuarios on n.idDestinatario = usuarios.idUsuario
+	    where n.idDestinatario = @idUsuario
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
+IF EXISTS(select * from sys.procedures where name='Listar_PizarrasDeUnEquipo')
+DROP PROCEDURE Listar_PizarrasDeUnEquipo
+GO
+create procedure [Listar_PizarrasDeUnEquipo]
+@idEquipo int
+as
+begin
+	BEGIN TRY
+		Select p.titulo,e.nombre
+		from Pizarras P inner join Equipos E on p.idEquipo=e.idEquipo
+	    where p.idEquipo = @idEquipo
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
