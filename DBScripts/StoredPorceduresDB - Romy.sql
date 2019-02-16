@@ -1397,11 +1397,54 @@ begin
 end 
 go
 
+
+IF EXISTS(select * from sys.procedures where name='Buscar_UsuarioPorEmpresa')
+DROP PROCEDURE Buscar_UsuarioPorEmpresa
+GO
+create procedure [Buscar_UsuarioPorEmpresa]
+@idEmpresa int,
+@idUsuario int
+as
+begin
+	BEGIN TRY
+		Select u.idUsuario , u.idEmpresa
+		from UsuariosEmpresas U
+	    where u.idUsuario = @idUsuario and u.idEmpresa = @idEmpresa
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
+
+IF EXISTS(select * from sys.procedures where name='Listar_UsuariosPorResponsable')
+DROP PROCEDURE Listar_UsuariosPorResponsable
+GO
+create procedure [Listar_UsuariosPorResponsable]
+@idUsuario int
+as
+begin
+	BEGIN TRY
+	declare @equipo int
+
+		Select @equipo=ue.idEquipo
+		from Usuarios u inner join UsuariosEquipos UE on u.idUsuario = ue.idUsuario
+		where u.idUsuario = 2 and ue.rol=1 
+		exec Listar_UsuariosPorEquipo @equipo
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
 IF EXISTS(select * from sys.procedures where name='Listar_UsuariosPorEquipo')
 DROP PROCEDURE Listar_UsuariosPorEquipo
 GO
-create procedure [Listar_UsuariosPorEquipo]
-@idEquipo int
+create procedure [Listar_UsuariosPorEquipo](@idEquipo int)
 as
 begin
 	BEGIN TRY
