@@ -12,7 +12,13 @@ CREATE PROCEDURE [Empresa_Desactivate]
 AS
 BEGIN
 	SET NOCOUNT ON;
-	UPDATE [dbo].[Empresas] SET [estado] = 'inactivo' WHERE [idEmpresa] = @id
+		begin try
+			UPDATE [dbo].[Empresas] SET [estado] = 'inactivo' WHERE [idEmpresa] = @id
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
 END
 GO
 
@@ -29,8 +35,13 @@ CREATE PROCEDURE [Empresa_Activate]
 AS
 BEGIN
 	SET NOCOUNT ON;
-
-	UPDATE [dbo].[Empresas] SET [estado] = 'activo' WHERE [idEmpresa] = @id
+		begin try
+			UPDATE [dbo].[Empresas] SET [estado] = 'activo' WHERE [idEmpresa] = @id
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
 END
 GO
 
@@ -48,8 +59,14 @@ CREATE PROCEDURE [UsuariosEquipos_Activate]
 AS
 BEGIN
 	SET NOCOUNT ON;
-
-	UPDATE [dbo].[UsuariosEquipos] SET [estado] = 'activo' WHERE [idUsuario] = @idUsuario AND [idEquipo] = @idEquipo
+		begin try
+			UPDATE [dbo].[UsuariosEquipos] SET [estado] = 'activo' WHERE [idUsuario] = @idUsuario AND [idEquipo] = @idEquipo
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
+	
 END
 GO
 
@@ -67,8 +84,13 @@ CREATE PROCEDURE [UsuariosEquipos_Desactivate]
 AS
 BEGIN
 	SET NOCOUNT ON;
-
-	UPDATE [dbo].[UsuariosEquipos] SET [estado] = 'inactivo' WHERE [idUsuario] = @idUsuario AND [idEquipo] = @idEquipo
+		begin try
+			UPDATE [dbo].[UsuariosEquipos] SET [estado] = 'inactivo' WHERE [idUsuario] = @idUsuario AND [idEquipo] = @idEquipo
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
 END
 GO
 
@@ -86,8 +108,13 @@ CREATE PROCEDURE [EquiposValores_Activate]
 AS
 BEGIN
 	SET NOCOUNT ON;
-
-	UPDATE [dbo].[EquiposValores] SET [estado] = 'activo' WHERE [idValor] = @idValor AND [idEquipo] = @idEquipo
+		begin try
+			 UPDATE [dbo].[EquiposValores] SET [estado] = 'activo' WHERE [idValor] = @idValor AND [idEquipo] = @idEquipo
+	    end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
 END
 GO
 
@@ -105,8 +132,13 @@ CREATE PROCEDURE [EquiposValores_Desactivate]
 AS
 BEGIN
 	SET NOCOUNT ON;
-
-	UPDATE [dbo].[EquiposValores] SET [estado] = 'inactivo' WHERE [idValor] = @idValor AND [idEquipo] = @idEquipo
+		begin try
+			UPDATE [dbo].[EquiposValores] SET [estado] = 'inactivo' WHERE [idValor] = @idValor AND [idEquipo] = @idEquipo
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
 END
 GO
 
@@ -123,8 +155,13 @@ CREATE PROCEDURE [BuscarPerfil]
 AS
 BEGIN
 	SET NOCOUNT ON;
-
-	SELECT nombre, mail, fotoPerfil FROM Usuarios WHERE idUsuario = @idUsuario
+		begin try
+			 SELECT nombre, mail, fotoPerfil FROM Usuarios WHERE idUsuario = @idUsuario
+	    end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
 END
 GO
 
@@ -141,8 +178,13 @@ CREATE PROCEDURE [BuscarPerfil]
 AS
 BEGIN
 	SET NOCOUNT ON;
-
-	SELECT idUsuario, nombre, mail FROM Usuarios WHERE nombre LIKE @mailONombre OR mail LIKE @mailONombre
+	begin try
+		SELECT idUsuario, nombre, mail FROM Usuarios WHERE nombre LIKE @mailONombre OR mail LIKE @mailONombre
+	end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
 END
 GO
 
@@ -159,12 +201,17 @@ CREATE PROCEDURE [ConsultarLogrosDeUnUsuario]
 AS
 BEGIN
 	SET NOCOUNT ON;
-
-	SELECT Usuarios.nombre, Logros.nombre, Logros.descripcion, LogrosUsuarios.fecha
-	FROM Usuarios INNER JOIN LogrosUsuarios ON Usuarios.idUsuario = LogrosUsuarios.idUsuario
-	INNER JOIN Logros ON LogrosUsuarios.idLogro = Logros.idLogro
-	WHERE Usuarios.idUsuario = @idUsuario
-	ORDER BY Logros.nombre ASC
+		begin try
+			SELECT Usuarios.nombre, Logros.nombre, Logros.descripcion, LogrosUsuarios.fecha
+			FROM Usuarios INNER JOIN LogrosUsuarios ON Usuarios.idUsuario = LogrosUsuarios.idUsuario
+			INNER JOIN Logros ON LogrosUsuarios.idLogro = Logros.idLogro
+			WHERE Usuarios.idUsuario = @idUsuario
+			ORDER BY Logros.nombre ASC
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
 END
 GO
 
@@ -181,13 +228,18 @@ CREATE PROCEDURE [ConsultarValoresUsuario]
 AS
 BEGIN
 	SET NOCOUNT ON;
-
-	SELECT Usuarios.nombre, Valores.nombre, SUM(Notas.puntuacion) AS 'Total'
-	FROM Usuarios INNER JOIN Notas ON Usuarios.idUsuario = Notas.idDestinatario
-	INNER JOIN Valores ON Notas.idValor = Valores.idValor
-	WHERE Usuarios.idUsuario = @idUsuario
-	GROUP BY Usuarios.nombre, Valores.nombre
-	ORDER BY Valores.nombre
+		begin try
+			SELECT Usuarios.nombre, Valores.nombre, SUM(Notas.puntuacion) AS 'Total'
+			FROM Usuarios INNER JOIN Notas ON Usuarios.idUsuario = Notas.idDestinatario
+			INNER JOIN Valores ON Notas.idValor = Valores.idValor
+			WHERE Usuarios.idUsuario = @idUsuario
+			GROUP BY Usuarios.nombre, Valores.nombre
+			ORDER BY Valores.nombre
+		end try
+			begin catch
+				declare @error varchar(100)= ERROR_MESSAGE()
+				RAISERROR(@error,11,1)  
+			end catch
 END
 GO
 
@@ -205,13 +257,18 @@ CREATE PROCEDURE [ConsultarHistoricoValorUsuario]
 AS
 BEGIN
 	SET NOCOUNT ON;
-
-	SELECT Usuarios.nombre, Valores.nombre, Notas.puntuacion, Pizarras.fechaInicio
-	FROM Usuarios INNER JOIN Notas ON Usuarios.idUsuario = Notas.idDestinatario
-	INNER JOIN Valores ON Notas.idValor = Valores.idValor
-	INNER JOIN Pizarras ON Notas.idPizarra = Pizarras.idPizarra
-	WHERE Usuarios.idUsuario = @idUsuario AND Valores.idValor = @idValor
-	ORDER BY Pizarras.fechaInicio
+		begin try
+			SELECT Usuarios.nombre, Valores.nombre, Notas.puntuacion, Pizarras.fechaInicio
+			FROM Usuarios INNER JOIN Notas ON Usuarios.idUsuario = Notas.idDestinatario
+			INNER JOIN Valores ON Notas.idValor = Valores.idValor
+			INNER JOIN Pizarras ON Notas.idPizarra = Pizarras.idPizarra
+			WHERE Usuarios.idUsuario = @idUsuario AND Valores.idValor = @idValor
+			ORDER BY Pizarras.fechaInicio
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
 END
 GO
 
@@ -228,11 +285,16 @@ CREATE PROCEDURE [ConsultarPizarraEquipo]
 AS
 BEGIN
 	SET NOCOUNT ON;
-
-	SELECT Equipos.nombre, Pizarras.titulo, Pizarras.fechaInicio, Pizarras.fechaFin
-	FROM Pizarras INNER JOIN Equipos ON Pizarras.idEquipo = Equipos.idEquipo
-	WHERE Equipos.idEquipo = @idEquipo
-	ORDER BY FechaInicio ASC
+		begin try
+			SELECT Equipos.nombre, Pizarras.titulo, Pizarras.fechaInicio, Pizarras.fechaFin
+			FROM Pizarras INNER JOIN Equipos ON Pizarras.idEquipo = Equipos.idEquipo
+			WHERE Equipos.idEquipo = @idEquipo
+			ORDER BY FechaInicio ASC
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
 END
 GO
 
@@ -250,10 +312,16 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	SELECT Equipos.nombre, Pizarras.titulo, Pizarras.fechaInicio, Pizarras.fechaFin
-	FROM Pizarras INNER JOIN Equipos ON Pizarras.idEquipo = Equipos.idEquipo
-	WHERE Equipos.idEquipo = @idEquipo AND GETDATE() BETWEEN Pizarras.fechaInicio AND Pizarras.fechaFin
-	ORDER BY FechaInicio ASC
+		begin try
+			SELECT Equipos.nombre, Pizarras.titulo, Pizarras.fechaInicio, Pizarras.fechaFin
+			FROM Pizarras INNER JOIN Equipos ON Pizarras.idEquipo = Equipos.idEquipo
+			WHERE Equipos.idEquipo = @idEquipo AND GETDATE() BETWEEN Pizarras.fechaInicio AND Pizarras.fechaFin
+			ORDER BY FechaInicio ASC
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
 END
 GO
 
@@ -271,12 +339,18 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	SELECT Usuarios.nombre, Pizarras.titulo, Pizarras.fechaInicio, Pizarras.fechaFin, Equipos.nombre
-	FROM Usuarios INNER JOIN UsuariosEquipos ON Usuarios.idUsuario = UsuariosEquipos.idUsuario
-	INNER JOIN Equipos ON UsuariosEquipos.idEquipo = Equipos.idEquipo
-	INNER JOIN Pizarras ON Equipos.idEquipo = Pizarras.idEquipo
-	WHERE Usuarios.idUsuario = @idUsuario AND GETDATE() BETWEEN Pizarras.fechaInicio AND Pizarras.fechaFin
-	ORDER BY Equipos.nombre ASC
+		begin try
+			SELECT Usuarios.nombre, Pizarras.titulo, Pizarras.fechaInicio, Pizarras.fechaFin, Equipos.nombre
+			FROM Usuarios INNER JOIN UsuariosEquipos ON Usuarios.idUsuario = UsuariosEquipos.idUsuario
+			INNER JOIN Equipos ON UsuariosEquipos.idEquipo = Equipos.idEquipo
+			INNER JOIN Pizarras ON Equipos.idEquipo = Pizarras.idEquipo
+			WHERE Usuarios.idUsuario = @idUsuario AND GETDATE() BETWEEN Pizarras.fechaInicio AND Pizarras.fechaFin
+			ORDER BY Equipos.nombre ASC
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
 END
 GO
 
@@ -294,12 +368,18 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	SELECT Equipos.nombre, SUM(Notas.puntuacion) AS 'Total', Valores.nombre
-	FROM Equipos INNER JOIN Pizarras ON Equipos.idEquipo = Pizarras.idEquipo
-	INNER JOIN Notas ON Pizarras.idPizarra = Notas.idPizarra
-	INNER JOIN Valores ON Notas.idValor = Valores.idValor
-	WHERE Equipos.idEquipo = @idEquipo
-	GROUP BY Valores.nombre, Equipos.nombre
+		begin try
+			SELECT Equipos.nombre, SUM(Notas.puntuacion) AS 'Total', Valores.nombre
+			FROM Equipos INNER JOIN Pizarras ON Equipos.idEquipo = Pizarras.idEquipo
+			INNER JOIN Notas ON Pizarras.idPizarra = Notas.idPizarra
+			INNER JOIN Valores ON Notas.idValor = Valores.idValor
+			WHERE Equipos.idEquipo = @idEquipo
+			GROUP BY Valores.nombre, Equipos.nombre
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
 END
 GO
 
@@ -317,12 +397,18 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	SELECT Empresas.nombre, SUM(Notas.puntuacion) AS 'Total', Valores.nombre
-	FROM Equipos INNER JOIN Pizarras ON Equipos.idEquipo = Pizarras.idEquipo
-	INNER JOIN Notas ON Pizarras.idPizarra = Notas.idPizarra
-	INNER JOIN Valores ON Notas.idValor = Valores.idValor
-	INNER JOIN Empresas ON Equipos.idEmpresa = Empresas.idEmpresa
-	WHERE Empresas.idEmpresa = @idEmpresa
-	GROUP BY Valores.nombre, Empresas.nombre
+		begin try
+			SELECT Empresas.nombre, SUM(Notas.puntuacion) AS 'Total', Valores.nombre
+			FROM Equipos INNER JOIN Pizarras ON Equipos.idEquipo = Pizarras.idEquipo
+			INNER JOIN Notas ON Pizarras.idPizarra = Notas.idPizarra
+			INNER JOIN Valores ON Notas.idValor = Valores.idValor
+			INNER JOIN Empresas ON Equipos.idEmpresa = Empresas.idEmpresa
+			WHERE Empresas.idEmpresa = @idEmpresa
+			GROUP BY Valores.nombre, Empresas.nombre
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
 END
 GO
