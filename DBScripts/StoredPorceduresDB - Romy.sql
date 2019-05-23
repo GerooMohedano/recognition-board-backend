@@ -11,7 +11,12 @@ CREATE procedure [Usuarios_Insert]
 @adminGeneral bit
 as
 begin
+
 		begin try
+		
+		if(LEN(@nombre) > 3 OR LEN(@contraseña) > 30 OR LEN(@mail) > 30)
+			RAISERROR('Excediste el número de caracteres permitido',11,1)
+
 			Insert dbo.Usuarios(nombre,contrasenia,mail,fotoPerfil,adminGeneral)
 			values (@nombre,@contraseña,@mail,@fotoPerfil,@adminGeneral)
 		end try
@@ -21,6 +26,18 @@ begin
 		end catch
 end
 GO
+INSERT [dbo].[Usuarios] ([nombre], [contrasenia], [mail], [adminGeneral]) VALUES ('pruebaaaa', '123', 'deos@mail.com', 1)
+
+ALTER TABLE Usuarios WITH CHECK ADD CONSTRAINT[
+
+
+ERROR:
+Debe ingresar sólo caracteres alfabéticos
+
+]CHECK (Usuarios.nombre NOT LIKE '%[^A-Z]%') 
+GO 
+
+
 
 IF EXISTS(select * from sys.procedures where name='Usuarios_Update')
 DROP PROCEDURE Usuarios_Update
@@ -35,6 +52,10 @@ CREATE procedure [Usuarios_Update]
 as
 begin
 		begin try
+		
+		if(LEN(@nombre) > 50 OR LEN(@contrasenia) > 30 OR LEN(@mail) > 30)
+			RAISERROR('Excediste el número de caracteres permitido',11,1)
+
 			update dbo.Usuarios
 			set
 			 nombre=@nombre,
@@ -59,11 +80,16 @@ CREATE PROCEDURE [dbo].[Empresas_Insert]
 	@direccion nvarchar(50),
    	@telefono int,
 	@logo image,
-	@estado nvarchar(50)
+	@estado nvarchar(10)
 
 AS
 BEGIN
+
 	BEGIN TRY
+	
+		if(LEN(@nombre) > 50 OR LEN(@direccion) > 50 OR LEN(@estado) > 10)
+			RAISERROR('Excediste el número de caracteres permitido',11,1)
+
 		INSERT INTO dbo.Empresas(nombre,direccion,telefono,logo,estado)
 		VALUES(@nombre,@direccion, @telefono, @logo, @estado)
 	END TRY
@@ -87,7 +113,10 @@ CREATE PROCEDURE [dbo].[Empresas_Update]
 	@estado nvarchar(50)	
 AS
 BEGIN
+
 	BEGIN TRY
+		if(LEN(@nombre) > 50 OR LEN(@direccion) > 50 OR LEN(@estado) > 10)
+			RAISERROR('Excediste el número de caracteres permitido',11,1)
 		UPDATE dbo.Empresas
 		SET 
 		nombre= @nombre,
@@ -110,11 +139,15 @@ GO
 CREATE PROCEDURE [dbo].[Equipos_Insert]
 	@nombre varchar(30),
 	@imagen image,
-	@estado varchar(30)
+	@estado varchar(10)
 
 AS
 BEGIN
+
 	BEGIN TRY
+		IF(LEN(@nombre) > 30 OR LEN(@estado) > 10)
+			RAISERROR('Excediste el número de caracteres permitido',11,1)
+
 		INSERT INTO dbo.Equipos(nombre,imagen,estado)
 		VALUES(@nombre,@imagen,@estado)
 	END TRY
@@ -136,7 +169,15 @@ CREATE PROCEDURE [dbo].[Equipos_Update]
 	@estado nvarchar(50)
 AS
 BEGIN
+
+
 	BEGIN TRY
+			IF EXISTS(Select * from Equipos where idEquipo = @idEquipo)
+				RAISERROR('Ya existe este equipo'+@idEquipo,11,1)
+
+			IF(LEN(@nombre) > 30 OR LEN(@estado) > 10)
+				RAISERROR('Excediste el número de caracteres permitido',11,1)
+
 			UPDATE dbo.Equipos
 			SET 
 			nombre= @nombre,
@@ -156,11 +197,15 @@ IF EXISTS(select * from sys.procedures where name='Valores_Insert')
 DROP PROCEDURE Valores_Insert
 GO
 CREATE PROCEDURE [dbo].[Valores_Insert]
-	@nombre nvarchar(50)
+	@nombre nvarchar(30)
 
 AS
 BEGIN
+
 	BEGIN TRY
+		IF(LEN(@nombre) > 30)
+			RAISERROR('Excediste el número de caracteres permitido',11,1)
+
 		INSERT INTO dbo.Valores(nombre)
 		VALUES(@nombre)
 	END TRY
@@ -176,10 +221,18 @@ DROP PROCEDURE Valores_Update
 GO
 CREATE PROCEDURE [dbo].[Valores_Update]
 	@idValor int,
-	@nombre nvarchar(50)
+	@nombre nvarchar(30)
 AS
 BEGIN
+
 	BEGIN TRY
+	
+		IF EXISTS(Select * from Valores where idValor = @idValor)
+			RAISERROR('Ya existe este Valor'+@idValor,11,1)
+
+		IF(LEN(@nombre) > 30)
+			RAISERROR('Excediste el número de caracteres permitido',11,1)
+
 		UPDATE dbo.Valores
 		SET 
 		nombre= @nombre	
@@ -198,11 +251,15 @@ GO
 CREATE PROCEDURE [dbo].[EquiposValores_Insert]
 	@idValor int,
 	@idEquipo int,
-	@estado nvarchar(50)
+	@estado nvarchar(10)
 
 AS
 BEGIN
+
 	BEGIN TRY
+			IF(LEN(@estado) > 10)
+				RAISERROR('Excediste el número de caracteres permitido',11,1)
+
 			INSERT INTO dbo.EquiposValores(idValor,idEquipo,estado)
 			VALUES(@idValor,@idEquipo,@estado)
 	END TRY
@@ -222,7 +279,11 @@ CREATE PROCEDURE [dbo].[EquiposValores_Update]
 	@estado nvarchar(30)
 AS
 BEGIN
+
 	BEGIN TRY
+		IF(LEN(@estado) > 10)
+			RAISERROR('Excediste el número de caracteres permitido',11,1)
+
 		UPDATE dbo.EquiposValores
 		SET 
 		idValor = @idValor,
@@ -284,13 +345,17 @@ IF EXISTS(select * from sys.procedures where name='Logros_Insert')
 DROP PROCEDURE Logros_Insert
 GO
 CREATE PROCEDURE [dbo].[Logros_Insert]
-	@nombre nvarchar(50),
+	@nombre nvarchar(30),
 	@descripcion nvarchar(50),
 	@foto image
 
 AS
 BEGIN
+
 	BEGIN TRY
+		IF(LEN(@nombre) > 30 or LEN(@descripcion) > 50)
+			RAISERROR('Excediste el número de caracteres permitido',11,1)
+
 		INSERT INTO dbo.Logros(nombre,descripcion,foto)
 		VALUES(@nombre, @descripcion, @foto)
 	END TRY
@@ -312,7 +377,14 @@ CREATE PROCEDURE [dbo].[Logros_Update]
 	
 AS
 BEGIN
+	
 	BEGIN TRY
+		IF EXISTS(Select * from Logros where idLogro = @idLogro)
+			RAISERROR('Ya existe este Logro'+@idLogro,11,1)
+
+		IF(LEN(@nombre) > 30 or LEN(@descripcion) > 50)
+			RAISERROR('Excediste el número de caracteres permitido',11,1)
+
 		UPDATE dbo.Logros
 		SET 
 		nombre= @nombre,
@@ -334,12 +406,16 @@ GO
 CREATE PROCEDURE [dbo].[UsuariosEquipos_Insert]
 	@idEquipo int,
 	@idUsuario int,
-	@rol nvarchar(50),
-	@estado nvarchar(50)
+	@rol nvarchar(30),
+	@estado nvarchar(10)
 
 AS
 BEGIN
+
 	BEGIN TRY
+		IF(LEN(@rol) > 30 or LEN(@estado) > 10)
+			RAISERROR('Excediste el número de caracteres permitido',11,1)
+
 		INSERT INTO dbo.UsuariosEquipos(idEquipo, idUsuario, rol, estado)
 		VALUES(@idEquipo, @idUsuario, @rol, @estado)
 	END TRY	
@@ -362,7 +438,11 @@ CREATE PROCEDURE [dbo].[UsuariosEquipos_Update]
 	
 AS
 BEGIN
+
 	BEGIN TRY
+		IF(LEN(@rol) > 30 or LEN(@estado) > 10)
+			RAISERROR('Excediste el número de caracteres permitido',11,1)
+
 		UPDATE dbo.UsuariosEquipos
 		SET 
 		idEquipo = @idEquipo,
@@ -391,6 +471,8 @@ CREATE PROCEDURE [dbo].[Pizarras_Insert]
 AS
 BEGIN
 	BEGIN TRY
+		IF @fechaFin<@fechaInicio
+			RAISERROR('La fecha no de inicio de no puede ser mayor a la fecha de fin',11,1)
 		INSERT INTO dbo.Pizarras(titulo,idEquipo,fechaInicio,fechaFin)
 		VALUES(@titulo, @idEquipo, @fechaInicio, @fechaFin)
 	END TRY
@@ -406,14 +488,23 @@ DROP PROCEDURE Pizarras_Update
 GO
 CREATE PROCEDURE [dbo].[Pizarras_Update]
 	@idPizarra int,
-	@titulo nvarchar(50),
+	@titulo nvarchar(30),
 	@idEquipo int,
 	@fechaInicio datetime,
 	@fechaFin datetime
 
 AS
 BEGIN
+
+
 	BEGIN TRY
+		IF @fechaFin<@fechaInicio
+			RAISERROR('La fecha no de inicio de no puede ser mayor a la fecha de fin',11,1)
+		IF EXISTS(Select * from Pizarras where idPizarra = @idPizarra)
+			RAISERROR('Ya existe esta pizarra'+@idPizarra,11,1)
+		IF(LEN(@titulo) > 30)
+			RAISERROR('Excediste el número de caracteres permitido',11,1)
+
 		UPDATE dbo.Pizarras
 		SET 
 		titulo = @titulo,
@@ -443,7 +534,11 @@ CREATE PROCEDURE [dbo].[Notas_Insert]
 
 AS
 BEGIN
+
 	BEGIN TRY
+		IF(LEN(@descripcion) > 50)
+		RAISERROR('Excediste el número de caracteres permitido',11,1)
+
 		INSERT INTO dbo.Notas(idPizarra,idAutor,idDestinatario, idValor, descripcion, puntuacion)
 		VALUES(@idPizarra, @idAutor, @idDestinatario, @idValor, @descripcion, @puntuacion)
 	END TRY
@@ -467,7 +562,13 @@ CREATE PROCEDURE [dbo].[Notas_Update]
 	@puntuacion int
 AS
 BEGIN
+
 	BEGIN TRY
+		IF EXISTS(Select * from Notas where idNota = @idNota)
+			RAISERROR('Ya existe esta nota'+@idNota,11,1)
+		IF(LEN(@descripcion) > 50)
+			RAISERROR('Excediste el número de caracteres permitido',11,1)	
+
 		UPDATE dbo.Notas
 		SET 
 		idPizarra= @idPizarra,
@@ -513,11 +614,15 @@ GO
 CREATE PROCEDURE [dbo].[UsuariosEmpresas_Update]
 	@idUsuario int,
 	@idEmpresa int,
-	@rol nvarchar(50)
+	@rol nvarchar(30)
 
 AS
 BEGIN
+
 	BEGIN TRY
+		IF(LEN(@rol) > 30)
+			RAISERROR('Excediste el número de caracteres permitido',11,1)	
+
 		UPDATE dbo.UsuariosEmpresas
 		SET 
 		idUsuario= @idUsuario,

@@ -44,6 +44,15 @@ CREATE TABLE [dbo].[Usuarios](
 ) ON [PRIMARY]
 GO
 
+ALTER TABLE Usuarios WITH CHECK ADD CONSTRAINT[
+
+ERROR:
+Debe ingresar sólo caracteres alfabéticos
+
+]CHECK (Usuarios.nombre NOT LIKE '%[^A-Z]%') 
+GO 
+
+
 /****** Object:  Table Logros ******/
 SET ANSI_NULLS ON
 GO
@@ -201,6 +210,15 @@ CREATE TABLE [dbo].[Empresas](
 ) ON [PRIMARY]
 GO
 
+ALTER TABLE Empresas WITH CHECK ADD CONSTRAINT[
+
+ERROR:
+Debe ingresar sólo números
+
+]CHECK (Empresas.telefono NOT LIKE '%[^0-9]%') 
+GO 
+
+
 /****** Object:  Table UsuariosEmpresas ******/
 CREATE TABLE [dbo].[UsuariosEmpresas](
 	[idEmpresa] [int] NOT NULL,
@@ -246,6 +264,13 @@ CREATE TABLE [dbo].[Condiciones](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
+
+CREATE RULE Regla_Puntuacion
+as
+
+@puntuacion = +1 or @puntuacion = -1;
+
+EXEC sp_bindrule 'Regla_Puntuacion', 'Condiciones.puntuacion'
 
 /****** Object:  Table LogrosCondiciones ******/
 SET ANSI_NULLS ON
