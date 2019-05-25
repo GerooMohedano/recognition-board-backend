@@ -265,12 +265,6 @@ CREATE TABLE [dbo].[Condiciones](
 ) ON [PRIMARY]
 GO
 
-CREATE RULE Regla_Puntuacion
-as
-
-@puntuacion = +1 or @puntuacion = -1;
-
-EXEC sp_bindrule 'Regla_Puntuacion', 'Condiciones.puntuacion'
 
 /****** Object:  Table LogrosCondiciones ******/
 SET ANSI_NULLS ON
@@ -532,3 +526,14 @@ go
 
 CREATE INDEX IX_idEmpresaValorValor ON EmpresasValores(idValor)
 go
+
+ if object_id ('Regla_Puntuacion') is not null
+   drop rule Regla_Puntuacion;
+   go
+
+CREATE RULE Regla_Puntuacion
+as
+
+@puntuacion = +1 or @puntuacion = -1;
+go
+exec sp_bindrule Regla_Puntuacion, 'Notas.puntuacion'

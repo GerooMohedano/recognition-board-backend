@@ -6,9 +6,9 @@ INSERT [dbo].[Usuarios] ([nombre], [contrasenia], [mail], [adminGeneral]) VALUES
 INSERT [dbo].[Usuarios] ([nombre], [contrasenia], [mail], [adminGeneral]) VALUES ('Tony', '123', 'iaforms@mail.com', 0)
 INSERT [dbo].[Usuarios] ([nombre], [contrasenia], [mail], [adminGeneral]) VALUES ('Diego', '123', 'ds.campero@mail.com', 0)
 INSERT [dbo].[Usuarios] ([nombre], [contrasenia], [mail], [adminGeneral]) VALUES ('Franco', '123', 'franco_altovoltaje@mail.com', 0)
-INSERT [dbo].[Usuarios] ([nombre], [contrasenia], [mail], [adminGeneral]) VALUES ('Esclavo1', '123', 'nn1@sovos.com', 0)
-INSERT [dbo].[Usuarios] ([nombre], [contrasenia], [mail], [adminGeneral]) VALUES ('Esclavo2', '123', 'nn2@sovos.com', 0)
-INSERT [dbo].[Usuarios] ([nombre], [contrasenia], [mail], [adminGeneral]) VALUES ('Esclavo3', '123', 'nn3@sovos.com', 0)
+INSERT [dbo].[Usuarios] ([nombre], [contrasenia], [mail], [adminGeneral]) VALUES ('Esclavouno', '123', 'nn1@sovos.com', 0)
+INSERT [dbo].[Usuarios] ([nombre], [contrasenia], [mail], [adminGeneral]) VALUES ('Esclavodos', '123', 'nn2@sovos.com', 0)
+INSERT [dbo].[Usuarios] ([nombre], [contrasenia], [mail], [adminGeneral]) VALUES ('Esclavotres', '123', 'nn3@sovos.com', 0)
 GO
 
 INSERT [dbo].[Empresas] ([nombre]) VALUES ('Sovos')
@@ -122,10 +122,6 @@ INSERT [dbo].[Notas] ([idPizarra], [idAutor], [idDestinatario], [idValor], [desc
 INSERT [dbo].[Notas] ([idPizarra], [idAutor], [idDestinatario], [idValor], [descripcion], [puntuacion]) VALUES (7, 2, 7, 5, 'Fortalecimos mucho nuestros lazos de amistad despues de que casi moris electrocutado', 1)
 INSERT [dbo].[Notas] ([idPizarra], [idAutor], [idDestinatario], [idValor], [descripcion], [puntuacion]) VALUES (8, 7, 8, 6, 'Siempre sos el primero en llegar', 1)
 INSERT [dbo].[Notas] ([idPizarra], [idAutor], [idDestinatario], [idValor], [descripcion], [puntuacion]) VALUES (8, 9, 10, 5, 'No sonreis nunca', -1)
-INSERT [dbo].[Notas] ([idPizarra], [idAutor], [idDestinatario], [idValor], [descripcion], [puntuacion]) VALUES (8, 10, 9, 5, 'Tu vieja', -1)
-INSERT [dbo].[Notas] ([idPizarra], [idAutor], [idDestinatario], [idValor], [descripcion], [puntuacion]) VALUES (8, 10, 9, 5, 'Tu vieja', -1)
-INSERT [dbo].[Notas] ([idPizarra], [idAutor], [idDestinatario], [idValor], [descripcion], [puntuacion]) VALUES (8, 10, 9, 5, 'Tu vieja', -1)
-INSERT [dbo].[Notas] ([idPizarra], [idAutor], [idDestinatario], [idValor], [descripcion], [puntuacion]) VALUES (8, 10, 9, 5, 'Tu vieja', -1)
 INSERT [dbo].[Notas] ([idPizarra], [idAutor], [idDestinatario], [idValor], [descripcion], [puntuacion]) VALUES (9, 7, 2, 5, 'Gracias', 1)
 INSERT [dbo].[Notas] ([idPizarra], [idAutor], [idDestinatario], [idValor], [descripcion], [puntuacion]) VALUES (9, 7, 2, 6, 'Levantate mas temprano', -1)
 INSERT [dbo].[Notas] ([idPizarra], [idAutor], [idDestinatario], [idValor], [descripcion], [puntuacion]) VALUES (10, 7, 8, 7, 'Muy buena idea para resolver el login', 1)
