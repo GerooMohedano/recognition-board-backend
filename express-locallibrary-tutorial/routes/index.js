@@ -1,4 +1,8 @@
 const UsuariosRoutes = require( './myRoutes/UsuariosRoutes');
+const EquiposRoutes = require('./myRoutes/EquiposRoutes');
+const ValoresRoutes = require('./myRoutes/ValoresRoutes');
+const LogrosRoutes = require('./myRoutes/LogrosRoutes');
+const EmpresasRoutes = require('./myRoutes/EmpresasRoutes');
 var express = require('express');
 var router = express.Router();
 var sql = require('mssql');
@@ -18,8 +22,10 @@ const config = {
 router.use(bodyParser.json());
 
 let usuariosRoutes = new UsuariosRoutes(express, router, sql, bodyParser, config);
-
-
+let equiposRoutes = new EquiposRoutes(express, router, sql, bodyParser, config);
+let valoresRoutes = new ValoresRoutes(express, router, sql, bodyParser,config);
+let logrosRoutes = new LogrosRoutes(express, router, sql, bodyParser, config);
+let empresasRoutes = new EmpresasRoutes(express, router, sql,bodyParse, config);
 
 /* GET function. */
 router.get('/', function(req, res, next) {
@@ -51,97 +57,34 @@ router.get('/empresas', function(req, res, next) {
   }
 });
 
-
-//Listar Equipos
-router.get('/equipos', function(req, res, next){
-  try
-  {
-    sql.connect(config, err => {
-      if(err) console.log("Control de error");
-
-      new sql.Request()
-      .execute('OnBoardDataBase.dbo.Listar_Equipos', (err, result) => {
-        console.log(result.recordset);
-        let datos = result.recordset;
-        res.send(
+//Listar usuarios por equipo
+         router.post('/usuariosPorEquipo', function(req, res, next){
+          try
           {
-            status: "OK",
-            data : datos
+            sql.connect(config, err => {
+                if(err) console.log("Control de error");
+                new sql.Request()
+                .query('EXEC Listar_UsuariosPorEquipo @idEquipo = ' + req.body.idEquipo, (err, result) => {
+                  console.dir(result.recordset)
+                  let datos = result.recordset;
+                  res.send(
+                    {
+                      status: "OK",
+                      data : datos
+                    }
+                   );
+                   sql.close();
+              });
+            });
           }
-         );
+          catch(e)
+          {
+          console.log(e);
+          res.send({
+              status: "error",
+              message: e
+          });
+          }
       });
-    })
-  }
-  catch(e)
-  {
-    console.log(e);
-    res.send({
-      status: "error",
-      message: e
-    });
-  }
-});
-
-//Listar Equipos por empresa
-router.post('/equiposxempresa', function(req, res, next){
-  try
-  {
-    sql.connect(config, err => {
-      if(err) console.log("Control de error");
-      console.log(req.body.idEmpresa  );
-      new sql.Request()
-      .input('idEmpresa', req.body.idEmpresa)
-      .execute('Listar_EquiposPorEmpresa', (err, result) => {
-          console.dir(result.recordset)
-          let datos = result.recordset;
-          res.send(
-            {
-              status: "OK",
-              data : datos
-            }
-           );
-      });
-    })
-  }
-  catch(e)
-  {
-    console.log("--------------------------");
-    console.log(e);
-    res.send({
-      status: "error",
-      message: e
-    });
-  }
-});
-
-router.post('/equiposxempresa2', function(req, res, next){
-  try
-  {
-    sql.connect(config, err => {
-      if(err) console.log("Control de error");
-      console.log(req.body.idEmpresa  );
-      new sql.Request()
-      .query('EXEC Listar_EquiposPorEmpresa @idEMpresa = ' + req.body.idEmpresa, (err, result) => {
-          console.dir(result.recordset)
-          let datos = result.recordset;
-          res.send(
-            {
-              status: "OK",
-              data : datos
-            }
-           );
-      });
-    })
-  }
-  catch(e)
-  {
-    console.log("--------------------------");
-    console.log(e);
-    res.send({
-      status: "error",
-      message: e
-    });
-  }
-});
 
 module.exports = router;

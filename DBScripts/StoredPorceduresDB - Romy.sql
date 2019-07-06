@@ -245,6 +245,31 @@ BEGIN
 END
 go
 
+CREATE PROCEDURE [dbo].[Valores_Delete]
+	@idValor int,
+	@nombre nvarchar(30)
+AS
+BEGIN
+
+	BEGIN TRY
+	
+		IF EXISTS(Select * from Valores where idValor = @idValor)
+			RAISERROR('Ya existe este Valor'+@idValor,11,1)
+
+		IF(LEN(@nombre) > 30)
+			RAISERROR('Excediste el número de caracteres permitido',11,1)
+
+		UPDATE dbo.Valores
+		SET 
+		nombre= @nombre	
+		WHERE idValor = @idValor 
+	END TRY
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1) 
+	END CATCH
+END
+go
 IF EXISTS(select * from sys.procedures where name='EquiposValores_Insert')
 DROP PROCEDURE EquiposValores_Insert
 GO
@@ -298,6 +323,27 @@ BEGIN
 END
 go
 
+
+IF EXISTS(select * from sys.procedures where name='EquiposValores_Delete')
+DROP PROCEDURE EquiposValores_Update
+GO
+CREATE PROCEDURE [dbo].[EquiposValores_Delete]
+	@idValor int,
+	@idEquipo int
+AS
+BEGIN
+
+	BEGIN TRY
+		DELETE FROM dbo.EquiposValores  WHERE
+		idValor = @idValor AND
+		idEquipo = @idEquipo
+	END TRY
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+END
+go
 IF EXISTS(select * from sys.procedures where name='EmpresasValores_Insert')
 DROP PROCEDURE EmpresasValores_Insert
 GO
@@ -1689,6 +1735,7 @@ begin
 		Select p.titulo,e.nombre
 		from Pizarras P inner join Equipos E on p.idEquipo=e.idEquipo
 	    where p.idEquipo = @idEquipo
+	order by p.fechaInicio asc
 	END TRY	
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()
