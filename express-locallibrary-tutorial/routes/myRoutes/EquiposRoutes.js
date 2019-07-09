@@ -5,6 +5,37 @@ class EquiposRoutes extends MyRoutes{
     contructor(express, router, sql, bodyParser, config){
         super(express, router, sql, bodyParser, config);
         
+    //Buscar Equipo
+        router.post('/buscarEquipo', function(req, res, next){
+            try
+            {
+            sql.connect(config, err => {
+                if(err) console.log("Control de error");
+                new sql.Request()
+                .query(' EXEC Buscar_Equipo @nombre = ' + req.body.nombre, (err, result) => {
+                    console.dir(result.recordset)
+                    console.log(result.recordset)
+                    let datos = result.recordset;
+                    res.send(
+                    {
+                        status: "OK",
+                        data : datos
+                    }
+                    );
+                    sql.close();
+                });
+            });
+            }
+            catch(e)
+            {
+            console.log(e);
+            res.send({
+                status: "error",
+                message: e
+            });
+            }
+        });
+
     //Alta Equipo
         router.post('/altaEquipo', function(req, res, next){
             try
@@ -425,7 +456,40 @@ class EquiposRoutes extends MyRoutes{
         });
         }
         });
+
+       //Consultar evaluacion de un equipo
+       router.post('/evaluacionEquipo', function(req, res, next){
+        try
+        {
+          sql.connect(config, err => {
+              if(err) console.log("Control de error");
+              new sql.Request()
+              .query(' EXEC ConsultarEvaluacionEquipo @idEquipo = "' + req.body.idEquipo , (err, result) => {
+                console.dir(result.recordset)
+                console.log(result.recordset)
+                let datos = result.recordset;
+                res.send(
+                  {
+                    status: "OK",
+                    data : datos
+                  }
+                 );
+                 sql.close();
+            });
+          });
         }
+        catch(e)
+        {
+        console.log(e);
+        res.send({
+            status: "error",
+            message: e
+        });
+        }
+        });
+
+        }
+        
 }
 
 module.exports = EquiposRoutes;
