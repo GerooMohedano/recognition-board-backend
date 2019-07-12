@@ -25,7 +25,7 @@ let usuariosRoutes = new UsuariosRoutes(express, router, sql, bodyParser, config
 let equiposRoutes = new EquiposRoutes(express, router, sql, bodyParser, config);
 let valoresRoutes = new ValoresRoutes(express, router, sql, bodyParser,config);
 let logrosRoutes = new LogrosRoutes(express, router, sql, bodyParser, config);
-let empresasRoutes = new EmpresasRoutes(express, router, sql,bodyParse, config);
+let empresasRoutes = new EmpresasRoutes(express, router, sql, bodyParser, config);
 
 /* GET function. */
 router.get('/', function(req, res, next) {

@@ -3,7 +3,7 @@ var MyRoutes = require('./MyRoutes.js');
 class EmpresasRoutes extends MyRoutes{
 
     constructor(express, router, sql, bodyParser, config){
-        super(express, router, sql, bodyParse, config);
+        super(express, router, sql, bodyParser, config);
 
         //Buscar Empresa
         router.post('/buscarEmpresa', function(req, res, next){

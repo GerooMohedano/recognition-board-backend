@@ -2,7 +2,7 @@ var MyRoutes = require('./MyRoutes.js');
 
 class EquiposRoutes extends MyRoutes{
 
-    contructor(express, router, sql, bodyParser, config){
+    constructor(express, router, sql, bodyParser, config){
         super(express, router, sql, bodyParser, config);
         
     //Buscar Equipo

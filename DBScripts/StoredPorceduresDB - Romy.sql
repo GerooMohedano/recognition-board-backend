@@ -1,3 +1,4 @@
+
 USE [OnBoardDataBase]
 GO
 IF EXISTS(select * from sys.procedures where name='Usuarios_Insert')
@@ -846,7 +847,7 @@ begin
 	END CATCH 
 end
 go
-
+/*
 IF EXISTS(select * from sys.tables where name='Auditoria')
 DROP TABLE Auditoria
 GO
@@ -1422,6 +1423,51 @@ GO
 		'NINGUNA',GETDATE() from deleted
 		END;
 GO
+*/
+/*==============================================================*/
+/*AUDITORIA SOBRE LAS NOTAS                                        */
+/*==============================================================*/
+IF EXISTS(select * from sys.tables where name='Auditoria_Notas')
+DROP TABLE Auditoria_Notas
+GO
+create table Auditoria_Notas(
+	[idAud] [int] IDENTITY(1,1) NOT NULL,
+	[fechaAud] DATETIME NOT NULL,
+	[usuarioAud] varchar(30) NOT NULL,
+	[hostNameAud] varchar(40) NOT NULL,
+	[motivoAud] varchar(100) DEFAULT NULL,
+	[tipoAud] char(1) NOT NULL,
+	[idNota] int NOT NULL,
+	[idPizarra] int NOT NULL,
+	[idAutor] int NOT NULL,
+	[idDestinatario] int NOT NULL,
+	[idValor] int NOT NULL,
+	[descripcion] varchar(100),
+	[puntuacion] int NOT NULL,
+	 CONSTRAINT [PK_AudNotas] PRIMARY KEY CLUSTERED 
+(
+	[idAud] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+-- Trigger inserción en notas
+DROP TRIGGER IF EXISTS [ttg_insercion_Notas];
+GO
+
+CREATE TRIGGER [ttg_insercion_Notas]
+ON [Notas] AFTER INSERT AS BEGIN
+
+	/*
+    Registra en la tabla aud_Vacas la fecha, usuario e ip del auditor y los datos de la fila
+    insertar en la tabla vacas, despues de realizada la insercion.
+    */
+	INSERT INTO Auditoria_Notas(fechaAud, usuarioAud, HostnameAud, motivoAud, tipoAud, 
+    [idNota], [idPizarra], [idAutor], [idDestinatario],[idValor],[descripcion],[puntuacion])
+    VALUES(getdate(), SUBSTRING_INDEX(USER(), '@', 1), SUBSTRING_INDEX(USER(), '@', -1), 'ALTA', 'I',
+    NEW.idVaca, NEW.idCaravana, NEW.idRFID, NEW.nombre, NEW.fecha_Nac, NEW.raza, NEW.lote, NEW.idVaca_Madre, NEW.peso_Kg, NEW.idTambo, NEW.idSucursal);
+END 
+go
 
 /*==============================================================*/
 /*Listados y busquedas                                            */
