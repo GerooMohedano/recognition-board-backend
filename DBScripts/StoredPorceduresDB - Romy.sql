@@ -1,6 +1,71 @@
 
 USE [OnBoardDataBase]
 GO
+
+IF EXISTS(select * from sys.procedures where name='insert_token')
+DROP PROCEDURE insert_token
+GO
+CREATE PROCEDURE [dbo].[insert_token]
+@nombre varchar(30),
+@valorToken varchar(50)
+as
+begin
+
+		begin try
+			Insert dbo.Token(valorToken, nombre)
+			values (@valorToken, @nombre)
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
+END
+GO
+
+IF EXISTS(select * from sys.procedures where name='get_token')
+DROP PROCEDURE get_token
+GO
+CREATE PROCEDURE [dbo].[get_token]
+@nombre varchar(50),
+@valorToken varchar(50)
+as
+
+begin
+
+		begin try
+			select Token.valorToken, Token.nombre from Token where @valorToken = valorToken and @nombre = nombre
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
+END
+
+
+IF EXISTS(select * from sys.procedures where name='get_user')
+DROP PROCEDURE get_user
+GO
+CREATE PROCEDURE [dbo].[get_user]
+@nombre varchar(50),
+@contrasenia varchar(50)
+
+as
+declare @returnData varchar(30)
+set @returnData = null
+begin
+
+		begin try
+			select @returnData= u.nombre from Usuarios u WHERE @nombre = u.nombre and @contrasenia = u.contrasenia
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
+		print @returnData
+return @returnData
+END
+GO
+
 IF EXISTS(select * from sys.procedures where name='Usuarios_Insert')
 DROP PROCEDURE Usuarios_Insert
 GO
@@ -1431,12 +1496,6 @@ IF EXISTS(select * from sys.tables where name='Auditoria_Notas')
 DROP TABLE Auditoria_Notas
 GO
 create table Auditoria_Notas(
-	[idAud] [int] IDENTITY(1,1) NOT NULL,
-	[fechaAud] DATETIME NOT NULL,
-	[usuarioAud] varchar(30) NOT NULL,
-	[hostNameAud] varchar(40) NOT NULL,
-	[motivoAud] varchar(100) DEFAULT NULL,
-	[tipoAud] char(1) NOT NULL,
 	[idNota] int NOT NULL,
 	[idPizarra] int NOT NULL,
 	[idAutor] int NOT NULL,
@@ -1444,30 +1503,167 @@ create table Auditoria_Notas(
 	[idValor] int NOT NULL,
 	[descripcion] varchar(100),
 	[puntuacion] int NOT NULL,
-	 CONSTRAINT [PK_AudNotas] PRIMARY KEY CLUSTERED 
-(
-	[idAud] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
+	[fechaAud] DATETIME NOT NULL,
+	[usuarioAud] varchar(30) NOT NULL,
+	[hostNameAud] varchar(40) NOT NULL,
+	[motivoAud] varchar(100) DEFAULT NULL,
+
+)
 GO
 
--- Trigger inserción en notas
-DROP TRIGGER IF EXISTS [ttg_insercion_Notas];
+--Trigger de inserción 
+DROP TRIGGER IF EXISTS [trig_insercion_Notas];
+GO
+CREATE TRIGGER [trig_insercion_Notas]
+	ON Notas 
+	FOR insert
+AS 
+BEGIN
+	INSERT INTO Auditoria_Notas([idNota], [idPizarra], [idAutor], [idDestinatario], [idValor], [descripcion], [puntuacion], fechaAud, usuarioAud, hostnameAud, motivoAud)
+	SELECT idNota, [idPizarra], idAutor, idDestinatario, idValor, descripcion, puntuacion, GETDATE(), CURRENT_USER, HOST_NAME(), 'Alta' from inserted;
+END
 GO
 
-CREATE TRIGGER [ttg_insercion_Notas]
-ON [Notas] AFTER INSERT AS BEGIN
+--Trigger de modificacion
+DROP TRIGGER IF EXISTS [Trig_Modificacion_Notas];
+GO
+CREATE TRIGGER Trig_Modificacion_Notas
+	ON Notas 
+	FOR insert
+AS 
+BEGIN
+	INSERT INTO Auditoria_Notas([idNota], [idPizarra], [idAutor], [idDestinatario], [idValor], [descripcion], [puntuacion], fechaAud, usuarioAud, hostnameAud, motivoAud)
+	SELECT idNota, idPizarra, idAutor, idDestinatario, idValor, descripcion, puntuacion, GETDATE(), CURRENT_USER, HOST_NAME(), 'Modificación' from inserted;
+END
+GO
 
-	/*
-    Registra en la tabla aud_Vacas la fecha, usuario e ip del auditor y los datos de la fila
-    insertar en la tabla vacas, despues de realizada la insercion.
-    */
-	INSERT INTO Auditoria_Notas(fechaAud, usuarioAud, HostnameAud, motivoAud, tipoAud, 
-    [idNota], [idPizarra], [idAutor], [idDestinatario],[idValor],[descripcion],[puntuacion])
-    VALUES(getdate(), SUBSTRING_INDEX(USER(), '@', 1), SUBSTRING_INDEX(USER(), '@', -1), 'ALTA', 'I',
-    NEW.idVaca, NEW.idCaravana, NEW.idRFID, NEW.nombre, NEW.fecha_Nac, NEW.raza, NEW.lote, NEW.idVaca_Madre, NEW.peso_Kg, NEW.idTambo, NEW.idSucursal);
-END 
-go
+--Trigger de eliminación
+DROP TRIGGER IF EXISTS [Trig_Eliminacion_Notas];
+GO
+CREATE TRIGGER Trig_Eliminacion_Notas
+	ON Notas 
+	FOR delete
+AS 
+BEGIN
+INSERT INTO Auditoria_Notas([idNota], [idPizarra], [idAutor], [idDestinatario], [idValor], [descripcion], [puntuacion], fechaAud, usuarioAud, hostnameAud, motivoAud)
+	SELECT idNota, idPizarra, idAutor, idDestinatario, idValor, descripcion, puntuacion, GETDATE(), CURRENT_USER, HOST_NAME(), 'Eliminación' from deleted;
+END
+GO
+
+/*==============================================================*/
+/*AUDITORIA SOBRE LOS LOGROS DE LOS USUARIOS                    */
+/*==============================================================*/
+IF EXISTS(select * from sys.tables where name='Auditoria_LogrosUsuarios')
+DROP TABLE Auditoria_LogrosUsuarios
+GO
+create table Auditoria_LogrosUsuarios(
+	[idLogro] int NOT NULL,
+	[idUsuario] int NOT NULL,
+	[fecha] DATETIME NOT NULL,
+	[fechaAud] DATETIME NOT NULL,
+	[usuarioAud] varchar(30) NOT NULL,
+	[hostNameAud] varchar(40) NOT NULL,
+	[motivoAud] varchar(100) DEFAULT NULL,
+
+)
+GO
+
+--Trigger de inserción 
+DROP TRIGGER IF EXISTS [trig_insercion_LogrosUsuarios];
+GO
+CREATE TRIGGER [trig_insercion_LogrosUsuarios]
+	ON LogrosUsuarios 
+	FOR insert
+AS 
+BEGIN
+	INSERT INTO Auditoria_LogrosUsuarios([idLogro], [idUsuario], [fecha], fechaAud, usuarioAud, hostnameAud, motivoAud)
+	SELECT idLogro, idUsuario, fecha, GETDATE(), CURRENT_USER, HOST_NAME(), 'Alta' from inserted;
+END
+GO
+
+--Trigger de modificacion
+DROP TRIGGER IF EXISTS [Trig_Modificacion_LogrosUsuarios];
+GO
+CREATE TRIGGER Trig_Modificacion_LogrosUsuarios
+ON LogrosUsuarios 
+	FOR insert
+AS 
+BEGIN
+	INSERT INTO Auditoria_LogrosUsuarios([idLogro], [idUsuario], [fecha], fechaAud, usuarioAud, hostnameAud, motivoAud)
+	SELECT idLogro, idUsuario, fecha, GETDATE(), CURRENT_USER, HOST_NAME(), 'Modificación' from inserted;
+END
+GO
+
+--Trigger de eliminación
+DROP TRIGGER IF EXISTS [Trig_Eliminacion_Notas];
+GO
+CREATE TRIGGER Trig_Eliminacion_LogrosUsuarios
+	ON LogrosUsuarios 
+	FOR delete
+AS 
+BEGIN
+	INSERT INTO Auditoria_LogrosUsuarios([idLogro], [idUsuario], [fecha], fechaAud, usuarioAud, hostnameAud, motivoAud)
+	SELECT idLogro, idUsuario, fecha, GETDATE(), CURRENT_USER, HOST_NAME(), 'Eliminación' from deleted;
+END
+GO
+
+
+/*==============================================================*/
+/*AUDITORIA SOBRE LOS VALORES DE LOS EQUIPOS                    */
+/*==============================================================*/
+IF EXISTS(select * from sys.tables where name='Auditoria_EquiposValores')
+DROP TABLE Auditoria_EquiposValores
+GO
+create table Auditoria_EquiposValores(
+	[idEquipo] int NOT NULL,
+	[idValor] int NOT NULL,
+	[estado] varchar(30) NOT NULL,
+	[fechaAud] DATETIME NOT NULL,
+	[usuarioAud] varchar(30) NOT NULL,
+	[hostNameAud] varchar(40) NOT NULL,
+	[motivoAud] varchar(100) DEFAULT NULL,
+
+)
+GO
+
+--Trigger de inserción 
+DROP TRIGGER IF EXISTS [trig_insercion_EquiposValores];
+GO
+CREATE TRIGGER [trig_insercion_EquiposValores]
+	ON EquiposValores 
+	FOR insert
+AS 
+BEGIN
+	INSERT INTO Auditoria_EquiposValores([idEquipo], [idValor], [estado], fechaAud, usuarioAud, hostnameAud, motivoAud)
+	SELECT idEquipo, idValor, estado, GETDATE(), CURRENT_USER, HOST_NAME(), 'Alta' from inserted;
+END
+GO
+
+--Trigger de modificacion
+DROP TRIGGER IF EXISTS [Trig_Modificacion_EquiposValores];
+GO
+CREATE TRIGGER Trig_Modificacion_EquiposValores
+ON EquiposValores 
+	FOR insert
+AS 
+BEGIN
+	INSERT INTO Auditoria_EquiposValores([idEquipo], [idValor], [estado], fechaAud, usuarioAud, hostnameAud, motivoAud)
+	SELECT [idEquipo], [idValor], [estado], GETDATE(), CURRENT_USER, HOST_NAME(), 'Modificación' from inserted;
+END
+GO
+
+--Trigger de eliminación
+DROP TRIGGER IF EXISTS [Trig_Eliminacion_EquiposValores];
+GO
+CREATE TRIGGER Trig_Eliminacion_EquiposValores
+	ON EquiposValores 
+	FOR delete
+AS 
+BEGIN
+	INSERT INTO Auditoria_EquiposValores([idEquipo], [idValor], [estado], fechaAud, usuarioAud, hostnameAud, motivoAud)
+	SELECT [idEquipo], [idValor], [estado], GETDATE(), CURRENT_USER, HOST_NAME(), 'Eliminación' from deleted;
+END
+GO
 
 /*==============================================================*/
 /*Listados y busquedas                                            */

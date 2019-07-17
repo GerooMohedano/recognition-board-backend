@@ -25,6 +25,23 @@ GO
 
 USE [OnBoardDataBase]
 GO
+
+/****** Object:  Table TOKEN ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Token](
+	[idToken] [int] IDENTITY(1,1) NOT NULL,
+	[valorToken] [varchar](MAX) NOT NULL,
+	[nombre] [varchar](30) NOT NULL,
+ CONSTRAINT [PK_Token] PRIMARY KEY CLUSTERED 
+(
+	[idToken] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
 /****** Object:  Table Usuarios ******/
 SET ANSI_NULLS ON
 GO

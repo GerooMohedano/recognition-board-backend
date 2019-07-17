@@ -1,6 +1,7 @@
 var MyRoutes = require('./MyRoutes.js');
 const jwt = require ('jsonwebtoken');
 const jwlVerifer = require('express-jwt');
+const {generateToken,validateToken} =require('./jwt.js')
 const secret = 'secret';
 class UsuariosRoutes extends MyRoutes{
 
@@ -44,40 +45,59 @@ class UsuariosRoutes extends MyRoutes{
         var token = jwt.sign({userID: user.nombre, exp:expirationDate }, secret);
         return token;
       }
-       router.post('/', async (req, res) => {
+       router.post('/login', async (req, res) => {
 
           try{
-            const user = (await connectionPoo.request()
-            .input('nombre', db.VarChar(30), req.body.nombre)
-            .input('contrasenia', db.VarChar(128), sha512(req.body.contrasenia))
-            .execute('dbo.get_user')).recordset[0];
+              sql.connect(config,  err => {
+                  if(err) console.log("Control de error"); 
+                  new sql.Request()
+                  .query(' EXEC get_user '
+                  + ' @nombre = "' + req.body.nombre 
+                  + '", @contrasenia = "' + req.body.contrasenia 
+                  + '"', (err, result) => {
+                    console.log(result.recordset)
+                    let user = result.recordset;
+                    console.log(user);
+                    if(user === undefined){
+                      const error = new Error('Usuario y/o contraseña incorrectos');
+                      error.code = 'EREQUEST';
+                      throw error;
+                    }
+                    var token = generateToken(user);
+                    token = token.slice(0,20);
 
-            if(user === 0/*undefined*/){
-              const error = new Error('Usuario y/o contraseña incorrectos');
-              error.code = 'EREQUEST';
-              throw error;
-            }
-
-            const token = await createToken();
-            await connectionPool.request()
-              .input('nombre', db.VarChar(30), user.nombre)
-              .input('token', db.VarChar(db.MAX), token)
-              .execute('dbo.insert_token');
-            
-            res.status(200).json({token, user});
-          } catch (err) {
-            handleError(res, err);
+                    console.log(user[0].nombre,typeof(user[0].nombre));
+                    console.log("token",token,typeof(token));
+                    new sql.Request()
+                    .query(' EXEC insert_token '
+                    + ' @nombre = "' + user[0].nombre
+                    + '", @valorToken = "' + token
+                    + '"', (err, result) => {
+                      res.send(
+                        {
+                          status: "OK",
+                        }
+                      );
+                    sql.close();
+                });
+              });
+    
+            });
           }
-       });
+          catch(e){
+            console.log("ERROR",e);
+          }        
+        })
 
-       router.use(/^(?!(\/login)).*/, async (req, res, next) => {
+       router.use('/', async (req, res, next) => {
 
         const authHeader = req.get('Authorization');
         if(!authHeader){
           res.status(401).end();
           return;
         }
-
+        console.log('authHeader',authHeader);
+/*
         try{
           const token = authHeader.split(' ')[1];
           const payload = await validateToken(token);
@@ -94,6 +114,29 @@ class UsuariosRoutes extends MyRoutes{
         }catch (err) {
           res.status(401).end();
         }
+*/
+            try{
+              const token = authHeader.split(' ')[1];
+              const payload = await validateToken(token);
+              sql.connect(config,  err => {
+                  if(err) console.log("Control de error"); 
+                  const dbToken = new sql.Request()
+                      .query(' EXEC get_token '
+                      + ' @nombre = "' + payload.nombre 
+                      + '", @valorToken = "' + token 
+                      + '"', (err, result) => {
+                        if(!dbToken){
+                          throw new Error();
+                        }
+                        req.user = payload;
+                        next();
+                      sql.close();
+                  });
+            });
+          }
+          catch(e){
+            console.log("ERROR",e);
+          } 
        });
 
         //Logueo
