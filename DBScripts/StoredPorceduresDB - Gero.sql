@@ -233,7 +233,7 @@ BEGIN
 			FROM Usuarios INNER JOIN Notas ON Usuarios.idUsuario = Notas.idDestinatario
 			INNER JOIN Valores ON Notas.idValor = Valores.idValor
 			WHERE Usuarios.idUsuario = @idUsuario
-			GROUP BY Usuarios.nombre, Valores.nombre
+			GROUP BY Usuarios.nombre, Valores.nombre, Usuarios.idUsuario, Valores.idValor
 			ORDER BY Valores.nombre
 		end try
 			begin catch

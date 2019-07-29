@@ -40,7 +40,7 @@ begin
 			RAISERROR(@error,11,1)  
 		end catch
 END
-
+go
 
 IF EXISTS(select * from sys.procedures where name='get_user')
 DROP PROCEDURE get_user
@@ -71,7 +71,7 @@ DROP PROCEDURE Usuarios_Insert
 GO
 CREATE procedure [Usuarios_Insert]
 @nombre varchar(50),
-@contraseña varchar(30),
+@contraseï¿½a varchar(30),
 @mail varchar(30),
 @fotoPerfil image,
 @adminGeneral bit
@@ -80,11 +80,11 @@ begin
 
 		begin try
 		
-		if(LEN(@nombre) > 3 OR LEN(@contraseña) > 30 OR LEN(@mail) > 30)
-			RAISERROR('Excediste el número de caracteres permitido',11,1)
+		if(LEN(@nombre) > 3 OR LEN(@contraseï¿½a) > 30 OR LEN(@mail) > 30)
+			RAISERROR('Excediste el nï¿½mero de caracteres permitido',11,1)
 
 			Insert dbo.Usuarios(nombre,contrasenia,mail,fotoPerfil,adminGeneral)
-			values (@nombre,@contraseña,@mail,@fotoPerfil,@adminGeneral)
+			values (@nombre,@contraseï¿½a,@mail,@fotoPerfil,@adminGeneral)
 		end try
 		begin catch
 			declare @error varchar(100)= ERROR_MESSAGE()
@@ -92,6 +92,7 @@ begin
 		end catch
 end
 GO
+
 
 IF EXISTS(select * from sys.procedures where name='Usuarios_Update')
 DROP PROCEDURE Usuarios_Update
@@ -108,7 +109,7 @@ begin
 		begin try
 		
 		if(LEN(@nombre) > 50 OR LEN(@contrasenia) > 30 OR LEN(@mail) > 30)
-			RAISERROR('Excediste el número de caracteres permitido',11,1)
+			RAISERROR('Excediste el nï¿½mero de caracteres permitido',11,1)
 
 			update dbo.Usuarios
 			set
@@ -142,7 +143,7 @@ BEGIN
 	BEGIN TRY
 	
 		if(LEN(@nombre) > 50 OR LEN(@direccion) > 50 OR LEN(@estado) > 10)
-			RAISERROR('Excediste el número de caracteres permitido',11,1)
+			RAISERROR('Excediste el nï¿½mero de caracteres permitido',11,1)
 
 		INSERT INTO dbo.Empresas(nombre,direccion,telefono,logo,estado)
 		VALUES(@nombre,@direccion, @telefono, @logo, @estado)
@@ -170,7 +171,7 @@ BEGIN
 
 	BEGIN TRY
 		if(LEN(@nombre) > 50 OR LEN(@direccion) > 50 OR LEN(@estado) > 10)
-			RAISERROR('Excediste el número de caracteres permitido',11,1)
+			RAISERROR('Excediste el nï¿½mero de caracteres permitido',11,1)
 		UPDATE dbo.Empresas
 		SET 
 		nombre= @nombre,
@@ -200,7 +201,7 @@ BEGIN
 
 	BEGIN TRY
 		IF(LEN(@nombre) > 30 OR LEN(@estado) > 10)
-			RAISERROR('Excediste el número de caracteres permitido',11,1)
+			RAISERROR('Excediste el nï¿½mero de caracteres permitido',11,1)
 
 		INSERT INTO dbo.Equipos(nombre,imagen,estado)
 		VALUES(@nombre,@imagen,@estado)
@@ -227,10 +228,10 @@ BEGIN
 
 	BEGIN TRY
 			IF EXISTS(Select * from Equipos where idEquipo = @idEquipo)
-				RAISERROR('Ya existe este equipo'+@idEquipo,11,1)
+				RAISERROR('Ya existe este equipo',@idEquipo,11,1)
 
 			IF(LEN(@nombre) > 30 OR LEN(@estado) > 10)
-				RAISERROR('Excediste el número de caracteres permitido',11,1)
+				RAISERROR('Excediste el nï¿½mero de caracteres permitido',11,1)
 
 			UPDATE dbo.Equipos
 			SET 
@@ -258,7 +259,7 @@ BEGIN
 
 	BEGIN TRY
 		IF(LEN(@nombre) > 30)
-			RAISERROR('Excediste el número de caracteres permitido',11,1)
+			RAISERROR('Excediste el nï¿½mero de caracteres permitido',11,1)
 
 		INSERT INTO dbo.Valores(nombre)
 		VALUES(@nombre)
@@ -282,10 +283,9 @@ BEGIN
 	BEGIN TRY
 	
 		IF EXISTS(Select * from Valores where idValor = @idValor)
-			RAISERROR('Ya existe este Valor'+@idValor,11,1)
-
+			RAISERROR('Ya existe este Valor',@idValor,11,1)
 		IF(LEN(@nombre) > 30)
-			RAISERROR('Excediste el número de caracteres permitido',11,1)
+			RAISERROR('Excediste el nï¿½mero de caracteres permitido',11,1)
 
 		UPDATE dbo.Valores
 		SET 
@@ -308,10 +308,10 @@ BEGIN
 	BEGIN TRY
 	
 		IF EXISTS(Select * from Valores where idValor = @idValor)
-			RAISERROR('Ya existe este Valor'+@idValor,11,1)
+			RAISERROR('Ya existe este Valor',@idValor,11,1)
 
 		IF(LEN(@nombre) > 30)
-			RAISERROR('Excediste el número de caracteres permitido',11,1)
+			RAISERROR('Excediste el nï¿½mero de caracteres permitido',11,1)
 
 		UPDATE dbo.Valores
 		SET 
@@ -337,7 +337,7 @@ BEGIN
 
 	BEGIN TRY
 			IF(LEN(@estado) > 10)
-				RAISERROR('Excediste el número de caracteres permitido',11,1)
+				RAISERROR('Excediste el nï¿½mero de caracteres permitido',11,1)
 
 			INSERT INTO dbo.EquiposValores(idValor,idEquipo,estado)
 			VALUES(@idValor,@idEquipo,@estado)
@@ -361,7 +361,7 @@ BEGIN
 
 	BEGIN TRY
 		IF(LEN(@estado) > 10)
-			RAISERROR('Excediste el número de caracteres permitido',11,1)
+			RAISERROR('Excediste el nï¿½mero de caracteres permitido',11,1)
 
 		UPDATE dbo.EquiposValores
 		SET 
@@ -454,7 +454,7 @@ BEGIN
 
 	BEGIN TRY
 		IF(LEN(@nombre) > 30 or LEN(@descripcion) > 50)
-			RAISERROR('Excediste el número de caracteres permitido',11,1)
+			RAISERROR('Excediste el nï¿½mero de caracteres permitido',11,1)
 
 		INSERT INTO dbo.Logros(nombre,descripcion,foto)
 		VALUES(@nombre, @descripcion, @foto)
@@ -480,10 +480,10 @@ BEGIN
 	
 	BEGIN TRY
 		IF EXISTS(Select * from Logros where idLogro = @idLogro)
-			RAISERROR('Ya existe este Logro'+@idLogro,11,1)
+			RAISERROR('Ya existe este Logro',@idLogro,11,1)
 
 		IF(LEN(@nombre) > 30 or LEN(@descripcion) > 50)
-			RAISERROR('Excediste el número de caracteres permitido',11,1)
+			RAISERROR('Excediste el nï¿½mero de caracteres permitido',11,1)
 
 		UPDATE dbo.Logros
 		SET 
@@ -514,7 +514,7 @@ BEGIN
 
 	BEGIN TRY
 		IF(LEN(@rol) > 30 or LEN(@estado) > 10)
-			RAISERROR('Excediste el número de caracteres permitido',11,1)
+			RAISERROR('Excediste el nï¿½mero de caracteres permitido',11,1)
 
 		INSERT INTO dbo.UsuariosEquipos(idEquipo, idUsuario, rol, estado)
 		VALUES(@idEquipo, @idUsuario, @rol, @estado)
@@ -541,7 +541,7 @@ BEGIN
 
 	BEGIN TRY
 		IF(LEN(@rol) > 30 or LEN(@estado) > 10)
-			RAISERROR('Excediste el número de caracteres permitido',11,1)
+			RAISERROR('Excediste el nï¿½mero de caracteres permitido',11,1)
 
 		UPDATE dbo.UsuariosEquipos
 		SET 
@@ -601,9 +601,9 @@ BEGIN
 		IF @fechaFin<@fechaInicio
 			RAISERROR('La fecha no de inicio de no puede ser mayor a la fecha de fin',11,1)
 		IF EXISTS(Select * from Pizarras where idPizarra = @idPizarra)
-			RAISERROR('Ya existe esta pizarra'+@idPizarra,11,1)
+			RAISERROR('Ya existe esta pizarra',@idPizarra,11,1)
 		IF(LEN(@titulo) > 30)
-			RAISERROR('Excediste el número de caracteres permitido',11,1)
+			RAISERROR('Excediste el nï¿½mero de caracteres permitido',11,1)
 
 		UPDATE dbo.Pizarras
 		SET 
@@ -637,7 +637,7 @@ BEGIN
 
 	BEGIN TRY
 		IF(LEN(@descripcion) > 50)
-		RAISERROR('Excediste el número de caracteres permitido',11,1)
+		RAISERROR('Excediste el nï¿½mero de caracteres permitido',11,1)
 
 		INSERT INTO dbo.Notas(idPizarra,idAutor,idDestinatario, idValor, descripcion, puntuacion)
 		VALUES(@idPizarra, @idAutor, @idDestinatario, @idValor, @descripcion, @puntuacion)
@@ -665,9 +665,9 @@ BEGIN
 
 	BEGIN TRY
 		IF EXISTS(Select * from Notas where idNota = @idNota)
-			RAISERROR('Ya existe esta nota'+@idNota,11,1)
+			RAISERROR('Ya existe esta nota',@idNota,11,1)
 		IF(LEN(@descripcion) > 50)
-			RAISERROR('Excediste el número de caracteres permitido',11,1)	
+			RAISERROR('Excediste el nï¿½mero de caracteres permitido',11,1)	
 
 		UPDATE dbo.Notas
 		SET 
@@ -721,7 +721,7 @@ BEGIN
 
 	BEGIN TRY
 		IF(LEN(@rol) > 30)
-			RAISERROR('Excediste el número de caracteres permitido',11,1)	
+			RAISERROR('Excediste el nï¿½mero de caracteres permitido',11,1)	
 
 		UPDATE dbo.UsuariosEmpresas
 		SET 
@@ -867,10 +867,10 @@ begin
 end
 go
 
-IF EXISTS(select * from sys.procedures where name='Cambiar_Contraseña')
-DROP PROCEDURE Cambiar_Contraseña
+IF EXISTS(select * from sys.procedures where name='Cambiar_Contraseï¿½a')
+DROP PROCEDURE Cambiar_Contraseï¿½a
 GO
-create procedure Cambiar_Contraseña
+create procedure Cambiar_Contraseï¿½a
 @idUsuario int,
 @contraseniaactual varchar(30),
 @contrasenianueva varchar(30)
@@ -914,11 +914,11 @@ create table Auditoria(
 	descripcion varchar(50),
 	fecha_hora datetime not null
 	)
-go
+go*/
 /*==============================================================*/
 /* Trigger: Insertar                                              */
 /*==============================================================*/
-
+/*
 	IF EXISTS(select * from sys.triggers where name='AuditoriaUsuario_Insertar')
 	DROP trigger AuditoriaUsuario_Insertar
 	GO
@@ -927,7 +927,7 @@ go
 	FOR INSERT
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','USUARIOS','INSERTÓ',idUsuario,nombre, 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','USUARIOS','INSERTï¿½',idUsuario,nombre, 
 		'NINGUNA',GETDATE() from inserted
 		END;
 
@@ -941,7 +941,7 @@ go
 	FOR INSERT
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Equipos','INSERTÓ',idEquipo,nombre, 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Equipos','INSERTï¿½',idEquipo,nombre, 
 		'NINGUNA',GETDATE() from inserted
 		END;
 
@@ -955,7 +955,7 @@ GO
 	FOR INSERT
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Empresas','INSERTÓ',idEmpresa,nombre, 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Empresas','INSERTï¿½',idEmpresa,nombre, 
 		'NINGUNA',GETDATE() from inserted
 		END;
 
@@ -969,7 +969,7 @@ GO
 	FOR INSERT
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Logros','INSERTÓ',idLogro,nombre, 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Logros','INSERTï¿½',idLogro,nombre, 
 		'NINGUNA',GETDATE() from inserted
 		END;
 
@@ -983,7 +983,7 @@ GO
 	FOR INSERT
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Condiciones','INSERTÓ',idCondicion,'', 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Condiciones','INSERTï¿½',idCondicion,'', 
 		'NINGUNA',GETDATE() from inserted
 		END;
 
@@ -997,7 +997,7 @@ GO
 	FOR INSERT
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Notas','INSERTÓ',idNota,descripcion, 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Notas','INSERTï¿½',idNota,descripcion, 
 		'NINGUNA',GETDATE() from inserted
 		END;
 
@@ -1011,7 +1011,7 @@ GO
 	FOR INSERT
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Pizarras','INSERTÓ',idPizarra,titulo, 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Pizarras','INSERTï¿½',idPizarra,titulo, 
 		'NINGUNA',GETDATE() from inserted
 		END;
 
@@ -1025,7 +1025,7 @@ GO
 	FOR INSERT
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Valores','INSERTÓ',idValor,nombre, 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Valores','INSERTï¿½',idValor,nombre, 
 		'NINGUNA',GETDATE() from inserted
 		END;
 GO
@@ -1039,7 +1039,7 @@ GO
 	FOR INSERT
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','EmpresasValores','INSERTÓ',idValor+''+idEmpresa,'valor y empresa', 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','EmpresasValores','INSERTï¿½',idValor+''+idEmpresa,'valor y empresa', 
 		'NINGUNA',GETDATE() from inserted
 		END;
 GO
@@ -1052,7 +1052,7 @@ GO
 	FOR INSERT
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','EquiposValores','INSERTÓ',idEquipo+''+idValor,'Equipo y Valor', 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','EquiposValores','INSERTï¿½',idEquipo+''+idValor,'Equipo y Valor', 
 		'NINGUNA',GETDATE() from inserted
 		END;
 GO
@@ -1065,7 +1065,7 @@ GO
 	FOR INSERT
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','LogrosCondiciones','INSERTÓ',idCondicion+''+idLogro,'Condición y Logro', 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','LogrosCondiciones','INSERTï¿½',idCondicion+''+idLogro,'Condiciï¿½n y Logro', 
 		'NINGUNA',GETDATE() from inserted
 		END;
 GO
@@ -1078,7 +1078,7 @@ GO
 	FOR INSERT
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','LogrosUsuarios','INSERTÓ',idLogro+''+idUsuario,'Logro y Usuario', 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','LogrosUsuarios','INSERTï¿½',idLogro+''+idUsuario,'Logro y Usuario', 
 		'NINGUNA',GETDATE() from inserted
 		END;
 GO
@@ -1091,7 +1091,7 @@ GO
 	FOR INSERT
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','UsuariosEmpresas','INSERTÓ',idEmpresa+''+idUsuario,'Empresa y Usuario', 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','UsuariosEmpresas','INSERTï¿½',idEmpresa+''+idUsuario,'Empresa y Usuario', 
 		'NINGUNA',GETDATE() from inserted
 		END;
 GO
@@ -1103,14 +1103,14 @@ GO
 	FOR INSERT
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','UsuariosEquipos','INSERTÓ',idEquipo+''+idUsuario,'Equipo y Usuario', 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','UsuariosEquipos','INSERTï¿½',idEquipo+''+idUsuario,'Equipo y Usuario', 
 		'NINGUNA',GETDATE() from inserted
 		END;
-GO
+GO*/
 /*==============================================================*/
 /* Trigger: Actualizar                                          */
 /*==============================================================*/
-
+/*
 	IF EXISTS(select * from sys.triggers where name='AuditoriaUsuarios_Actualizar')
 	DROP trigger AuditoriaUsuarios_Actualizar
 	GO
@@ -1119,7 +1119,7 @@ GO
 	FOR UPDATE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Usuarios','ACTUALIZÓ',idUsuario,nombre, 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Usuarios','ACTUALIZï¿½',idUsuario,nombre, 
 		(select nombre from deleted),GETDATE() from inserted
 		END;
 
@@ -1133,7 +1133,7 @@ GO
 	FOR UPDATE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Equipos','ACTUALIZÓ',idEquipo,nombre, 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Equipos','ACTUALIZï¿½',idEquipo,nombre, 
 		(select nombre from deleted),GETDATE() from inserted
 		END;
 
@@ -1147,7 +1147,7 @@ GO
 	FOR UPDATE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Empresas','ACTUALIZÓ',idEmpresa,nombre, 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Empresas','ACTUALIZï¿½',idEmpresa,nombre, 
 		(select nombre from deleted),GETDATE() from inserted
 		END;
 
@@ -1161,7 +1161,7 @@ GO
 	FOR UPDATE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Logros','ACTUALIZÓ',idLogro,nombre, 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Logros','ACTUALIZï¿½',idLogro,nombre, 
 		(select nombre from deleted),GETDATE() from inserted
 		END;
 
@@ -1175,7 +1175,7 @@ GO
 	FOR UPDATE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Notas','ACTUALIZÓ',idNota,descripcion, 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Notas','ACTUALIZï¿½',idNota,descripcion, 
 		(select descripcion from deleted),GETDATE() from inserted
 		END;
 
@@ -1188,7 +1188,7 @@ GO
 	FOR UPDATE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Pizarras','ACTUALIZÓ',idPizarra,titulo, 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Pizarras','ACTUALIZï¿½',idPizarra,titulo, 
 		(select titulo from deleted),GETDATE() from inserted
 		END;
 GO
@@ -1201,7 +1201,7 @@ GO
 	FOR UPDATE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Valores','ACTUALIZÓ',idValor,nombre, 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Valores','ACTUALIZï¿½',idValor,nombre, 
 		(select nombre from deleted),GETDATE() from inserted
 		END;
 GO
@@ -1214,7 +1214,7 @@ GO
 	FOR UPDATE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Condiciones','ACTUALIZÓ',idCondicion,RTRIM(puntuacion)+' '+RTRIM(modificador)+' '+RTRIM(excluyente), 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Condiciones','ACTUALIZï¿½',idCondicion,RTRIM(puntuacion)+' '+RTRIM(modificador)+' '+RTRIM(excluyente), 
 		(select RTRIM(puntuacion)+' '+RTRIM(modificador)+' '+RTRIM(excluyente) from deleted),GETDATE() from inserted
 		END;
 GO
@@ -1228,7 +1228,7 @@ GO
 	FOR UPDATE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','EmpresasValores','ACTUALIZÓ',idEmpresa+''+idValor,'Empresa y Valor', 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','EmpresasValores','ACTUALIZï¿½',idEmpresa+''+idValor,'Empresa y Valor', 
 		(select idEmpresa+''+idValor from deleted),GETDATE() from inserted
 		END;
 GO
@@ -1241,7 +1241,7 @@ GO
 	FOR UPDATE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','EquiposValores','ACTUALIZÓ',idEquipo+''+idValor,'Equipo y Valor', 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','EquiposValores','ACTUALIZï¿½',idEquipo+''+idValor,'Equipo y Valor', 
 		(select idEquipo+''+idValor from deleted),GETDATE() from inserted
 		END;
 GO
@@ -1254,7 +1254,7 @@ GO
 	FOR UPDATE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','LogrosCondiciones','ACTUALIZÓ',idLogro+''+idCondicion,'Equipo y Valor', 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','LogrosCondiciones','ACTUALIZï¿½',idLogro+''+idCondicion,'Equipo y Valor', 
 		(select idLogro+''+idCondicion from deleted),GETDATE() from inserted
 		END;
 GO
@@ -1267,7 +1267,7 @@ GO
 	FOR UPDATE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','LogrosUsuarios','ACTUALIZÓ',idLogro+''+idUsuario,'Logro y Usuario', 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','LogrosUsuarios','ACTUALIZï¿½',idLogro+''+idUsuario,'Logro y Usuario', 
 		(select idLogro+''+idUsuario from deleted),GETDATE() from inserted
 		END;
 GO
@@ -1279,7 +1279,7 @@ GO
 	FOR UPDATE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','UsuariosEmpresas','ACTUALIZÓ',idUsuario+''+idEmpresa,'Usuario y Empresa', 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','UsuariosEmpresas','ACTUALIZï¿½',idUsuario+''+idEmpresa,'Usuario y Empresa', 
 		(select idUsuario+''+idEmpresa from deleted),GETDATE() from inserted
 		END;
 GO
@@ -1292,14 +1292,14 @@ GO
 	FOR UPDATE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','UsuariosEquipos','ACTUALIZÓ',idUsuario+''+idEquipo,'Usuario y Equipo', 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','UsuariosEquipos','ACTUALIZï¿½',idUsuario+''+idEquipo,'Usuario y Equipo', 
 		(select idUsuario+''+idEquipo from deleted),GETDATE() from inserted
 		END;
-GO
+GO*/
 /*==============================================================*/
 /* Trigger: Eliminar                                              */
 /*==============================================================*/
-
+/*
 	IF EXISTS(select * from sys.triggers where name='AuditoriaUsuarios_Eliminar')
 	DROP trigger AuditoriaUsuarios_Eliminar
 	GO
@@ -1308,7 +1308,7 @@ GO
 	FOR DELETE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Usuarios','ELIMINÓ',idUsuario,nombre, 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Usuarios','ELIMINï¿½',idUsuario,nombre, 
 		'NINGUNA',GETDATE() from deleted
 		END;
 GO
@@ -1320,7 +1320,7 @@ GO
 	FOR DELETE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Equipos','ELIMINÓ',idEquipo,nombre, 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Equipos','ELIMINï¿½',idEquipo,nombre, 
 		'NINGUNA',GETDATE() from deleted
 		END;
 GO
@@ -1332,7 +1332,7 @@ GO
 	FOR DELETE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Empresas','ELIMINÓ',idEmpresa,nombre, 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Empresas','ELIMINï¿½',idEmpresa,nombre, 
 		'NINGUNA',GETDATE() from deleted
 		END;
 GO
@@ -1344,7 +1344,7 @@ GO
 	FOR DELETE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Logros','ELIMINÓ',idLogro,nombre, 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Logros','ELIMINï¿½',idLogro,nombre, 
 		'NINGUNA',GETDATE() from deleted
 		END;
 GO
@@ -1356,7 +1356,7 @@ GO
 	FOR DELETE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Notas','ELIMINÓ',idNota,descripcion, 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Notas','ELIMINï¿½',idNota,descripcion, 
 		'NINGUNA',GETDATE() from deleted
 		END;
 GO
@@ -1368,7 +1368,7 @@ GO
 	FOR DELETE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Pizarras','ELIMINÓ',idPizarra,titulo, 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Pizarras','ELIMINï¿½',idPizarra,titulo, 
 		'NINGUNA',GETDATE() from deleted
 		END;
 GO
@@ -1381,7 +1381,7 @@ GO
 	FOR DELETE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Valores','ELIMINÓ',idValor,nombre, 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Valores','ELIMINï¿½',idValor,nombre, 
 		'NINGUNA',GETDATE() from deleted
 		END;
 GO
@@ -1394,7 +1394,7 @@ GO
 	FOR DELETE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','Condiciones','ELIMINÓ',idCondicion,'', 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','Condiciones','ELIMINï¿½',idCondicion,'', 
 		'NINGUNA',GETDATE() from deleted
 		END;
 GO
@@ -1408,7 +1408,7 @@ GO
 	FOR DELETE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','EmpresasValores','ELIMINÓ',idEmpresa+''+idValor,'Empresa y Valor', 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','EmpresasValores','ELIMINï¿½',idEmpresa+''+idValor,'Empresa y Valor', 
 		'NINGUNA',GETDATE() from deleted
 		END;
 GO
@@ -1421,7 +1421,7 @@ GO
 	FOR DELETE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','EquiposValores','ELIMINÓ',idEquipo+''+idValor,'Equipo y Valor', 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','EquiposValores','ELIMINï¿½',idEquipo+''+idValor,'Equipo y Valor', 
 		'NINGUNA',GETDATE() from deleted
 		END;
 GO
@@ -1434,7 +1434,7 @@ GO
 	FOR DELETE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','LogrosCondiciones','ELIMINÓ',idLogro+''+idCondicion,'Logro y Condición', 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','LogrosCondiciones','ELIMINï¿½',idLogro+''+idCondicion,'Logro y Condiciï¿½n', 
 		'NINGUNA',GETDATE() from deleted
 		END;
 GO
@@ -1447,7 +1447,7 @@ GO
 	FOR DELETE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','LogrosUsuarios','ELIMINÓ',idLogro+''+idUsuario,'Logro y Usuario', 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','LogrosUsuarios','ELIMINï¿½',idLogro+''+idUsuario,'Logro y Usuario', 
 		'NINGUNA',GETDATE() from deleted
 		END;
 GO
@@ -1460,7 +1460,7 @@ GO
 	FOR DELETE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','UsuariosEmpresas','ELIMINÓ',idUsuario+''+idEmpresa,'Usuario y Empresa', 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','UsuariosEmpresas','ELIMINï¿½',idUsuario+''+idEmpresa,'Usuario y Empresa', 
 		'NINGUNA',GETDATE() from deleted
 		END;
 GO
@@ -1472,7 +1472,7 @@ GO
 	FOR DELETE
 	AS 
 		BEGIN
-		INSERT AUDITORIA SELECT 'DESCONOCIDO','UsuariosEquipos','ELIMINÓ',idUsuario+''+idEquipo,'Usuario y Equipo', 
+		INSERT AUDITORIA SELECT 'DESCONOCIDO','UsuariosEquipos','ELIMINï¿½',idUsuario+''+idEquipo,'Usuario y Equipo', 
 		'NINGUNA',GETDATE() from deleted
 		END;
 GO
@@ -1499,8 +1499,9 @@ create table Auditoria_Notas(
 )
 GO
 
---Trigger de inserción 
-DROP TRIGGER IF EXISTS [trig_insercion_Notas];
+--Trigger de inserciï¿½n 
+IF EXISTS(select * from sys.triggers where name='trig_insercion_Notas')
+DROP TRIGGER [trig_insercion_Notas];
 GO
 CREATE TRIGGER [trig_insercion_Notas]
 	ON Notas 
@@ -1513,7 +1514,8 @@ END
 GO
 
 --Trigger de modificacion
-DROP TRIGGER IF EXISTS [Trig_Modificacion_Notas];
+IF EXISTS(select * from sys.triggers where name='Trig_Modificacion_Notas')
+DROP TRIGGER [Trig_Modificacion_Notas];
 GO
 CREATE TRIGGER Trig_Modificacion_Notas
 	ON Notas 
@@ -1521,12 +1523,13 @@ CREATE TRIGGER Trig_Modificacion_Notas
 AS 
 BEGIN
 	INSERT INTO Auditoria_Notas([idNota], [idPizarra], [idAutor], [idDestinatario], [idValor], [descripcion], [puntuacion], fechaAud, usuarioAud, hostnameAud, motivoAud)
-	SELECT idNota, idPizarra, idAutor, idDestinatario, idValor, descripcion, puntuacion, GETDATE(), CURRENT_USER, HOST_NAME(), 'Modificación' from inserted;
+	SELECT idNota, idPizarra, idAutor, idDestinatario, idValor, descripcion, puntuacion, GETDATE(), CURRENT_USER, HOST_NAME(), 'Modificaciï¿½n' from inserted;
 END
 GO
 
---Trigger de eliminación
-DROP TRIGGER IF EXISTS [Trig_Eliminacion_Notas];
+--Trigger de eliminaciï¿½n
+IF EXISTS(select * from sys.triggers where name='Trig_Eliminacion_Notas')
+DROP TRIGGER [Trig_Eliminacion_Notas];
 GO
 CREATE TRIGGER Trig_Eliminacion_Notas
 	ON Notas 
@@ -1534,7 +1537,7 @@ CREATE TRIGGER Trig_Eliminacion_Notas
 AS 
 BEGIN
 INSERT INTO Auditoria_Notas([idNota], [idPizarra], [idAutor], [idDestinatario], [idValor], [descripcion], [puntuacion], fechaAud, usuarioAud, hostnameAud, motivoAud)
-	SELECT idNota, idPizarra, idAutor, idDestinatario, idValor, descripcion, puntuacion, GETDATE(), CURRENT_USER, HOST_NAME(), 'Eliminación' from deleted;
+	SELECT idNota, idPizarra, idAutor, idDestinatario, idValor, descripcion, puntuacion, GETDATE(), CURRENT_USER, HOST_NAME(), 'Eliminaciï¿½n' from deleted;
 END
 GO
 
@@ -1556,8 +1559,9 @@ create table Auditoria_LogrosUsuarios(
 )
 GO
 
---Trigger de inserción 
-DROP TRIGGER IF EXISTS [trig_insercion_LogrosUsuarios];
+--Trigger de inserciï¿½n 
+IF EXISTS(select * from sys.triggers where name='trig_insercion_LogrosUsuarios')
+DROP TRIGGER [trig_insercion_LogrosUsuarios];
 GO
 CREATE TRIGGER [trig_insercion_LogrosUsuarios]
 	ON LogrosUsuarios 
@@ -1570,7 +1574,8 @@ END
 GO
 
 --Trigger de modificacion
-DROP TRIGGER IF EXISTS [Trig_Modificacion_LogrosUsuarios];
+IF EXISTS(select * from sys.triggers where name='Trig_Modificacion_LogrosUsuarios')
+DROP TRIGGER [Trig_Modificacion_LogrosUsuarios];
 GO
 CREATE TRIGGER Trig_Modificacion_LogrosUsuarios
 ON LogrosUsuarios 
@@ -1578,12 +1583,13 @@ ON LogrosUsuarios
 AS 
 BEGIN
 	INSERT INTO Auditoria_LogrosUsuarios([idLogro], [idUsuario], [fecha], fechaAud, usuarioAud, hostnameAud, motivoAud)
-	SELECT idLogro, idUsuario, fecha, GETDATE(), CURRENT_USER, HOST_NAME(), 'Modificación' from inserted;
+	SELECT idLogro, idUsuario, fecha, GETDATE(), CURRENT_USER, HOST_NAME(), 'Modificaciï¿½n' from inserted;
 END
 GO
 
---Trigger de eliminación
-DROP TRIGGER IF EXISTS [Trig_Eliminacion_Notas];
+--Trigger de eliminaciï¿½n
+IF EXISTS(select * from sys.triggers where name='Trig_Eliminacion_LogrosUsuarios')
+DROP TRIGGER [Trig_Eliminacion_LogrosUsuarios];
 GO
 CREATE TRIGGER Trig_Eliminacion_LogrosUsuarios
 	ON LogrosUsuarios 
@@ -1591,7 +1597,7 @@ CREATE TRIGGER Trig_Eliminacion_LogrosUsuarios
 AS 
 BEGIN
 	INSERT INTO Auditoria_LogrosUsuarios([idLogro], [idUsuario], [fecha], fechaAud, usuarioAud, hostnameAud, motivoAud)
-	SELECT idLogro, idUsuario, fecha, GETDATE(), CURRENT_USER, HOST_NAME(), 'Eliminación' from deleted;
+	SELECT idLogro, idUsuario, fecha, GETDATE(), CURRENT_USER, HOST_NAME(), 'Eliminaciï¿½n' from deleted;
 END
 GO
 
@@ -1614,8 +1620,9 @@ create table Auditoria_EquiposValores(
 )
 GO
 
---Trigger de inserción 
-DROP TRIGGER IF EXISTS [trig_insercion_EquiposValores];
+--Trigger de inserciï¿½n
+IF EXISTS(select * from sys.triggers where name='trig_insercion_EquiposValores')
+DROP TRIGGER [trig_insercion_EquiposValores];
 GO
 CREATE TRIGGER [trig_insercion_EquiposValores]
 	ON EquiposValores 
@@ -1628,7 +1635,8 @@ END
 GO
 
 --Trigger de modificacion
-DROP TRIGGER IF EXISTS [Trig_Modificacion_EquiposValores];
+IF EXISTS(select * from sys.triggers where name='Trig_Modificacion_EquiposValores')
+DROP TRIGGER [Trig_Modificacion_EquiposValores];
 GO
 CREATE TRIGGER Trig_Modificacion_EquiposValores
 ON EquiposValores 
@@ -1636,12 +1644,13 @@ ON EquiposValores
 AS 
 BEGIN
 	INSERT INTO Auditoria_EquiposValores([idEquipo], [idValor], [estado], fechaAud, usuarioAud, hostnameAud, motivoAud)
-	SELECT [idEquipo], [idValor], [estado], GETDATE(), CURRENT_USER, HOST_NAME(), 'Modificación' from inserted;
+	SELECT [idEquipo], [idValor], [estado], GETDATE(), CURRENT_USER, HOST_NAME(), 'Modificaciï¿½n' from inserted;
 END
 GO
 
---Trigger de eliminación
-DROP TRIGGER IF EXISTS [Trig_Eliminacion_EquiposValores];
+--Trigger de eliminaciï¿½n
+IF EXISTS(select * from sys.triggers where name='Trig_Eliminacion_EquiposValores')
+DROP TRIGGER [Trig_Eliminacion_EquiposValores];
 GO
 CREATE TRIGGER Trig_Eliminacion_EquiposValores
 	ON EquiposValores 
@@ -1649,7 +1658,7 @@ CREATE TRIGGER Trig_Eliminacion_EquiposValores
 AS 
 BEGIN
 	INSERT INTO Auditoria_EquiposValores([idEquipo], [idValor], [estado], fechaAud, usuarioAud, hostnameAud, motivoAud)
-	SELECT [idEquipo], [idValor], [estado], GETDATE(), CURRENT_USER, HOST_NAME(), 'Eliminación' from deleted;
+	SELECT [idEquipo], [idValor], [estado], GETDATE(), CURRENT_USER, HOST_NAME(), 'Eliminaciï¿½n' from deleted;
 END
 GO
 
