@@ -92,18 +92,6 @@ begin
 		end catch
 end
 GO
-INSERT [dbo].[Usuarios] ([nombre], [contrasenia], [mail], [adminGeneral]) VALUES ('pruebaaaa', '123', 'deos@mail.com', 1)
-
-ALTER TABLE Usuarios WITH CHECK ADD CONSTRAINT[
-
-
-ERROR:
-Debe ingresar sólo caracteres alfabéticos
-
-]CHECK (Usuarios.nombre NOT LIKE '%[^A-Z]%') 
-GO 
-
-
 
 IF EXISTS(select * from sys.procedures where name='Usuarios_Update')
 DROP PROCEDURE Usuarios_Update
@@ -1706,6 +1694,26 @@ begin
 end 
 go
 
+IF EXISTS(select * from sys.procedures where name='Listar_ValoresEmpresa')
+DROP PROCEDURE Listar_ValoresEmpresa
+GO
+create procedure Listar_ValoresEmpresa
+@idEmpresa int
+as
+begin
+		BEGIN TRY
+			Select EV.idEmpresa, E.nombre as Empresa, EV.idValor, V.nombre as Valor
+			from EmpresasValores EV inner join Empresas E on EV.idEmpresa = E.idEmpresa
+									inner join Valores V on EV.idValor = V.idValor
+			where EV.idEmpresa = @idEmpresa
+		END TRY	
+		BEGIN CATCH
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)
+		END CATCH 
+end 
+go
+
 IF EXISTS(select * from sys.procedures where name='Buscar_Empresa')
 DROP PROCEDURE Buscar_Empresa
 GO
@@ -1861,7 +1869,7 @@ create procedure [Listar_UsuariosPorEquipo](@idEquipo int)
 as
 begin
 	BEGIN TRY
-		Select u.idUsuario, Usuarios.nombre 
+		Select u.idUsuario, Usuarios.nombre, u.rol 
 		from UsuariosEquipos U inner join Usuarios on u.idUsuario = Usuarios.idUsuario
 	    where u.idEquipo = @idEquipo
 	END TRY	

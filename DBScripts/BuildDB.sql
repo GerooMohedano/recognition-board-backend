@@ -31,6 +31,9 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+IF EXISTS(select * from sys.tables where name='Token')
+DROP TABLE Token
+GO
 CREATE TABLE [dbo].[Token](
 	[idToken] [int] IDENTITY(1,1) NOT NULL,
 	[valorToken] [varchar](MAX) NOT NULL,
@@ -46,6 +49,9 @@ GO
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
+GO
+IF EXISTS(select * from sys.tables where name='Usuarios')
+DROP TABLE Usuarios
 GO
 CREATE TABLE [dbo].[Usuarios](
 	[idUsuario] [int] IDENTITY(1,1) NOT NULL,
@@ -75,14 +81,19 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+IF EXISTS(select * from sys.tables where name='Logros')
+DROP TABLE Logros
+GO
 CREATE TABLE [dbo].[Logros](
 	[idLogro] [int] IDENTITY(1,1)  NOT NULL,
+	[idEmpresa] [int] NOT NULL,
 	[nombre] [varchar](50) NOT NULL,
 	[descripcion] [varchar](150) NOT NULL,
 	[foto] [image] NULL,
  CONSTRAINT [PK_Logros] PRIMARY KEY CLUSTERED 
 (
-	[idLogro] ASC
+	[idLogro] ASC,
+	[idEmpresa] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -91,6 +102,9 @@ GO
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
+GO
+IF EXISTS(select * from sys.tables where name='LogrosUsuarios')
+DROP TABLE LogrosUsuarios
 GO
 CREATE TABLE [dbo].[LogrosUsuarios](
 	[idLogro] [int] NOT NULL,
@@ -108,6 +122,9 @@ GO
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
+GO
+IF EXISTS(select * from sys.tables where name='Equipos')
+DROP TABLE Equipos
 GO
 CREATE TABLE [dbo].[Equipos](
 	[idEquipo] [int] IDENTITY(1,1) NOT NULL,
@@ -127,6 +144,9 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+IF EXISTS(select * from sys.tables where name='UsuariosEquipos')
+DROP TABLE UsuariosEquipos
+GO
 CREATE TABLE [dbo].[UsuariosEquipos](
 	[idEquipo] [int] NOT NULL,
 	[idUsuario] [int] NOT NULL,
@@ -144,6 +164,9 @@ GO
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
+GO
+IF EXISTS(select * from sys.tables where name='Pizarras')
+DROP TABLE Pizarras
 GO
 CREATE TABLE [dbo].[Pizarras](
 	[idPizarra] [int] IDENTITY(1,1) NOT NULL,
@@ -163,6 +186,9 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+IF EXISTS(select * from sys.tables where name='Valores')
+DROP TABLE Valores
+GO
 CREATE TABLE [dbo].[Valores](
 	[idValor] [int] IDENTITY(1,1) NOT NULL,
 	[nombre] [varchar](30) NOT NULL,
@@ -177,6 +203,9 @@ GO
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
+GO
+IF EXISTS(select * from sys.tables where name='EquiposValores')
+DROP TABLE EquiposValores
 GO
 CREATE TABLE [dbo].[EquiposValores](
 	[idEquipo] [int] NOT NULL,
@@ -194,6 +223,9 @@ GO
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
+GO
+IF EXISTS(select * from sys.tables where name='Notas')
+DROP TABLE Notas
 GO
 CREATE TABLE [dbo].[Notas](
 	[idNota] [int] IDENTITY(1,1) NOT NULL,
@@ -213,7 +245,9 @@ GO
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
-
+IF EXISTS(select * from sys.tables where name='Empresas')
+DROP TABLE Empresas
+GO
 CREATE TABLE [dbo].[Empresas](
 	[idEmpresa] [int] IDENTITY(1,1) NOT NULL,
 	[nombre] [varchar](100) NOT NULL,
@@ -237,6 +271,9 @@ GO
 
 
 /****** Object:  Table UsuariosEmpresas ******/
+IF EXISTS(select * from sys.tables where name='UsuariosEmpresas')
+DROP TABLE UsuariosEmpresas
+GO
 CREATE TABLE [dbo].[UsuariosEmpresas](
 	[idEmpresa] [int] NOT NULL,
 	[idUsuario] [int] NOT NULL,
@@ -253,7 +290,9 @@ GO
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
-
+IF EXISTS(select * from sys.tables where name='EmpresasValores')
+DROP TABLE EmpresasValores
+GO
 CREATE TABLE [dbo].[EmpresasValores](
 	[idEmpresa] [int] NOT NULL,
 	[idValor] [int] NOT NULL, CONSTRAINT [PK_EmpresasValores] PRIMARY KEY CLUSTERED 
@@ -268,7 +307,9 @@ GO
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
-
+IF EXISTS(select * from sys.tables where name='Condiciones')
+DROP TABLE Condiciones
+GO
 CREATE TABLE [dbo].[Condiciones](
 	[idCondicion] [int] IDENTITY(1,1) NOT NULL,
 	[idValor] [int] NOT NULL,
@@ -287,7 +328,9 @@ GO
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
-
+IF EXISTS(select * from sys.tables where name='LogrosCondiciones')
+DROP TABLE LogrosCondiciones
+GO
 CREATE TABLE [dbo].[LogrosCondiciones](
 	[idCondicion] [int] NOT NULL,
 	[idLogro] [int] NOT NULL,

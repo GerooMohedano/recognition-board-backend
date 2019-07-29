@@ -534,7 +534,49 @@ class EquiposRoutes extends MyRoutes{
                 message: e
             });
             }
-          });  
+        });  
+
+      //ir a la configuración de un equipo
+      router.get('/equipoConfig/:id', function(req, res, next){
+        try
+        {
+          sql.connect(config, err => {
+              var idEq = req.params.id
+              let valores , usuarios
+              console.log('id del equipo: ', idEq);
+              if(err) console.log("Control de error");
+              new sql.Request()
+              .query(' EXEC Listar_UsuariosPorEquipo @idEquipo = ' + idEq, (err, result) => {
+                console.dir(result.recordset)
+                console.log(result.recordset)
+                usuarios = result.recordset;
+              });
+/*-------------------------------otro sp*/
+              new sql.Request()
+              .query('EXEC Listar_ValoresDeUnEquipo @idEquipo = ' + idEq, (err, result) => {
+                  console.dir(result.recordset)
+                  console.log(result.recordset)
+                  valores = result.recordset;
+                 res.send(
+                  {
+                      status: "OK",
+                      data : [valores, usuarios]
+                  }
+                );
+/*-------------------------------*/
+                sql.close();
+            });
+          });
+        }
+        catch(e)
+        {
+        console.log(e);
+        res.send({
+            status: "error",
+            message: e
+        });
+        }
+    });
   
         }
         
