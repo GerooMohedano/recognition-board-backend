@@ -110,7 +110,7 @@ class LogrosRoutes extends MyRoutes{
             sql.connect(config, err => {
                 if(err) console.log("Control de error");
                 new sql.Request()
-                .query(' EXEC ConsultarLogrosDeUnUsuario @idLogro = ' + req.body.idUsuario, (err, result) => {
+                .query(' EXEC ConsultarLogrosDeUnUsuario @idLogro = ' + req.body.idLogro, (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
                     let datos = result.recordset;

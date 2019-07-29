@@ -88,7 +88,7 @@ class UsuariosRoutes extends MyRoutes{
             console.log("ERROR",e);
           }        
         })
-
+/*
        router.use('/', async (req, res, next) => {
 
         const authHeader = req.get('Authorization');
@@ -114,7 +114,7 @@ class UsuariosRoutes extends MyRoutes{
         }catch (err) {
           res.status(401).end();
         }
-*/
+*//*
             try{
               const token = authHeader.split(' ')[1];
               const payload = await validateToken(token);
@@ -138,7 +138,7 @@ class UsuariosRoutes extends MyRoutes{
             console.log("ERROR",e);
           } 
        });
-
+*/
         //Logueo
         router.post('/logeo', function(req, res, next){
           try
@@ -267,7 +267,7 @@ class UsuariosRoutes extends MyRoutes{
           }
         }); 
         //Buscar perfil
-        router.post('/perfil', function(req, res, next){
+        router.post('/buscarPerfil', function(req, res, next){
           try
           {
             sql.connect(config, err => {
@@ -296,6 +296,54 @@ class UsuariosRoutes extends MyRoutes{
           });
           }
         });  
+         //ir al perfil
+         router.get('/perfil/:id', function(req, res, next){
+          try
+          {
+            sql.connect(config, err => {
+                var idUs = req.body.idUsuario
+                let equipos, valores , logros
+                console.log('id del usuario: ', idUs);
+                if(err) console.log("Control de error");
+                new sql.Request()
+                .query(' EXEC Listar_EquiposPorUsuario @idUsuario = ' + idUs, (err, result) => {
+                  console.dir(result.recordset)
+                  console.log(result.recordset)
+                  equipos = result.recordset;
+                });
+                new sql.Request()
+                .query(' EXEC ConsultarValoresUsuario @idUsuario = ' + idUs, (err, result) => {
+                  console.dir(result.recordset)
+                  console.log(result.recordset)
+                  valores  = result.recordset;
+                });
+/*-------------------------------otro sp*/
+                new sql.Request()
+                .query(' EXEC ConsultarLogrosDeUnUsuario @idUsuario = ' + idUs, (err, result) => {
+                    console.dir(result.recordset)
+                    console.log(result.recordset)
+                    logros = result.recordset;
+                   res.send(
+                    {
+                        status: "OK",
+                        data : [equipos, valores, logros]
+                    }
+                  );
+/*-------------------------------*/
+                  sql.close();
+              });
+            });
+          }
+          catch(e)
+          {
+          console.log(e);
+          res.send({
+              status: "error",
+              message: e
+          });
+          }
+        });  
+
         //Cambiar contraseña
         router.post('/cambioContraseña', function(req, res, next){
           try

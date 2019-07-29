@@ -1670,6 +1670,26 @@ GO
 /*==============================================================*/
 
 
+IF EXISTS(select * from sys.procedures where name='Listar_EquiposPorUsuario')
+DROP PROCEDURE Listar_EquiposPorUsuario
+GO
+create procedure [Listar_EquiposPorUsuario]
+@idUsuario int
+as
+begin
+	BEGIN TRY
+		Select U.idUsuario, U.nombre as nombre_usuario, UE.idEquipo, E.nombre as nombre_equipo
+		from Usuarios U inner join UsuariosEquipos UE on U.idUsuario = UE.idUsuario
+						inner join Equipos E on UE.idEquipo = E.idEquipo
+	    where U.idUsuario = @idUsuario
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+GO
+
 IF EXISTS(select * from sys.procedures where name='Listar_Empresas')
 DROP PROCEDURE Listar_Empresas
 GO
