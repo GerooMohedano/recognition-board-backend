@@ -488,6 +488,54 @@ class EquiposRoutes extends MyRoutes{
         }
         });
 
+         //ir al equipo
+         router.get('/equipo/:id', function(req, res, next){
+            try
+            {
+              sql.connect(config, err => {
+                  var idEq = req.params.id
+                  let evaluacion, valores , usuarios
+                  console.log('id del equipo: ', idEq);
+                  if(err) console.log("Control de error");
+                  new sql.Request()
+                  .query(' EXEC ConsultarEvaluacionEquipo @idEquipo = ' + idEq, (err, result) => {
+                    console.dir(result.recordset)
+                    console.log(result.recordset)
+                    evaluacion = result.recordset;
+                  });
+                  new sql.Request()
+                  .query(' EXEC Listar_ValoresDeUnEquipo @idEquipo = ' + idEq, (err, result) => {
+                    console.dir(result.recordset)
+                    console.log(result.recordset)
+                    valores  = result.recordset;
+                  });
+  /*-------------------------------otro sp*/
+                  new sql.Request()
+                  .query('EXEC Listar_UsuariosPorEquipo @idEquipo = ' + idEq, (err, result) => {
+                      console.dir(result.recordset)
+                      console.log(result.recordset)
+                      usuarios = result.recordset;
+                     res.send(
+                      {
+                          status: "OK",
+                          data : [evaluacion, valores, usuarios]
+                      }
+                    );
+  /*-------------------------------*/
+                    sql.close();
+                });
+              });
+            }
+            catch(e)
+            {
+            console.log(e);
+            res.send({
+                status: "error",
+                message: e
+            });
+            }
+          });  
+  
         }
         
 }

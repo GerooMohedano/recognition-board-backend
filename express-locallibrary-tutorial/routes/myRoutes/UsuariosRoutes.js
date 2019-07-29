@@ -301,14 +301,15 @@ class UsuariosRoutes extends MyRoutes{
           try
           {
             sql.connect(config, err => {
-                var idUs = req.body.idUsuario
+                var idUs = req.params.id
+                console.log('este es el idusuario',idUs)
+                console.log('este es el req',req.params)
                 let equipos, valores , logros
-                console.log('id del usuario: ', idUs);
                 if(err) console.log("Control de error");
                 new sql.Request()
                 .query(' EXEC Listar_EquiposPorUsuario @idUsuario = ' + idUs, (err, result) => {
-                  console.dir(result.recordset)
-                  console.log(result.recordset)
+                 console.dir(result.recordset)
+                 console.log(result.recordset)
                   equipos = result.recordset;
                 });
                 new sql.Request()
