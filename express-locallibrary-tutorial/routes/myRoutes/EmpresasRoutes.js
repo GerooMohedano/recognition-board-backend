@@ -238,7 +238,7 @@ class EmpresasRoutes extends MyRoutes{
           {
             sql.connect(config, err => {
                 var idEmp = req.params.id
-                let evaluacion, equipos , usuarios, valores
+                let evaluacion, equipos , usuarios, valores, logros
                 console.log('id de la empresa: ', idEmp);
                 if(err) console.log("Control de error");
                 new sql.Request()
@@ -259,6 +259,12 @@ class EmpresasRoutes extends MyRoutes{
                   console.log(result.recordset)
                   valores  = result.recordset;
                 });
+                new sql.Request()
+                .query(' EXEC Listar_LogrosEmpresas @idEmpresa = ' + idEmp, (err, result) => {
+                  console.dir(result.recordset)
+                  console.log(result.recordset)
+                  logros  = result.recordset;
+                });
 /*-------------------------------otro sp*/
                 new sql.Request()
                 .query('EXEC Listar_UsuariosPorEmpresa @idEmpresa = ' + idEmp, (err, result) => {
@@ -268,7 +274,11 @@ class EmpresasRoutes extends MyRoutes{
                    res.send(
                     {
                         status: "OK",
-                        data : [evaluacion, equipos, usuarios, valores]
+                        data : [evaluacion],
+                        equipos: [equipos],
+                        usuarios: [usuarios],
+                        valores: [valores],
+                        logros: [logros]
                     }
                   );
 /*-------------------------------*/
