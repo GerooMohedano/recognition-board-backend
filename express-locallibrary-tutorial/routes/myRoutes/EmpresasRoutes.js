@@ -232,6 +232,59 @@ class EmpresasRoutes extends MyRoutes{
                 });
                 }
         });
+        //ir a la configuracion de empresa
+        router.get('/empresaConfig/:id', function(req, res, next){
+          try
+          {
+            sql.connect(config, err => {
+                var idEmp = req.params.id
+                let evaluacion, equipos , usuarios, valores
+                console.log('id de la empresa: ', idEmp);
+                if(err) console.log("Control de error");
+                new sql.Request()
+                .query(' EXEC ConsultarEvaluacionEmpresa @idEmpresa = ' + idEmp, (err, result) => {
+                  console.dir(result.recordset)
+                  console.log(result.recordset)
+                  evaluacion = result.recordset;
+                });
+                new sql.Request()
+                .query(' EXEC Listar_EquiposPorEmpresa @idEmpresa = ' + idEmp, (err, result) => {
+                  console.dir(result.recordset)
+                  console.log(result.recordset)
+                  equipos  = result.recordset;
+                });
+                new sql.Request()
+                .query(' EXEC Listar_ValoresEmpresa @idEmpresa = ' + idEmp, (err, result) => {
+                  console.dir(result.recordset)
+                  console.log(result.recordset)
+                  valores  = result.recordset;
+                });
+/*-------------------------------otro sp*/
+                new sql.Request()
+                .query('EXEC Listar_UsuariosPorEmpresa @idEmpresa = ' + idEmp, (err, result) => {
+                    console.dir(result.recordset)
+                    console.log(result.recordset)
+                    usuarios = result.recordset;
+                   res.send(
+                    {
+                        status: "OK",
+                        data : [evaluacion, equipos, usuarios, valores]
+                    }
+                  );
+/*-------------------------------*/
+                  sql.close();
+              });
+            });
+          }
+          catch(e)
+          {
+          console.log(e);
+          res.send({
+              status: "error",
+              message: e
+          });
+          }
+      });  
         
     }
 

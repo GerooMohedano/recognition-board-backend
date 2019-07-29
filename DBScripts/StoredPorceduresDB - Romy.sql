@@ -71,7 +71,7 @@ DROP PROCEDURE Usuarios_Insert
 GO
 CREATE procedure [Usuarios_Insert]
 @nombre varchar(50),
-@contrase�a varchar(30),
+@contrasenia varchar(30),
 @mail varchar(30),
 @fotoPerfil image,
 @adminGeneral bit
@@ -80,11 +80,11 @@ begin
 
 		begin try
 		
-		if(LEN(@nombre) > 3 OR LEN(@contrase�a) > 30 OR LEN(@mail) > 30)
-			RAISERROR('Excediste el n�mero de caracteres permitido',11,1)
+		if(LEN(@nombre) > 3 OR LEN(@contrasenia) > 30 OR LEN(@mail) > 30)
+			RAISERROR('Excediste el número de caracteres permitido',11,1)
 
 			Insert dbo.Usuarios(nombre,contrasenia,mail,fotoPerfil,adminGeneral)
-			values (@nombre,@contrase�a,@mail,@fotoPerfil,@adminGeneral)
+			values (@nombre,@contrasenia,@mail,@fotoPerfil,@adminGeneral)
 		end try
 		begin catch
 			declare @error varchar(100)= ERROR_MESSAGE()
@@ -299,6 +299,10 @@ BEGIN
 END
 go
 
+
+IF EXISTS(select * from sys.procedures where name='Valores_Delete')
+DROP PROCEDURE Valores_Delete
+GO
 CREATE PROCEDURE [dbo].[Valores_Delete]
 	@idValor int,
 	@nombre nvarchar(30)
@@ -379,7 +383,7 @@ go
 
 
 IF EXISTS(select * from sys.procedures where name='EquiposValores_Delete')
-DROP PROCEDURE EquiposValores_Update
+DROP PROCEDURE EquiposValores_Delete
 GO
 CREATE PROCEDURE [dbo].[EquiposValores_Delete]
 	@idValor int,
@@ -868,9 +872,9 @@ end
 go
 
 IF EXISTS(select * from sys.procedures where name='Cambiar_Contrase�a')
-DROP PROCEDURE Cambiar_Contrase�a
+DROP PROCEDURE Cambiar_Contrasenia
 GO
-create procedure Cambiar_Contrase�a
+create procedure Cambiar_Contrasenia
 @idUsuario int,
 @contraseniaactual varchar(30),
 @contrasenianueva varchar(30)

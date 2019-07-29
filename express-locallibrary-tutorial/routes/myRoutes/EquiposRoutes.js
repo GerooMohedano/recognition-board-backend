@@ -488,8 +488,8 @@ class EquiposRoutes extends MyRoutes{
         }
         });
 
-         //ir al equipo
-         router.get('/equipo/:id', function(req, res, next){
+        //ir al equipo
+        router.get('/equipo/:id', function(req, res, next){
             try
             {
               sql.connect(config, err => {
@@ -518,7 +518,9 @@ class EquiposRoutes extends MyRoutes{
                      res.send(
                       {
                           status: "OK",
-                          data : [evaluacion, valores, usuarios]
+                          data : [evaluacion],
+                          valores: [valores],
+                          usuarios: [usuarios]
                       }
                     );
   /*-------------------------------*/
@@ -537,7 +539,7 @@ class EquiposRoutes extends MyRoutes{
         });  
 
       //ir a la configuración de un equipo
-      router.get('/equipoConfig/:id', function(req, res, next){
+        router.get('/equipoConfig/:id', function(req, res, next){
         try
         {
           sql.connect(config, err => {
@@ -560,7 +562,8 @@ class EquiposRoutes extends MyRoutes{
                  res.send(
                   {
                       status: "OK",
-                      data : [valores, usuarios]
+                      valores : [valores],
+                      usuarios: [usuarios]
                   }
                 );
 /*-------------------------------*/
@@ -576,7 +579,7 @@ class EquiposRoutes extends MyRoutes{
             message: e
         });
         }
-    });
+        });
   
         }
         

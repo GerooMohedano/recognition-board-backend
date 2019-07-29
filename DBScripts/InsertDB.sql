@@ -63,12 +63,12 @@ INSERT [dbo].[Condiciones] ([idValor], [puntuacion]) VALUES (1, 500)
 INSERT [dbo].[Condiciones] ([idValor], [puntuacion], [excluyente]) VALUES (5, 100, 1)
 GO
 
-INSERT [dbo].[Logros] ([nombre], [descripcion]) VALUES ('Mejor Amigo', 'Obtuviste mas de 100 puntos en Amistoso y Puntual')
-INSERT [dbo].[Logros] ([nombre], [descripcion]) VALUES ('Miss Simpatia', 'Obtuviste mas de 100 puntos en el valor de Amistoso')
-INSERT [dbo].[Logros] ([nombre], [descripcion]) VALUES ('Ninio Rata', 'Obtuviste un puntaje negativo en el valor Be Collaborative')
-INSERT [dbo].[Logros] ([nombre], [descripcion]) VALUES ('SO GROSSO', 'Obtuviste mas de 500 puntos en el valor Be Proffessional')
-INSERT [dbo].[Logros] ([nombre], [descripcion]) VALUES ('Reloj Atomico', 'Obtuviste mas de 100 puntos en el valor Puntualidadde alguien de otro equipo')
-INSERT [dbo].[Logros] ([nombre], [descripcion]) VALUES ('Joven manos de tijera', 'Meter los dedos en el enchufe')
+INSERT [dbo].[Logros] ([idEmpresa], [nombre], [descripcion]) VALUES (1,'Mejor Amigo', 'Obtuviste mas de 100 puntos en Amistoso y Puntual')
+INSERT [dbo].[Logros] ([idEmpresa], [nombre], [descripcion]) VALUES (1,'Miss Simpatia', 'Obtuviste mas de 100 puntos en el valor de Amistoso')
+INSERT [dbo].[Logros] ([idEmpresa], [nombre], [descripcion]) VALUES (2, 'Ninio Rata', 'Obtuviste un puntaje negativo en el valor Be Collaborative')
+INSERT [dbo].[Logros] ([idEmpresa], [nombre], [descripcion]) VALUES (1, 'SO GROSSO', 'Obtuviste mas de 500 puntos en el valor Be Proffessional')
+INSERT [dbo].[Logros] ([idEmpresa], [nombre], [descripcion]) VALUES (2, 'Reloj Atomico', 'Obtuviste mas de 100 puntos en el valor Puntualidadde alguien de otro equipo')
+INSERT [dbo].[Logros] ([idEmpresa], [nombre], [descripcion]) VALUES (1, 'Joven manos de tijera', 'Meter los dedos en el enchufe')
 GO
 
 INSERT [dbo].[LogrosCondiciones] ([idCondicion], [idLogro]) VALUES (1, 1)
@@ -79,13 +79,13 @@ INSERT [dbo].[LogrosCondiciones] ([idCondicion], [idLogro]) VALUES (4, 4)
 INSERT [dbo].[LogrosCondiciones] ([idCondicion], [idLogro]) VALUES (5, 5)
 GO
 
-INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (1, 3, CAST(N'2018-01-02' AS Date))
-INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (4, 2, CAST(N'2018-01-02' AS Date))
-INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (3, 5, CAST(N'2018-01-02' AS Date))
-INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (6, 7, CAST(N'2018-01-02' AS Date))
-INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (5, 3, CAST(N'2018-01-02' AS Date))
-INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (2, 6, CAST(N'2018-01-02' AS Date))
-INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (3, 4, CAST(N'2018-01-02' AS Date))
+INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (13, 3, CAST(N'2018-01-02' AS Date))
+INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (14, 2, CAST(N'2018-01-02' AS Date))
+INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (13, 5, CAST(N'2018-01-02' AS Date))
+INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (15, 7, CAST(N'2018-01-02' AS Date))
+INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (16, 3, CAST(N'2018-01-02' AS Date))
+INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (17, 6, CAST(N'2018-01-02' AS Date))
+INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (18, 4, CAST(N'2018-01-02' AS Date))
 GO
 
 INSERT [dbo].[EquiposValores] ([idEquipo], [idValor]) VALUES (1, 1)

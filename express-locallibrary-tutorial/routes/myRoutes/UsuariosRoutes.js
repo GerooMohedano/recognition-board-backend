@@ -327,7 +327,10 @@ class UsuariosRoutes extends MyRoutes{
                    res.send(
                     {
                         status: "OK",
-                        data : [equipos, valores, logros]
+                        equipos : [equipos],
+                        valores : [valores],
+                        logros : [logros]
+
                     }
                   );
 /*-------------------------------*/
