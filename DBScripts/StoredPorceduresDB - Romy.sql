@@ -40,7 +40,7 @@ begin
 			RAISERROR(@error,11,1)  
 		end catch
 END
-
+go
 
 IF EXISTS(select * from sys.procedures where name='get_user')
 DROP PROCEDURE get_user
@@ -92,17 +92,6 @@ begin
 		end catch
 end
 GO
-INSERT [dbo].[Usuarios] ([nombre], [contrasenia], [mail], [adminGeneral]) VALUES ('pruebaaaa', '123', 'deos@mail.com', 1)
-
-ALTER TABLE Usuarios WITH CHECK ADD CONSTRAINT[
-
-
-ERROR:
-Debe ingresar sólo caracteres alfabéticos
-
-]CHECK (Usuarios.nombre NOT LIKE '%[^A-Z]%') 
-GO 
-
 
 
 IF EXISTS(select * from sys.procedures where name='Usuarios_Update')
@@ -239,7 +228,7 @@ BEGIN
 
 	BEGIN TRY
 			IF EXISTS(Select * from Equipos where idEquipo = @idEquipo)
-				RAISERROR('Ya existe este equipo'+@idEquipo,11,1)
+				RAISERROR('Ya existe este equipo',@idEquipo,11,1)
 
 			IF(LEN(@nombre) > 30 OR LEN(@estado) > 10)
 				RAISERROR('Excediste el número de caracteres permitido',11,1)
@@ -294,8 +283,7 @@ BEGIN
 	BEGIN TRY
 	
 		IF EXISTS(Select * from Valores where idValor = @idValor)
-			RAISERROR('Ya existe este Valor'+@idValor,11,1)
-
+			RAISERROR('Ya existe este Valor',@idValor,11,1)
 		IF(LEN(@nombre) > 30)
 			RAISERROR('Excediste el número de caracteres permitido',11,1)
 
@@ -320,7 +308,7 @@ BEGIN
 	BEGIN TRY
 	
 		IF EXISTS(Select * from Valores where idValor = @idValor)
-			RAISERROR('Ya existe este Valor'+@idValor,11,1)
+			RAISERROR('Ya existe este Valor',@idValor,11,1)
 
 		IF(LEN(@nombre) > 30)
 			RAISERROR('Excediste el número de caracteres permitido',11,1)
@@ -492,7 +480,7 @@ BEGIN
 	
 	BEGIN TRY
 		IF EXISTS(Select * from Logros where idLogro = @idLogro)
-			RAISERROR('Ya existe este Logro'+@idLogro,11,1)
+			RAISERROR('Ya existe este Logro',@idLogro,11,1)
 
 		IF(LEN(@nombre) > 30 or LEN(@descripcion) > 50)
 			RAISERROR('Excediste el número de caracteres permitido',11,1)
@@ -613,7 +601,7 @@ BEGIN
 		IF @fechaFin<@fechaInicio
 			RAISERROR('La fecha no de inicio de no puede ser mayor a la fecha de fin',11,1)
 		IF EXISTS(Select * from Pizarras where idPizarra = @idPizarra)
-			RAISERROR('Ya existe esta pizarra'+@idPizarra,11,1)
+			RAISERROR('Ya existe esta pizarra',@idPizarra,11,1)
 		IF(LEN(@titulo) > 30)
 			RAISERROR('Excediste el número de caracteres permitido',11,1)
 
@@ -677,7 +665,7 @@ BEGIN
 
 	BEGIN TRY
 		IF EXISTS(Select * from Notas where idNota = @idNota)
-			RAISERROR('Ya existe esta nota'+@idNota,11,1)
+			RAISERROR('Ya existe esta nota',@idNota,11,1)
 		IF(LEN(@descripcion) > 50)
 			RAISERROR('Excediste el número de caracteres permitido',11,1)	
 
@@ -926,11 +914,11 @@ create table Auditoria(
 	descripcion varchar(50),
 	fecha_hora datetime not null
 	)
-go
+go*/
 /*==============================================================*/
 /* Trigger: Insertar                                              */
 /*==============================================================*/
-
+/*
 	IF EXISTS(select * from sys.triggers where name='AuditoriaUsuario_Insertar')
 	DROP trigger AuditoriaUsuario_Insertar
 	GO
@@ -1118,11 +1106,11 @@ GO
 		INSERT AUDITORIA SELECT 'DESCONOCIDO','UsuariosEquipos','INSERTÓ',idEquipo+''+idUsuario,'Equipo y Usuario', 
 		'NINGUNA',GETDATE() from inserted
 		END;
-GO
+GO*/
 /*==============================================================*/
 /* Trigger: Actualizar                                          */
 /*==============================================================*/
-
+/*
 	IF EXISTS(select * from sys.triggers where name='AuditoriaUsuarios_Actualizar')
 	DROP trigger AuditoriaUsuarios_Actualizar
 	GO
@@ -1307,11 +1295,11 @@ GO
 		INSERT AUDITORIA SELECT 'DESCONOCIDO','UsuariosEquipos','ACTUALIZÓ',idUsuario+''+idEquipo,'Usuario y Equipo', 
 		(select idUsuario+''+idEquipo from deleted),GETDATE() from inserted
 		END;
-GO
+GO*/
 /*==============================================================*/
 /* Trigger: Eliminar                                              */
 /*==============================================================*/
-
+/*
 	IF EXISTS(select * from sys.triggers where name='AuditoriaUsuarios_Eliminar')
 	DROP trigger AuditoriaUsuarios_Eliminar
 	GO
@@ -1512,7 +1500,8 @@ create table Auditoria_Notas(
 GO
 
 --Trigger de inserción 
-DROP TRIGGER IF EXISTS [trig_insercion_Notas];
+IF EXISTS(select * from sys.triggers where name='trig_insercion_Notas')
+DROP TRIGGER [trig_insercion_Notas];
 GO
 CREATE TRIGGER [trig_insercion_Notas]
 	ON Notas 
@@ -1525,7 +1514,8 @@ END
 GO
 
 --Trigger de modificacion
-DROP TRIGGER IF EXISTS [Trig_Modificacion_Notas];
+IF EXISTS(select * from sys.triggers where name='Trig_Modificacion_Notas')
+DROP TRIGGER [Trig_Modificacion_Notas];
 GO
 CREATE TRIGGER Trig_Modificacion_Notas
 	ON Notas 
@@ -1538,7 +1528,8 @@ END
 GO
 
 --Trigger de eliminación
-DROP TRIGGER IF EXISTS [Trig_Eliminacion_Notas];
+IF EXISTS(select * from sys.triggers where name='Trig_Eliminacion_Notas')
+DROP TRIGGER [Trig_Eliminacion_Notas];
 GO
 CREATE TRIGGER Trig_Eliminacion_Notas
 	ON Notas 
@@ -1569,7 +1560,8 @@ create table Auditoria_LogrosUsuarios(
 GO
 
 --Trigger de inserción 
-DROP TRIGGER IF EXISTS [trig_insercion_LogrosUsuarios];
+IF EXISTS(select * from sys.triggers where name='trig_insercion_LogrosUsuarios')
+DROP TRIGGER [trig_insercion_LogrosUsuarios];
 GO
 CREATE TRIGGER [trig_insercion_LogrosUsuarios]
 	ON LogrosUsuarios 
@@ -1582,7 +1574,8 @@ END
 GO
 
 --Trigger de modificacion
-DROP TRIGGER IF EXISTS [Trig_Modificacion_LogrosUsuarios];
+IF EXISTS(select * from sys.triggers where name='Trig_Modificacion_LogrosUsuarios')
+DROP TRIGGER [Trig_Modificacion_LogrosUsuarios];
 GO
 CREATE TRIGGER Trig_Modificacion_LogrosUsuarios
 ON LogrosUsuarios 
@@ -1595,7 +1588,8 @@ END
 GO
 
 --Trigger de eliminación
-DROP TRIGGER IF EXISTS [Trig_Eliminacion_Notas];
+IF EXISTS(select * from sys.triggers where name='Trig_Eliminacion_LogrosUsuarios')
+DROP TRIGGER [Trig_Eliminacion_LogrosUsuarios];
 GO
 CREATE TRIGGER Trig_Eliminacion_LogrosUsuarios
 	ON LogrosUsuarios 
@@ -1626,8 +1620,9 @@ create table Auditoria_EquiposValores(
 )
 GO
 
---Trigger de inserción 
-DROP TRIGGER IF EXISTS [trig_insercion_EquiposValores];
+--Trigger de inserción
+IF EXISTS(select * from sys.triggers where name='trig_insercion_EquiposValores')
+DROP TRIGGER [trig_insercion_EquiposValores];
 GO
 CREATE TRIGGER [trig_insercion_EquiposValores]
 	ON EquiposValores 
@@ -1640,7 +1635,8 @@ END
 GO
 
 --Trigger de modificacion
-DROP TRIGGER IF EXISTS [Trig_Modificacion_EquiposValores];
+IF EXISTS(select * from sys.triggers where name='Trig_Modificacion_EquiposValores')
+DROP TRIGGER [Trig_Modificacion_EquiposValores];
 GO
 CREATE TRIGGER Trig_Modificacion_EquiposValores
 ON EquiposValores 
@@ -1653,7 +1649,8 @@ END
 GO
 
 --Trigger de eliminación
-DROP TRIGGER IF EXISTS [Trig_Eliminacion_EquiposValores];
+IF EXISTS(select * from sys.triggers where name='Trig_Eliminacion_EquiposValores')
+DROP TRIGGER [Trig_Eliminacion_EquiposValores];
 GO
 CREATE TRIGGER Trig_Eliminacion_EquiposValores
 	ON EquiposValores 
