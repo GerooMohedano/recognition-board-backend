@@ -144,6 +144,24 @@ begin
 end 
 go
 
+
+IF EXISTS(select * from sys.procedures where name='Empresas_Get')
+DROP PROCEDURE Empresas_Get
+GO
+CREATE procedure [Empresas_Get]
+@idEmpresa int
+as
+begin
+
+		begin try
+			select E.nombre as nombre_empresa, E.direccion, E.telefono, E.estado, E.logo from Empresas E where @idEmpresa = E.idEmpresa
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
+end
+
 IF EXISTS(select * from sys.procedures where name='Empresas_Insert')
 DROP PROCEDURE Empresas_Insert
 GO
@@ -204,6 +222,26 @@ BEGIN
 	END CATCH
 END
 GO
+
+
+IF EXISTS(select * from sys.procedures where name='Equipos_Get')
+DROP PROCEDURE Equipos_Get
+GO
+CREATE procedure [Equipos_Get]
+@idEquipo int
+as
+begin
+
+		begin try
+			select E.idEquipo, E.nombre as nombre_equipo, E.imagen, E.estado, EM.idEmpresa, EM.nombre as nombre_empresa from Equipos E 
+			inner join Empresas EM on E.idEmpresa = EM.idEmpresa
+			where @idEquipo = E.idEquipo
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
+end
 
 IF EXISTS(select * from sys.procedures where name='Equipos_Insert')
 DROP PROCEDURE Equipos_Insert

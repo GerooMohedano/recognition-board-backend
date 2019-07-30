@@ -494,7 +494,7 @@ class EquiposRoutes extends MyRoutes{
             {
               sql.connect(config, err => {
                   var idEq = req.params.id
-                  let evaluacion, valores , usuarios
+                  let evaluacion, valores , usuarios, equipos
                   console.log('id del equipo: ', idEq);
                   if(err) console.log("Control de error");
                   new sql.Request()
@@ -509,7 +509,12 @@ class EquiposRoutes extends MyRoutes{
                     console.log(result.recordset)
                     valores  = result.recordset;
                   });
-  /*-------------------------------otro sp*/
+                  new sql.Request()
+                  .query(' EXEC Equipos_Get @idEquipo = ' + idEq, (err, result) => {
+                    console.dir(result.recordset)
+                    console.log(result.recordset)
+                    equipos  = result.recordset;
+                  });
                   new sql.Request()
                   .query('EXEC Listar_UsuariosPorEquipo @idEquipo = ' + idEq, (err, result) => {
                       console.dir(result.recordset)
@@ -518,9 +523,10 @@ class EquiposRoutes extends MyRoutes{
                      res.send(
                       {
                           status: "OK",
-                          data : [evaluacion],
-                          valores: [valores],
-                          usuarios: [usuarios]
+                          data : evaluacion,
+                          valores: valores,
+                          usuarios: usuarios,
+                          equipos: equipos
                       }
                     );
   /*-------------------------------*/
@@ -544,7 +550,7 @@ class EquiposRoutes extends MyRoutes{
         {
           sql.connect(config, err => {
               var idEq = req.params.id
-              let valores , usuarios
+              let valores , usuarios, equipos
               console.log('id del equipo: ', idEq);
               if(err) console.log("Control de error");
               new sql.Request()
@@ -553,7 +559,12 @@ class EquiposRoutes extends MyRoutes{
                 console.log(result.recordset)
                 usuarios = result.recordset;
               });
-/*-------------------------------otro sp*/
+              new sql.Request()
+              .query(' EXEC Equipos_Get @idEquipo = ' + idEq, (err, result) => {
+                console.dir(result.recordset)
+                console.log(result.recordset)
+                equipos  = result.recordset;
+              });
               new sql.Request()
               .query('EXEC Listar_ValoresDeUnEquipo @idEquipo = ' + idEq, (err, result) => {
                   console.dir(result.recordset)
@@ -562,8 +573,9 @@ class EquiposRoutes extends MyRoutes{
                  res.send(
                   {
                       status: "OK",
-                      valores : [valores],
-                      usuarios: [usuarios]
+                      valores : valores,
+                      usuarios: usuarios,
+                      equipos: equipos
                   }
                 );
 /*-------------------------------*/

@@ -238,7 +238,7 @@ class EmpresasRoutes extends MyRoutes{
           {
             sql.connect(config, err => {
                 var idEmp = req.params.id
-                let evaluacion, equipos , usuarios, valores, logros
+                let evaluacion, equipos , usuarios, valores, logros, empresas
                 console.log('id de la empresa: ', idEmp);
                 if(err) console.log("Control de error");
                 new sql.Request()
@@ -246,6 +246,12 @@ class EmpresasRoutes extends MyRoutes{
                   console.dir(result.recordset)
                   console.log(result.recordset)
                   evaluacion = result.recordset;
+                });
+                new sql.Request()
+                .query(' EXEC Empresas_Get @idEmpresa = ' + idEmp, (err, result) => {
+                  console.dir(result.recordset)
+                  console.log(result.recordset)
+                  empresas  = result.recordset;
                 });
                 new sql.Request()
                 .query(' EXEC Listar_EquiposPorEmpresa @idEmpresa = ' + idEmp, (err, result) => {
@@ -265,7 +271,6 @@ class EmpresasRoutes extends MyRoutes{
                   console.log(result.recordset)
                   logros  = result.recordset;
                 });
-/*-------------------------------otro sp*/
                 new sql.Request()
                 .query('EXEC Listar_UsuariosPorEmpresa @idEmpresa = ' + idEmp, (err, result) => {
                     console.dir(result.recordset)
@@ -274,11 +279,12 @@ class EmpresasRoutes extends MyRoutes{
                    res.send(
                     {
                         status: "OK",
-                        data : [evaluacion],
-                        equipos: [equipos],
-                        usuarios: [usuarios],
-                        valores: [valores],
-                        logros: [logros]
+                        evaluacion : evaluacion,
+                        equipos: equipos,
+                        usuarios: usuarios,
+                        valores: valores,
+                        logros: logros,
+                        empresas: empresas
                     }
                   );
 /*-------------------------------*/
