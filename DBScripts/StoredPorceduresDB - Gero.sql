@@ -202,7 +202,7 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 		begin try
-			SELECT Usuarios.nombre, Logros.nombre, Logros.descripcion, LogrosUsuarios.fecha
+			SELECT Logros.nombre as nombre_logro, Logros.descripcion, LogrosUsuarios.fecha
 			FROM Usuarios INNER JOIN LogrosUsuarios ON Usuarios.idUsuario = LogrosUsuarios.idUsuario
 			INNER JOIN Logros ON LogrosUsuarios.idLogro = Logros.idLogro
 			WHERE Usuarios.idUsuario = @idUsuario

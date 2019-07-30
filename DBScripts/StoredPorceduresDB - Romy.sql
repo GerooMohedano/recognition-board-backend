@@ -1,4 +1,3 @@
-
 USE [OnBoardDataBase]
 GO
 
@@ -64,6 +63,24 @@ begin
 		print @returnData
 return @returnData
 END
+GO
+
+IF EXISTS(select * from sys.procedures where name='Usuarios_Get')
+DROP PROCEDURE Usuarios_Get
+GO
+CREATE procedure [Usuarios_Get]
+@idUsuario int
+as
+begin
+
+		begin try
+			select U.nombre, U.mail, U.fotoPerfil, U.adminGeneral from Usuarios U where @idUsuario = U.idUsuario
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
+end
 GO
 
 IF EXISTS(select * from sys.procedures where name='Usuarios_Insert')

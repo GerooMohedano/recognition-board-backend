@@ -304,21 +304,30 @@ class UsuariosRoutes extends MyRoutes{
                 var idUs = req.params.id
                 console.log('este es el idusuario',idUs)
                 console.log('este es el req',req.params)
-                let equipos, valores , logros
+                let equipos, valores , logros, usuarios
                 if(err) console.log("Control de error");
+ /*-------------------------------Equipos del usuario*/
                 new sql.Request()
                 .query(' EXEC Listar_EquiposPorUsuario @idUsuario = ' + idUs, (err, result) => {
                  console.dir(result.recordset)
                  console.log(result.recordset)
                   equipos = result.recordset;
                 });
+/*-------------------------------Valores del usuario*/
                 new sql.Request()
                 .query(' EXEC ConsultarValoresUsuario @idUsuario = ' + idUs, (err, result) => {
                   console.dir(result.recordset)
                   console.log(result.recordset)
                   valores  = result.recordset;
                 });
-/*-------------------------------otro sp*/
+/*-------------------------------Info del usuario*/
+                new sql.Request()
+                .query(' EXEC Usuarios_Get @idUsuario = ' + idUs, (err, result) => {
+                  console.dir(result.recordset)
+                  console.log(result.recordset)
+                  usuarios  = result.recordset;
+                });
+/*-------------------------------Logros de un usuario*/
                 new sql.Request()
                 .query(' EXEC ConsultarLogrosDeUnUsuario @idUsuario = ' + idUs, (err, result) => {
                     console.dir(result.recordset)
@@ -327,10 +336,10 @@ class UsuariosRoutes extends MyRoutes{
                    res.send(
                     {
                         status: "OK",
-                        equipos : [equipos],
-                        valores : [valores],
-                        logros : [logros]
-
+                        equipos : equipos,
+                        valores : valores,
+                        logros : logros,
+                        usuarios : usuarios
                     }
                   );
 /*-------------------------------*/
