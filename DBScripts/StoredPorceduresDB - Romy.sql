@@ -1707,6 +1707,25 @@ begin
 end 
 go
 
+IF EXISTS(select * from sys.procedures where name='Listar_LogrosEmpresas')
+DROP PROCEDURE Listar_LogrosEmpresas
+GO
+create procedure [Listar_LogrosEmpresas]
+@idEmpresa int
+as
+begin
+	BEGIN TRY
+		Select L.idLogro, L.nombre, L.idEmpresa, E.nombre 
+		from Logros L inner join Empresas E on L.idEmpresa = E.idEmpresa
+		where L.idEmpresa = @idEmpresa
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
 IF EXISTS(select * from sys.procedures where name='Listar_ValoresEmpresa')
 DROP PROCEDURE Listar_ValoresEmpresa
 GO
