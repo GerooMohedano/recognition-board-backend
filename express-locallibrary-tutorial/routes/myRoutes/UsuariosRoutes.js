@@ -579,6 +579,75 @@ class UsuariosRoutes extends MyRoutes{
         });
         }
         });
+
+        //Modificar mail de un Usuario
+        router.post('/modificarMailUsuario', function(req, res, next){
+          try
+          {
+            sql.connect(config, err => {
+                if(err) console.log("Control de error");
+                new sql.Request()
+                .query(' EXEC Usuarios_MailUpdate '
+                + ' @idUsuario = "' + req.body.idUsuario 
+                + '", @mail = "' + req.body.mail + '"', (err, result) => {
+                  console.dir(result.recordset)
+                  console.log(result.recordset)
+                  let datos = result.recordset;
+                  res.send(
+                    {
+                      status: "OK",
+                      data : datos
+                    }
+                   );
+                   sql.close();
+              });
+            });
+          }
+          catch(e)
+          {
+          console.log(e);
+          res.send({
+              status: "error",
+              message: e
+          });
+          }
+          });
+
+
+        //Modificar foto perfil de un Usuario
+        router.post('/modificarFotoPerfilUsuario', function(req, res, next){
+          try
+          {
+            sql.connect(config, err => {
+                if(err) console.log("Control de error");
+                new sql.Request()
+                .query(' EXEC Usuarios_fotoPerfilUpdate '
+                + ' @idUsuario = "' + req.body.idUsuario 
+                + '", @fotoPerfil = "' + req.body.fotoPerfil + '"', (err, result) => {
+                  console.dir(result.recordset)
+                  console.log(result.recordset)
+                  let datos = result.recordset;
+                  res.send(
+                    {
+                      status: "OK",
+                      data : datos
+                    }
+                   );
+                   sql.close();
+              });
+            });
+          }
+          catch(e)
+          {
+          console.log(e);
+          res.send({
+              status: "error",
+              message: e
+          });
+          }
+          });
+
+  
         //Eliminar usuario
          router.post('/eliminarUsuario', function(req, res, next){
         try

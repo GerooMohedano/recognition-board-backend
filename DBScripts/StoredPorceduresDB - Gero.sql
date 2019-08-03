@@ -229,7 +229,7 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 		begin try
-			SELECT  Usuarios.idUsuario, Usuarios.nombre, Valores.idValor, Valores.nombre, SUM(Notas.puntuacion) AS 'Total'
+			SELECT  Valores.idValor, Valores.nombre, SUM(Notas.puntuacion) AS 'Total'
 			FROM Usuarios INNER JOIN Notas ON Usuarios.idUsuario = Notas.idDestinatario
 			INNER JOIN Valores ON Notas.idValor = Valores.idValor
 			WHERE Usuarios.idUsuario = @idUsuario

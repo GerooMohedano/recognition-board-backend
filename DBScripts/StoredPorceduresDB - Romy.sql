@@ -144,6 +144,51 @@ begin
 end 
 go
 
+IF EXISTS(select * from sys.procedures where name='Usuarios_MailUpdate')
+DROP PROCEDURE Usuarios_MailUpdate
+GO
+CREATE procedure [Usuarios_MailUpdate]
+@idUsuario int,
+@mail varchar(30)
+as
+begin
+		begin try
+		
+		if(LEN(@mail) > 30)
+			RAISERROR('Excediste el n�mero de caracteres permitido',11,1)
+
+			update dbo.Usuarios
+			set
+			 mail= @mail
+			where idUsuario = @idUsuario
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
+end 
+go
+
+IF EXISTS(select * from sys.procedures where name='Usuarios_fotoPerfilUpdate')
+DROP PROCEDURE Usuarios_fotoPerfilUpdate
+GO
+CREATE procedure [Usuarios_fotoPerfilUpdate]
+@idUsuario int,
+@fotoPerfil image
+as
+begin
+		begin try
+			update dbo.Usuarios
+			set
+			 fotoPerfil = @fotoPerfil
+			where idUsuario = @idUsuario
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
+end 
+go
 
 IF EXISTS(select * from sys.procedures where name='Empresas_Get')
 DROP PROCEDURE Empresas_Get
