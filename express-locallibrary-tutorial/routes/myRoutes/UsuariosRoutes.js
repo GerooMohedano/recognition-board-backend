@@ -677,6 +677,38 @@ class UsuariosRoutes extends MyRoutes{
         });
         }
         });
+
+        
+  
+        //Logros que puede obtener un usuario
+        router.post('/logrosUsuario', function(req, res, next){
+          try
+          {
+            sql.connect(config, err => {
+                if(err) console.log("Control de error");
+                new sql.Request()
+                .query('EXEC Logros_EmpresaUsuario @idUsuario = ' + req.body.idUsuario, (err, result) => {
+                  console.dir(result.recordset)
+                  let datos = result.recordset;
+                  res.send(
+                    {
+                      status: "OK",
+                      data : datos
+                    }
+                   );
+                   sql.close();
+              });
+            });
+          }
+          catch(e)
+          {
+          console.log(e);
+          res.send({
+              status: "error",
+              message: e
+          });
+          }
+          });
         //Agregar un usuario a un equipo
          router.post('/agregarUsuarioEnEquipo', function(req, res, next){
       try

@@ -241,24 +241,20 @@ DROP PROCEDURE Empresas_Update
 GO
 CREATE PROCEDURE [dbo].[Empresas_Update]
 	@idEmpresa int,
-	@nombre nvarchar(50),
+	--@nombre nvarchar(50),
 	@direccion nvarchar(50),
-   	@telefono int,
-	@logo image,
-	@estado nvarchar(50)	
+   	@telefono int
 AS
 BEGIN
 
 	BEGIN TRY
-		if(LEN(@nombre) > 50 OR LEN(@direccion) > 50 OR LEN(@estado) > 10)
+		if(LEN(@direccion) > 50) --LEN(@nombre) > 50 OR 
 			RAISERROR('Excediste el n�mero de caracteres permitido',11,1)
 		UPDATE dbo.Empresas
 		SET 
-		nombre= @nombre,
+		--nombre= @nombre,
 		direccion= @direccion,
-   		telefono= @telefono,
-		logo= @logo,
-		Estado= @estado	
+   		telefono= @telefono
 		WHERE idEmpresa = @idEmpresa 
 	END TRY
 	BEGIN CATCH
@@ -268,6 +264,50 @@ BEGIN
 END
 GO
 
+
+IF EXISTS(select * from sys.procedures where name='Empresas_ImageUpdate')
+DROP PROCEDURE Empresas_ImageUpdate
+GO
+CREATE PROCEDURE [dbo].[Empresas_ImageUpdate]
+	@idEmpresa int,
+	@logo image
+AS
+BEGIN
+
+	BEGIN TRY
+		UPDATE dbo.Empresas
+		SET 
+			logo= @logo
+		WHERE idEmpresa = @idEmpresa 
+	END TRY
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)  
+	END CATCH
+END
+GO
+
+IF EXISTS(select * from sys.procedures where name='Empresas_StateUpdate')
+DROP PROCEDURE Empresas_StateUpdate
+GO
+CREATE PROCEDURE [dbo].[Empresas_StateUpdate]
+	@idEmpresa int,
+	@estado nvarchar(50)
+AS
+BEGIN
+
+	BEGIN TRY
+		UPDATE dbo.Empresas
+		SET 
+			estado = @estado
+		WHERE idEmpresa = @idEmpresa 
+	END TRY
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)  
+	END CATCH
+END
+GO
 
 IF EXISTS(select * from sys.procedures where name='Equipos_Get')
 DROP PROCEDURE Equipos_Get
@@ -603,6 +643,29 @@ BEGIN
 
 END
 go
+
+IF EXISTS(select * from sys.procedures where name='Logros_EmpresaUsuario')
+DROP PROCEDURE Logros_EmpresaUsuario
+GO
+CREATE PROCEDURE [dbo].[Logros_EmpresaUsuario]
+	@idUsuario int
+
+AS
+BEGIN
+
+	BEGIN TRY
+		 select Logros.idLogro, Logros.nombre as nombre_logro from Empresas 
+						inner join UsuariosEmpresas on Empresas.idEmpresa = UsuariosEmpresas.idEmpresa
+						inner join Logros on Empresas.idEmpresa = Logros.idEmpresa
+					    where idUsuario = @idUsuario
+	END TRY
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+END
+go
+
 
 IF EXISTS(select * from sys.procedures where name='UsuariosEquipos_Insert')
 DROP PROCEDURE UsuariosEquipos_Insert
@@ -1807,6 +1870,7 @@ begin
 end 
 go
 
+
 IF EXISTS(select * from sys.procedures where name='Listar_LogrosEmpresas')
 DROP PROCEDURE Listar_LogrosEmpresas
 GO
@@ -1815,7 +1879,7 @@ create procedure [Listar_LogrosEmpresas]
 as
 begin
 	BEGIN TRY
-		Select L.idLogro, L.nombre, L.idEmpresa, E.nombre 
+		Select L.idLogro, L.nombre as nombre_logro
 		from Logros L inner join Empresas E on L.idEmpresa = E.idEmpresa
 		where L.idEmpresa = @idEmpresa
 	END TRY	
@@ -1834,7 +1898,7 @@ create procedure Listar_ValoresEmpresa
 as
 begin
 		BEGIN TRY
-			Select EV.idEmpresa, E.nombre as Empresa, EV.idValor, V.nombre as Valor
+			Select EV.idValor, V.nombre as Valor
 			from EmpresasValores EV inner join Empresas E on EV.idEmpresa = E.idEmpresa
 									inner join Valores V on EV.idValor = V.idValor
 			where EV.idEmpresa = @idEmpresa
@@ -1879,6 +1943,7 @@ begin
 end 
 go
 
+
 IF EXISTS(select * from sys.procedures where name='Listar_EquiposPorEmpresa')
 DROP PROCEDURE Listar_EquiposPorEmpresa
 GO
@@ -1887,7 +1952,7 @@ create procedure [Listar_EquiposPorEmpresa]
 as
 begin
 	BEGIN TRY
-		Select Empresas.nombre, E.nombre 
+		Select E.nombre as nombre_equipo 
 		from Equipos E inner join Empresas on E.idEmpresa = Empresas.idEmpresa
 	    where E.idEmpresa = @idEmpresa
 	END TRY	
@@ -1939,7 +2004,7 @@ create procedure [Listar_UsuariosPorEmpresa]
 as
 begin
 	BEGIN TRY
-		Select u.idUsuario, Usuarios.nombre 
+		Select u.idUsuario, Usuarios.nombre as nombre_usuario
 		from UsuariosEmpresas U inner join Usuarios on u.idUsuario = Usuarios.idUsuario
 	    where u.idEmpresa = @idEmpresa
 	END TRY	

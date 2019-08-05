@@ -81,11 +81,9 @@ class EmpresasRoutes extends MyRoutes{
                   new sql.Request()
                   .query(' EXEC Empresas_Update '
                   + ' @idEmpresa = "' + req.body.idEmpresa 
-                  + '", @nombre = "' + req.body.nombre 
-                  + '", @direccion = "' + req.body.direccion 
-                  + '", @telefono = "' + req.body.telefono 
-                  + '", @logo = "' + req.body.logo 
-                  + '", @estado = "' + req.body.estado + '"', (err, result) => {
+               //   + '", @nombre = "' + req.body.nombre 
+                  + '", @direccion = "' + req.body.direccion  
+                  + '", @telefono = "' + req.body.telefono + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
                     let datos = result.recordset;
@@ -108,7 +106,72 @@ class EmpresasRoutes extends MyRoutes{
             });
             }
         });  
+
+        //Cambiar imagen de una Empresa
+        router.post('/modificarImagenEmpresa', function(req, res, next){
+          try
+          {
+            sql.connect(config, err => {
+                if(err) console.log("Control de error");
+                new sql.Request()
+                .query(' EXEC Empresas_ImageUpdate '
+                + ' @idEmpresa = "' + req.body.idEmpresa 
+                + '", @logo = "' + req.body.logo + '"', (err, result) => {
+                  console.dir(result.recordset)
+                  console.log(result.recordset)
+                  let datos = result.recordset;
+                  res.send(
+                    {
+                      status: "OK",
+                      data : datos
+                    }
+                   );
+                   sql.close();
+              });
+            });
+          }
+          catch(e)
+          {
+          console.log(e);
+          res.send({
+              status: "error",
+              message: e
+          });
+          }
+      });  
         
+      //Cambiar estado de una Empresa
+      router.post('/modificarEstadoEmpresa', function(req, res, next){
+        try
+        {
+          sql.connect(config, err => {
+              if(err) console.log("Control de error");
+              new sql.Request()
+              .query(' EXEC Empresas_StateUpdate '
+              + ' @idEmpresa = "' + req.body.idEmpresa 
+              + '", @estado = "' + req.body.estado + '"', (err, result) => {
+                console.dir(result.recordset)
+                console.log(result.recordset)
+                let datos = result.recordset;
+                res.send(
+                  {
+                    status: "OK",
+                    data : datos
+                  }
+                 );
+                 sql.close();
+            });
+          });
+        }
+        catch(e)
+        {
+        console.log(e);
+        res.send({
+            status: "error",
+            message: e
+        });
+        }
+    });  
         //Borrar Empresa
         router.post('/borrarEmpresa', function(req, res, next){
                 try

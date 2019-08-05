@@ -249,8 +249,8 @@ DROP TABLE Empresas
 GO
 CREATE TABLE [dbo].[Empresas](
 	[idEmpresa] [int] IDENTITY(1,1) NOT NULL,
-	[nombre] [varchar](100) NOT NULL,
-	[direccion] [int] NULL,
+	[nombre] [varchar](50) NOT NULL,
+	[direccion] [varchar](50) NOT NULL,
 	[telefono] [int] NULL,
 	[estado] [varchar](30) NOT NULL,
 	[logo] [image] NULL, CONSTRAINT [PK_Empresas] PRIMARY KEY CLUSTERED 

@@ -11,8 +11,8 @@ INSERT [dbo].[Usuarios] ([nombre], [contrasenia], [mail], [adminGeneral]) VALUES
 INSERT [dbo].[Usuarios] ([nombre], [contrasenia], [mail], [adminGeneral]) VALUES ('Esclavotres', '123', 'nn3@sovos.com', 0)
 GO
 
-INSERT [dbo].[Empresas] ([nombre]) VALUES ('Sovos')
-INSERT [dbo].[Empresas] ([nombre]) VALUES ('Scania')
+INSERT [dbo].[Empresas] ([nombre], [direccion], [telefono], [estado], [logo]) VALUES ('Sovos','Belgrano',4250685,'activo',null)
+INSERT [dbo].[Empresas] ([nombre], [direccion], [telefono], [estado], [logo]) VALUES ('Scania','Cruz Alta',1254786,'activo',null)
 GO
 
 INSERT [dbo].[Equipos] ([nombre], [idEmpresa]) VALUES ('Elephants', 1)
@@ -79,13 +79,13 @@ INSERT [dbo].[LogrosCondiciones] ([idCondicion], [idLogro]) VALUES (4, 4)
 INSERT [dbo].[LogrosCondiciones] ([idCondicion], [idLogro]) VALUES (5, 5)
 GO
 
-INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (13, 3, CAST(N'2018-01-02' AS Date))
-INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (14, 2, CAST(N'2018-01-02' AS Date))
-INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (13, 5, CAST(N'2018-01-02' AS Date))
-INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (15, 7, CAST(N'2018-01-02' AS Date))
-INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (16, 3, CAST(N'2018-01-02' AS Date))
-INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (17, 6, CAST(N'2018-01-02' AS Date))
-INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (18, 4, CAST(N'2018-01-02' AS Date))
+INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (1, 3, CAST(N'2018-01-02' AS Date))
+INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (2, 2, CAST(N'2018-01-02' AS Date))
+INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (3, 5, CAST(N'2018-01-02' AS Date))
+INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (1, 7, CAST(N'2018-01-02' AS Date))
+INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (2, 3, CAST(N'2018-01-02' AS Date))
+INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (3, 6, CAST(N'2018-01-02' AS Date))
+INSERT [dbo].[LogrosUsuarios] ([idLogro], [idUsuario], [fecha]) VALUES (2, 4, CAST(N'2018-01-02' AS Date))
 GO
 
 INSERT [dbo].[EquiposValores] ([idEquipo], [idValor]) VALUES (1, 1)
