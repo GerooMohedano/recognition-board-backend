@@ -43,7 +43,7 @@ class LogrosRoutes extends MyRoutes{
                   if(err) console.log("Control de error");
                   new sql.Request()
                   .query(' EXEC Valores_Update '
-                  + ' @idValor = "' + req.body.idValor 
+                  + ' @idValor = "' + req.body.idValor
                   + '", @nombre = "' + req.body.nombre + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
@@ -98,7 +98,7 @@ class LogrosRoutes extends MyRoutes{
             });
             }
         });
-        
+
          //Insertar valor en una empresa
          router.post('/AgregarValorParaEmpresa', function(req, res, next){
           try
@@ -106,8 +106,8 @@ class LogrosRoutes extends MyRoutes{
             sql.connect(config, err => {
                 if(err) console.log("Control de error");
                 new sql.Request()
-                .query(' EXEC EmpresasValores_Insert ' 
-                + ' @idValor = "' + req.body.idValor 
+                .query(' EXEC EmpresasValores_Insert '
+                + ' @idValor = "' + req.body.idValor
                 + '", @idEmpresa = "' + req.body.idEmpresa + '"', (err, result) => {
                   console.dir(result.recordset)
                   console.log(result.recordset)
@@ -139,8 +139,8 @@ class LogrosRoutes extends MyRoutes{
               sql.connect(config, err => {
                   if(err) console.log("Control de error");
                   new sql.Request()
-                  .query(' EXEC EmpresasValores_Update ' 
-                  + ' @idValor = "' + req.body.idValor 
+                  .query(' EXEC EmpresasValores_Update '
+                  + ' @idValor = "' + req.body.idValor
                   + '", @idEmpresa = "' + req.body.idEmpresa + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
@@ -204,7 +204,7 @@ class LogrosRoutes extends MyRoutes{
                 if(err) console.log("Control de error");
                 new sql.Request()
                 .query(' EXEC ConsultarHistoricoValorUsuario '
-                + ' @idUsuario = "' + req.body.idUsuario 
+                + ' @idUsuario = "' + req.body.idUsuario
                 + '", @idValor = "' + req.body.idValor + '"', (err, result) => {
                  // console.dir(result.recordset)
                  // console.log(result.recordset)
@@ -217,14 +217,17 @@ class LogrosRoutes extends MyRoutes{
                       {results.push(dato);}
                     else
                     { results[index].puntuacion = results[index].puntuacion + dato.puntuacion;  }
-                   
+
                   });
+                  for (let i = 1; i < results.length; i++) {
+                    results[i].puntuacion = results[i].puntuacion + results[i - 1].puntuacion;
+                  }
                   res.send(
                     {
                       status: "OK",
                      data : results
                     }
-                   ); 
+                   );
                    sql.close();
               });
             });
