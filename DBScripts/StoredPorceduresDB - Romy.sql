@@ -2065,7 +2065,7 @@ create procedure [Listar_UsuariosPorEquipo](@idEquipo int)
 as
 begin
 	BEGIN TRY
-		Select u.idUsuario, Usuarios.nombre, u.rol 
+		Select u.idUsuario, Usuarios.nombre as nombre_usuario, u.rol 
 		from UsuariosEquipos U inner join Usuarios on u.idUsuario = Usuarios.idUsuario
 	    where u.idEquipo = @idEquipo
 	END TRY	
@@ -2159,7 +2159,7 @@ create procedure [Listar_ValoresDeUnEquipo]
 as
 begin
 	BEGIN TRY
-		Select Valores.nombre as Valor, eq.nombre 
+		Select Valores.nombre as nombre_valor, eq.nombre as nombre_equipo 
 		from EquiposValores E inner join Equipos EQ on e.idEquipo = EQ.idEquipo
 		inner join Valores on e.idValor = Valores.idValor
 	    where e.idEquipo = @idEquipo
