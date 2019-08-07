@@ -209,23 +209,19 @@ class LogrosRoutes extends MyRoutes{
                  // console.dir(result.recordset)
                  // console.log(result.recordset)
                   let datos = result.recordset;
-                  console.log("este es DATOS: ",datos);
                   const results = [];
                   console.log("----------------------------------");
-                  console.log("este es result: ",results);
                   datos.forEach(dato => {
-                    const index = results.findIndex(unResult => unResult.fechaInicio === dato.fechaInicio)
+                    const index = results.findIndex(unResult => unResult.fechaInicio.getTime() === dato.fechaInicio.getTime())
                     if(index === -1)
-                      results.push(dato);
+                      {results.push(dato);}
                     else
-                      results[index].puntuacion += dato.puntuacion;
+                    { results[index].puntuacion = results[index].puntuacion + dato.puntuacion;  }
+                   
                   });
-                  console.log("----------------------------------");
-                  console.log("este es result FINAL: ",results);
                   res.send(
                     {
                       status: "OK",
-                     // data : nuevoarray
                      data : results
                     }
                    ); 
