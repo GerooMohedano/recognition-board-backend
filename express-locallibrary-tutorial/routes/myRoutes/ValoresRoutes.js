@@ -206,15 +206,29 @@ class LogrosRoutes extends MyRoutes{
                 .query(' EXEC ConsultarHistoricoValorUsuario '
                 + ' @idUsuario = "' + req.body.idUsuario 
                 + '", @idValor = "' + req.body.idValor + '"', (err, result) => {
-                  console.dir(result.recordset)
-                  console.log(result.recordset)
+                 // console.dir(result.recordset)
+                 // console.log(result.recordset)
                   let datos = result.recordset;
+                  console.log("este es DATOS: ",datos);
+                  const results = [];
+                  console.log("----------------------------------");
+                  console.log("este es result: ",results);
+                  datos.forEach(dato => {
+                    const index = results.findIndex(unResult => unResult.fechaInicio === dato.fechaInicio)
+                    if(index === -1)
+                      results.push(dato);
+                    else
+                      results[index].puntuacion += dato.puntuacion;
+                  });
+                  console.log("----------------------------------");
+                  console.log("este es result FINAL: ",results);
                   res.send(
                     {
                       status: "OK",
-                      data : datos
+                     // data : nuevoarray
+                     data : results
                     }
-                   );
+                   ); 
                    sql.close();
               });
             });
@@ -227,6 +241,9 @@ class LogrosRoutes extends MyRoutes{
               message: e
           });
           }
+          /*function CrearArray(item){
+            if(item.)
+          }*/
       });
     }
 }

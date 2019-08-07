@@ -342,12 +342,12 @@ class EmpresasRoutes extends MyRoutes{
                    res.send(
                     {
                         status: "OK",
+                        empresas: empresas,
                         evaluacion : evaluacion,
                         equipos: equipos,
                         usuarios: usuarios,
                         valores: valores,
-                        logros: logros,
-                        empresas: empresas
+                        logros: logros
                     }
                   );
 /*-------------------------------*/

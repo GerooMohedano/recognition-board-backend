@@ -1943,7 +1943,6 @@ begin
 end 
 go
 
-
 IF EXISTS(select * from sys.procedures where name='Listar_EquiposPorEmpresa')
 DROP PROCEDURE Listar_EquiposPorEmpresa
 GO
@@ -1952,7 +1951,7 @@ create procedure [Listar_EquiposPorEmpresa]
 as
 begin
 	BEGIN TRY
-		Select E.nombre as nombre_equipo 
+		Select E.idEquipo, E.nombre as nombre_equipo, E.estado 
 		from Equipos E inner join Empresas on E.idEmpresa = Empresas.idEmpresa
 	    where E.idEmpresa = @idEmpresa
 	END TRY	
