@@ -503,12 +503,12 @@ class EquiposRoutes extends MyRoutes{
                     console.log(result.recordset)
                     evaluacion = result.recordset;
                   });
-                  new sql.Request()
+                  /*new sql.Request()
                   .query(' EXEC Listar_ValoresDeUnEquipo @idEquipo = ' + idEq, (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
                     valores  = result.recordset;
-                  });
+                  });*/
                   new sql.Request()
                   .query(' EXEC Equipos_Get @idEquipo = ' + idEq, (err, result) => {
                     console.dir(result.recordset)
@@ -523,8 +523,8 @@ class EquiposRoutes extends MyRoutes{
                      res.send(
                       {
                           status: "OK",
-                          data : evaluacion,
-                          valores: valores,
+                          evaluacion : evaluacion,
+                         // valores: valores,
                           usuarios: usuarios,
                           equipos: equipos
                       }

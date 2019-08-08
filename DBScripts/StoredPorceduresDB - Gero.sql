@@ -369,7 +369,7 @@ BEGIN
 	SET NOCOUNT ON;
 
 		begin try
-			SELECT Equipos.nombre as nombre_equipo, SUM(Notas.puntuacion) AS 'Total', Valores.nombre as nombre_valor
+			SELECT Equipos.nombre as nombre_equipo, SUM(Notas.puntuacion) AS 'Total', Valores.idValor, Valores.nombre as nombre_valor
 			FROM Equipos INNER JOIN Pizarras ON Equipos.idEquipo = Pizarras.idEquipo
 			INNER JOIN Notas ON Pizarras.idPizarra = Notas.idPizarra
 			INNER JOIN Valores ON Notas.idValor = Valores.idValor
