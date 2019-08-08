@@ -44,10 +44,10 @@ class EmpresasRoutes extends MyRoutes{
                   if(err) console.log("Control de error");
                   new sql.Request()
                   .query(' EXEC Empresas_Insert '
-                  + ' @nombre = "' + req.body.nombre 
-                  + '", @direccion = "' + req.body.direccion 
-                  + '", @telefono = "' + req.body.telefono 
-                  + '", @logo = "' + req.body.logo 
+                  + ' @nombre = "' + req.body.nombre
+                  + '", @direccion = "' + req.body.direccion
+                  + '", @telefono = "' + req.body.telefono
+                  + '", @logo = "' + req.body.logo
                   + '", @estado = "' + req.body.estado + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
@@ -80,9 +80,9 @@ class EmpresasRoutes extends MyRoutes{
                   if(err) console.log("Control de error");
                   new sql.Request()
                   .query(' EXEC Empresas_Update '
-                  + ' @idEmpresa = "' + req.body.idEmpresa 
-               //   + '", @nombre = "' + req.body.nombre 
-                  + '", @direccion = "' + req.body.direccion  
+                  + ' @idEmpresa = "' + req.body.idEmpresa
+               //   + '", @nombre = "' + req.body.nombre
+                  + '", @direccion = "' + req.body.direccion
                   + '", @telefono = "' + req.body.telefono + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
@@ -105,7 +105,7 @@ class EmpresasRoutes extends MyRoutes{
                 message: e
             });
             }
-        });  
+        });
 
         //Cambiar imagen de una Empresa
         router.post('/modificarImagenEmpresa', function(req, res, next){
@@ -115,7 +115,7 @@ class EmpresasRoutes extends MyRoutes{
                 if(err) console.log("Control de error");
                 new sql.Request()
                 .query(' EXEC Empresas_ImageUpdate '
-                + ' @idEmpresa = "' + req.body.idEmpresa 
+                + ' @idEmpresa = "' + req.body.idEmpresa
                 + '", @logo = "' + req.body.logo + '"', (err, result) => {
                   console.dir(result.recordset)
                   console.log(result.recordset)
@@ -138,8 +138,8 @@ class EmpresasRoutes extends MyRoutes{
               message: e
           });
           }
-      });  
-        
+      });
+
       //Cambiar estado de una Empresa
       router.post('/modificarEstadoEmpresa', function(req, res, next){
         try
@@ -148,7 +148,7 @@ class EmpresasRoutes extends MyRoutes{
               if(err) console.log("Control de error");
               new sql.Request()
               .query(' EXEC Empresas_StateUpdate '
-              + ' @idEmpresa = "' + req.body.idEmpresa 
+              + ' @idEmpresa = "' + req.body.idEmpresa
               + '", @estado = "' + req.body.estado + '"', (err, result) => {
                 console.dir(result.recordset)
                 console.log(result.recordset)
@@ -171,7 +171,7 @@ class EmpresasRoutes extends MyRoutes{
             message: e
         });
         }
-    });  
+    });
         //Borrar Empresa
         router.post('/borrarEmpresa', function(req, res, next){
                 try
@@ -363,8 +363,57 @@ class EmpresasRoutes extends MyRoutes{
               message: e
           });
           }
-      });  
-        
+      });
+
+      //Consultar Histórico sobre el valor de un equipo
+      router.post('/HistoricoValorEmpresa', function(req, res, next){
+        try
+        {
+          sql.connect(config, err => {
+              if(err) console.log("Control de error");
+              new sql.Request()
+              .query(' EXEC ConsultarHistoricoValorEmpresa '
+              + ' @idEmpresa = "' + req.body.idEmpresa
+              + '", @idValor = "' + req.body.idValor + '"', (err, result) => {
+               // console.dir(result.recordset)
+               // console.log(result.recordset)
+                let datos = result.recordset;
+                const results = [];
+                console.log("----------------------------------");
+                datos.forEach(dato => {
+                  const index = results.findIndex(unResult => unResult.fechaInicio.getTime() === dato.fechaInicio.getTime())
+                  if(index === -1)
+                    {results.push(dato);}
+                  else
+                  { results[index].puntuacion = results[index].puntuacion + dato.puntuacion;  }
+
+                });
+                for (let i = 1; i < results.length; i++) {
+                  results[i].puntuacion = results[i].puntuacion + results[i - 1].puntuacion;
+                }
+                res.send(
+                  {
+                    status: "OK",
+                   data : results
+                  }
+                 );
+                 sql.close();
+            });
+          });
+        }
+        catch(e)
+        {
+        console.log(e);
+        res.send({
+            status: "error",
+            message: e
+        });
+        }
+        /*function CrearArray(item){
+          if(item.)
+        }*/
+    });
+
     }
 
 }

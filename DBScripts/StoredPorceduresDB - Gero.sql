@@ -374,7 +374,7 @@ BEGIN
 			INNER JOIN Notas ON Pizarras.idPizarra = Notas.idPizarra
 			INNER JOIN Valores ON Notas.idValor = Valores.idValor
 			WHERE Equipos.idEquipo = @idEquipo
-			GROUP BY Valores.nombre, Equipos.nombre
+			GROUP BY Valores.idValor, Valores.nombre, Equipos.nombre
 		end try
 		begin catch
 			declare @error varchar(100)= ERROR_MESSAGE()
@@ -405,6 +405,67 @@ BEGIN
 			INNER JOIN Empresas ON Equipos.idEmpresa = Empresas.idEmpresa
 			WHERE Empresas.idEmpresa = @idEmpresa
 			GROUP BY Valores.nombre, Empresas.nombre
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
+END
+GO
+
+/***** Consultar historico de un valor para un equipo *****/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+IF EXISTS(select * from sys.procedures where name='ConsultarHistoricoValorEquipo')
+DROP PROCEDURE ConsultarHistoricoValorEquipo
+GO
+CREATE PROCEDURE [ConsultarHistoricoValorEquipo]
+	@idEquipo int,
+	@idValor int
+AS
+BEGIN
+	SET NOCOUNT ON;
+		begin try
+			SELECT Equipos.nombre as nombre_equipo, Valores.nombre, Notas.puntuacion, Pizarras.fechaInicio			
+			FROM Equipos INNER JOIN Pizarras ON Equipos.idEquipo = Pizarras.idEquipo
+			INNER JOIN Notas ON Pizarras.idPizarra = Notas.idPizarra
+			INNER JOIN Valores ON Notas.idValor = Valores.idValor
+			WHERE Equipos.idEquipo = @idEquipo AND Valores.idValor = @idValor
+			ORDER BY Pizarras.fechaInicio
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
+END
+GO
+
+/***** Consultar historico de un valor para una empresa *****/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+IF EXISTS(select * from sys.procedures where name='ConsultarHistoricoValorEmpresa')
+DROP PROCEDURE ConsultarHistoricoValorEmpresa
+GO
+CREATE PROCEDURE [ConsultarHistoricoValorEmpresa]
+	@idEmpresa int,
+	@idValor int
+AS
+BEGIN
+	SET NOCOUNT ON;
+		begin try
+			SELECT Empresas.nombre as nombre_equipo, Valores.nombre, Notas.puntuacion, Pizarras.fechaInicio			
+			FROM Empresas INNER JOIN Equipos on Empresas.idEmpresa = Equipos.idEmpresa
+			INNER JOIN Pizarras ON Equipos.idEquipo = Pizarras.idEquipo
+			INNER JOIN Notas ON Pizarras.idPizarra = Notas.idPizarra
+			INNER JOIN Valores ON Notas.idValor = Valores.idValor
+			WHERE Empresas.idEmpresa = @idEmpresa AND Valores.idValor = @idValor
+			ORDER BY Pizarras.fechaInicio
 		end try
 		begin catch
 			declare @error varchar(100)= ERROR_MESSAGE()

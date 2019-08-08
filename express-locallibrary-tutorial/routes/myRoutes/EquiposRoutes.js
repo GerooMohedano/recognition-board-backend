@@ -4,7 +4,7 @@ class EquiposRoutes extends MyRoutes{
 
     constructor(express, router, sql, bodyParser, config){
         super(express, router, sql, bodyParser, config);
-        
+
     //Buscar Equipo
         router.post('/buscarEquipo', function(req, res, next){
             try
@@ -44,8 +44,8 @@ class EquiposRoutes extends MyRoutes{
                   if(err) console.log("Control de error");
                   new sql.Request()
                   .query(' EXEC Equipos_Insert '
-                  + ' @nombre = "' + req.body.nombre 
-                  + '", @imagen = "' + req.body.imagen 
+                  + ' @nombre = "' + req.body.nombre
+                  + '", @imagen = "' + req.body.imagen
                   + '", @estado = "' + req.body.estado + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
@@ -78,9 +78,9 @@ class EquiposRoutes extends MyRoutes{
                   if(err) console.log("Control de error");
                   new sql.Request()
                   .query(' EXEC Equipos_Update '
-                  + ' @idEquipo = "' + req.body.idEquipo 
-                  + '", @nombre = "' + req.body.nombre 
-                  + '", @imagen = "' + req.body.imagen 
+                  + ' @idEquipo = "' + req.body.idEquipo
+                  + '", @nombre = "' + req.body.nombre
+                  + '", @imagen = "' + req.body.imagen
                   + '", @estado = "' + req.body.estado + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
@@ -167,7 +167,7 @@ class EquiposRoutes extends MyRoutes{
                 });
                 }
         });
-  
+
     //Listar valores de un Equipo
         router.post('/valoresEquipo', function(req, res, next){
             try
@@ -229,7 +229,7 @@ class EquiposRoutes extends MyRoutes{
             });
             }
         });
-        
+
     //Agregar valor a un Equipo
         router.post('/valorEnEquipo', function(req, res, next){
             try
@@ -238,7 +238,7 @@ class EquiposRoutes extends MyRoutes{
                 if(err) console.log("Control de error");
                 new sql.Request()
                 .query(' EXEC EquiposValores_Insert '
-                + ' @idValor = "' + req.body.idValor 
+                + ' @idValor = "' + req.body.idValor
                 + '", @idEquipo = "' + req.body.idEquipo + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
@@ -262,7 +262,7 @@ class EquiposRoutes extends MyRoutes{
             });
             }
         });
-         
+
     //Borrar valor a un Equipo
         router.post('/borrarValor', function(req, res, next){
             try
@@ -271,7 +271,7 @@ class EquiposRoutes extends MyRoutes{
                 if(err) console.log("Control de error");
                 new sql.Request()
                 .query(' EXEC EquiposValores_Delete '
-                + ' @idValor = "' + req.body.idValor 
+                + ' @idValor = "' + req.body.idValor
                 + '", @idEquipo = "' + req.body.idEquipo + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
@@ -304,7 +304,7 @@ class EquiposRoutes extends MyRoutes{
                 if(err) console.log("Control de error");
                 new sql.Request()
                 .query(' EXEC EquiposValores_Activate '
-                + ' @idValor = "' + req.body.idValor 
+                + ' @idValor = "' + req.body.idValor
                 + '", @idEquipo = "' + req.body.idEquipo + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
@@ -337,7 +337,7 @@ class EquiposRoutes extends MyRoutes{
                 if(err) console.log("Control de error");
                 new sql.Request()
                 .query(' EXEC EquiposValores_Desactivate '
-                + ' @idValor = "' + req.body.idValor 
+                + ' @idValor = "' + req.body.idValor
                 + '", @idEquipo = "' + req.body.idEquipo + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
@@ -361,7 +361,7 @@ class EquiposRoutes extends MyRoutes{
             });
             }
         });
-    
+
     //Cambiar admin de un equipo -- MODIFICAR
         router.post('/cambiarAdm', function(req, res, next){
             try
@@ -370,9 +370,9 @@ class EquiposRoutes extends MyRoutes{
                 if(err) console.log("Control de error");
                 new sql.Request()
                 .query(' EXEC UsuariosEquipos_Update '
-                + ' @idEquipo = "' + req.body.idEquipo 
-                + '", @idUsuario = "' + req.body.nombre 
-                + '", @rol = "' + req.body.rol 
+                + ' @idEquipo = "' + req.body.idEquipo
+                + '", @idUsuario = "' + req.body.nombre
+                + '", @rol = "' + req.body.rol
                 + '", @estado = "' + req.body.estado + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
@@ -403,7 +403,7 @@ class EquiposRoutes extends MyRoutes{
             {
             sql.connect(config, err => {
                 if(err) console.log("Control de error");
-        
+
                 new sql.Request()
                 .execute('OnBoardDataBase.dbo.Listar_Equipos', (err, result) => {
                 console.log(result.recordset);
@@ -426,7 +426,7 @@ class EquiposRoutes extends MyRoutes{
             });
             }
         });
-        
+
         router.post('/equiposxempresa2', function(req, res, next){
         try
         {
@@ -542,7 +542,7 @@ class EquiposRoutes extends MyRoutes{
                 message: e
             });
             }
-        });  
+        });
 
       //ir a la configuración de un equipo
         router.get('/equipoConfig/:id', function(req, res, next){
@@ -592,9 +592,58 @@ class EquiposRoutes extends MyRoutes{
         });
         }
         });
-  
+
+        //Consultar Histórico sobre el valor de un equipo
+        router.post('/HistoricoValorEquipo', function(req, res, next){
+          try
+          {
+            sql.connect(config, err => {
+                if(err) console.log("Control de error");
+                new sql.Request()
+                .query(' EXEC ConsultarHistoricoValorEquipo '
+                + ' @idEquipo = "' + req.body.idEquipo
+                + '", @idValor = "' + req.body.idValor + '"', (err, result) => {
+                 // console.dir(result.recordset)
+                 // console.log(result.recordset)
+                  let datos = result.recordset;
+                  const results = [];
+                  console.log("----------------------------------");
+                  datos.forEach(dato => {
+                    const index = results.findIndex(unResult => unResult.fechaInicio.getTime() === dato.fechaInicio.getTime())
+                    if(index === -1)
+                      {results.push(dato);}
+                    else
+                    { results[index].puntuacion = results[index].puntuacion + dato.puntuacion;  }
+
+                  });
+                  for (let i = 1; i < results.length; i++) {
+                    results[i].puntuacion = results[i].puntuacion + results[i - 1].puntuacion;
+                  }
+                  res.send(
+                    {
+                      status: "OK",
+                     data : results
+                    }
+                   );
+                   sql.close();
+              });
+            });
+          }
+          catch(e)
+          {
+          console.log(e);
+          res.send({
+              status: "error",
+              message: e
+          });
+          }
+          /*function CrearArray(item){
+            if(item.)
+          }*/
+      });
+
         }
-        
+
 }
 
 module.exports = EquiposRoutes;
