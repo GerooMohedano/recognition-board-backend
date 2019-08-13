@@ -2175,13 +2175,18 @@ IF EXISTS(select * from sys.procedures where name='Listar_NotasDeUnUsuario')
 DROP PROCEDURE Listar_NotasDeUnUsuario
 GO
 create procedure [Listar_NotasDeUnUsuario]
-@idUsuario int
+@idUsuario int,
+@idValor int,
+@idPizarra int
 as
 begin
 	BEGIN TRY
-		Select n.idNota,n.descripcion, Usuarios.nombre as Destinatario
-		from Notas N inner join Usuarios on n.idDestinatario = usuarios.idUsuario
-	    where n.idDestinatario = @idUsuario
+		Select n.idNota, n.descripcion, n.puntuacion, ua.nombre as autor
+		from Notas N inner join Usuarios ud on n.idDestinatario = ud.idUsuario
+		inner join Usuarios ua on n.idAutor = ua.idUsuario
+		inner join Valores on n.idValor = Valores.idValor
+		inner join Pizarras on n.idPizarra = Pizarras.idPizarra
+	    where n.idDestinatario = @idUsuario and Pizarras.idPizarra = @idPizarra and Valores.idValor = @idValor
 	END TRY	
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()

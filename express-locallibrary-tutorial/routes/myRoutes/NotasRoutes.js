@@ -12,11 +12,11 @@ class NotasRoutes extends MyRoutes{
               if(err) console.log("Control de error");
               new sql.Request()
               .query(' EXEC Notas_Insert '
-              + ' @idPizarra = "' + req.body.nombre 
-              + '", @idAutor = "' + req.body.idAutor 
-              + '", @idDestinatario = "' + req.body.idDestinatario 
-              + '", @idValor = "' + req.body.idValor 
-              + '", @descripcion = "' + req.body.descripcion 
+              + ' @idPizarra = "' + req.body.nombre
+              + '", @idAutor = "' + req.body.idAutor
+              + '", @idDestinatario = "' + req.body.idDestinatario
+              + '", @idValor = "' + req.body.idValor
+              + '", @descripcion = "' + req.body.descripcion
               + '", @puntuacion = "' + req.body.puntuacion + '"', (err, result) => {
                 console.dir(result.recordset)
                 console.log(result.recordset)
@@ -49,12 +49,12 @@ class NotasRoutes extends MyRoutes{
               if(err) console.log("Control de error");
               new sql.Request()
               .query(' EXEC Notas_Update '
-              + ' @idNota = "' + req.body.idNota 
-              + '", @idPizarra = "' + req.body.idPizarra 
-              + '", @idAutor = "' + req.body.idAutor 
-              + '", @idDestinatario = "' + req.body.idDestinatario 
-              + '", @idValor = "' + req.body.idValor 
-              + '", @descripcion = "' + req.body.descripcion 
+              + ' @idNota = "' + req.body.idNota
+              + '", @idPizarra = "' + req.body.idPizarra
+              + '", @idAutor = "' + req.body.idAutor
+              + '", @idDestinatario = "' + req.body.idDestinatario
+              + '", @idValor = "' + req.body.idValor
+              + '", @descripcion = "' + req.body.descripcion
               + '", @puntuacion = "' + req.body.puntuacion + '"', (err, result) => {
                 console.dir(result.recordset)
                 console.log(result.recordset)
@@ -117,7 +117,9 @@ class NotasRoutes extends MyRoutes{
       sql.connect(config, err => {
           if(err) console.log("Control de error");
           new sql.Request()
-          .query(' EXEC Listar_NotasDeUnUsuario @idUsuario = ' + req.body.idUsuario, (err, result) => {
+          .query(' EXEC Listar_NotasDeUnUsuario @idUsuario = "' + req.body.idUsuario
+          + '", @idValor = "' + req.body.idValor
+          + '", @idPizarra = "' + req.body.idPizarra + '"', (err, result) => {
             console.dir(result.recordset)
             console.log(result.recordset)
             let datos = result.recordset;
