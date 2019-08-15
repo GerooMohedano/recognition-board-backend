@@ -494,7 +494,7 @@ class EquiposRoutes extends MyRoutes{
             {
               sql.connect(config, err => {
                   var idEq = req.params.id
-                  let evaluacion, valores , usuarios, equipos
+                  let evaluacion, valores , usuarios, equipos, pizarras
                   console.log('id del equipo: ', idEq);
                   if(err) console.log("Control de error");
                   new sql.Request()
@@ -502,6 +502,12 @@ class EquiposRoutes extends MyRoutes{
                     console.dir(result.recordset)
                     console.log(result.recordset)
                     evaluacion = result.recordset;
+                  });
+                  new sql.Request()
+                  .query(' EXEC ConsultarPizarraEquipo @idEquipo = ' + idEq, (err, result) => {
+                    console.dir(result.recordset)
+                    console.log(result.recordset)
+                    pizarras  = result.recordset;
                   });
                   /*new sql.Request()
                   .query(' EXEC Listar_ValoresDeUnEquipo @idEquipo = ' + idEq, (err, result) => {
@@ -526,6 +532,7 @@ class EquiposRoutes extends MyRoutes{
                           evaluacion : evaluacion,
                          // valores: valores,
                           usuarios: usuarios,
+                          pizarras: pizarras,
                           equipos: equipos
                       }
                     );
