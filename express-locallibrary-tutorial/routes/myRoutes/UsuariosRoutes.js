@@ -298,6 +298,7 @@ class UsuariosRoutes extends MyRoutes{
         });  
          //ir al perfil
          router.get('/perfil/:id', function(req, res, next){
+
           try
           {
             sql.connect(config, err => {
@@ -333,7 +334,7 @@ class UsuariosRoutes extends MyRoutes{
                     console.dir(result.recordset)
                     console.log(result.recordset)
                     logros = result.recordset;
-                   res.send(
+                    res.send(
                     {
                         status: "OK",
                         equipos : equipos,
