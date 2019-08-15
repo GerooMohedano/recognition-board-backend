@@ -3,6 +3,8 @@ const EquiposRoutes = require('./myRoutes/EquiposRoutes');
 const ValoresRoutes = require('./myRoutes/ValoresRoutes');
 const LogrosRoutes = require('./myRoutes/LogrosRoutes');
 const EmpresasRoutes = require('./myRoutes/EmpresasRoutes');
+const NotasRoutes = require('./myRoutes/NotasRoutes');
+const PizarrasRoutes = require('./myRoutes/PizarrasRoutes');
 var express = require('express');
 var router = express.Router();
 var sql = require('mssql');
@@ -26,6 +28,8 @@ let equiposRoutes = new EquiposRoutes(express, router, sql, bodyParser, config);
 let valoresRoutes = new ValoresRoutes(express, router, sql, bodyParser,config);
 let logrosRoutes = new LogrosRoutes(express, router, sql, bodyParser, config);
 let empresasRoutes = new EmpresasRoutes(express, router, sql, bodyParser, config);
+let notasRoutes = new NotasRoutes(express, router, sql, bodyParser, config);
+let pizarrasRoutes = new PizarrasRoutes(express, router, sql, bodyParser, config);
 
 /* GET function. */
 router.get('/', function(req, res, next) {

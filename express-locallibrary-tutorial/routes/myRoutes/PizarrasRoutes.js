@@ -13,9 +13,9 @@ class PizarrasRoutes extends MyRoutes{
                   if(err) console.log("Control de error");
                   new sql.Request()
                   .query(' EXEC Pizarras_Insert '
-                  + ' @titulo = "' + req.body.titulo 
-                  + '", @idEquipo = "' + req.body.idEquipo 
-                  + '", @fechaInicio = "' + req.body.fechaInicio 
+                  + ' @titulo = "' + req.body.titulo
+                  + '", @idEquipo = "' + req.body.idEquipo
+                  + '", @fechaInicio = "' + req.body.fechaInicio
                   + '", @fechaFin = "' + req.body.fechaFin + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
@@ -48,10 +48,10 @@ class PizarrasRoutes extends MyRoutes{
                           if(err) console.log("Control de error");
                           new sql.Request()
                           .query(' EXEC Pizarras_Update '
-                          + ' @idPizarra = "' + req.body.idPizarra 
-                          + '", @titulo = "' + req.body.titulo 
-                          + '", @idEquipo = "' + req.body.idEquipo 
-                          + '", @fechaInicio = "' + req.body.fechaInicio 
+                          + ' @idPizarra = "' + req.body.idPizarra
+                          + '", @titulo = "' + req.body.titulo
+                          + '", @idEquipo = "' + req.body.idEquipo
+                          + '", @fechaInicio = "' + req.body.fechaInicio
                           + '", @fechaFin = "' + req.body.fechaFin + '"', (err, result) => {
                             console.dir(result.recordset)
                             console.log(result.recordset)

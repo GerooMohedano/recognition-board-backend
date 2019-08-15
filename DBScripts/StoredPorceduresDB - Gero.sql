@@ -286,10 +286,10 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 		begin try
-			SELECT Equipos.nombre, Pizarras.titulo, Pizarras.fechaInicio, Pizarras.fechaFin
+			SELECT Equipos.nombre, Pizarras.idPizarra, Pizarras.titulo, Pizarras.fechaInicio, Pizarras.fechaFin
 			FROM Pizarras INNER JOIN Equipos ON Pizarras.idEquipo = Equipos.idEquipo
 			WHERE Equipos.idEquipo = @idEquipo
-			ORDER BY FechaInicio ASC
+			ORDER BY FechaFin ASC
 		end try
 		begin catch
 			declare @error varchar(100)= ERROR_MESSAGE()
