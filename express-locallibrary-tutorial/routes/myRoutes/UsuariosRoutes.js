@@ -303,7 +303,7 @@ class UsuariosRoutes extends MyRoutes{
             sql.close();
             sql.connect(config, err => {
                 var idUs = req.params.id
-                let equipos, valores , logros , usuarios, result
+                let equipos, valores , logros , usuarios, suslogros, result
                 console.log('id de usuario: ', idUs);
                 if(err) console.log("Control de error");
                 let queries=[
@@ -322,10 +322,10 @@ class UsuariosRoutes extends MyRoutes{
                     }
                   })(),
                   (async()=>{
-                    let queryLogros = new sql.Request()
-                    logros = await queryLogros.query(' EXEC ConsultarLogrosDeUnUsuario @idUsuario = ' + idUs);
+                    let querySusLogros = new sql.Request()
+                    suslogros = await querySusLogros.query(' EXEC ConsultarLogrosDeUnUsuario @idUsuario = ' + idUs);
                       return {
-                        logros:logros.recordset
+                        suslogros:suslogros.recordset
                       }
                   })(),
                   (async()=>{
@@ -333,6 +333,13 @@ class UsuariosRoutes extends MyRoutes{
                     usuarios= await queryUsuarios.query(' EXEC Usuarios_Get @idUsuario = ' + idUs)
                       return{
                         usuarios:usuarios.recordset
+                      } 
+                  })(),
+                  (async()=>{
+                    let queryLogros = new sql.Request()
+                    logros= await queryLogros.query(' EXEC Logros_EmpresaUsuario @idUsuario = ' + idUs)
+                      return{
+                        logros:logros.recordset
                       } 
                   })(),
                 ];
@@ -343,8 +350,9 @@ class UsuariosRoutes extends MyRoutes{
                     let parseResult={
                       equipos:result[0].equipos,
                       valores:result[1].valores,
-                      logros:result[2].logros,
-                      usuarios:result[3].usuarios
+                      suslogros:result[2].suslogros,
+                      usuarios:result[3].usuarios,
+                      logros:result[4].logros
                     }
                     res.send(parseResult)
                   }
