@@ -2181,7 +2181,7 @@ create procedure [Listar_NotasDeUnUsuario]
 as
 begin
 	BEGIN TRY
-		Select n.idNota, n.descripcion, n.puntuacion, ua.nombre as autor
+		Select n.idNota, n.descripcion, n.puntuacion, ua.idUsuario, ua.nombre as autor
 		from Notas N inner join Usuarios ud on n.idDestinatario = ud.idUsuario
 		inner join Usuarios ua on n.idAutor = ua.idUsuario
 		inner join Valores on n.idValor = Valores.idValor

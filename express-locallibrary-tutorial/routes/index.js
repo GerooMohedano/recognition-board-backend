@@ -13,7 +13,7 @@ var bodyParser = require('body-parser');
 const config = {
   user: 'Usuario',
   password : '1234',
-  server : "localhost\\SQLEXPRESS",
+  server : "desktop-4svjl61",
   port : 1433,
   database : 'OnBoardDataBase',
   options: {
@@ -38,7 +38,7 @@ router.get('/', function(req, res, next) {
 
 //Listar empresas
 router.get('/empresas', function(req, res, next) {
-  
+
   try{
     sql.connect(config, err => {
       if(err) console.log("Control de error");

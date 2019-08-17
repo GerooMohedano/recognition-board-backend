@@ -15,7 +15,7 @@ app.use(cors());
 const config = {
   user: 'Usuario',
   password : '1234',
-  server : 'localhost\SQLEXPRESS',
+  server : 'desktop-4svjl61',
   port : 1433,
   database : 'OnBoardDataBase'
 };
