@@ -298,55 +298,58 @@ class UsuariosRoutes extends MyRoutes{
         });  
          //ir al perfil
          router.get('/perfil/:id', function(req, res, next){
-
           try
           {
+            sql.close();
             sql.connect(config, err => {
                 var idUs = req.params.id
-                console.log('este es el idusuario',idUs)
-                console.log('este es el req',req.params)
-                let equipos, valores , logros, usuarios
+                let equipos, valores , logros , usuarios, result
+                console.log('id de usuario: ', idUs);
                 if(err) console.log("Control de error");
- /*-------------------------------Equipos del usuario*/
-                new sql.Request()
-                .query(' EXEC Listar_EquiposPorUsuario @idUsuario = ' + idUs, (err, result) => {
-                 console.dir(result.recordset)
-                 console.log(result.recordset)
-                  equipos = result.recordset;
-                });
-/*-------------------------------Valores del usuario*/
-                new sql.Request()
-                .query(' EXEC ConsultarValoresUsuario @idUsuario = ' + idUs, (err, result) => {
-                  console.dir(result.recordset)
-                  console.log(result.recordset)
-                  valores  = result.recordset;
-                });
-/*-------------------------------Info del usuario*/
-                new sql.Request()
-                .query(' EXEC Usuarios_Get @idUsuario = ' + idUs, (err, result) => {
-                  console.dir(result.recordset)
-                  console.log(result.recordset)
-                  usuarios  = result.recordset;
-                });
-/*-------------------------------Logros de un usuario*/
-                new sql.Request()
-                .query(' EXEC ConsultarLogrosDeUnUsuario @idUsuario = ' + idUs, (err, result) => {
-                    console.dir(result.recordset)
-                    console.log(result.recordset)
-                    logros = result.recordset;
-                    res.send(
-                    {
-                        status: "OK",
-                        equipos : equipos,
-                        valores : valores,
-                        logros : logros,
-                        usuarios : usuarios
+                let queries=[
+                  (async()=>{
+                    let queryEquipos=new sql.Request()
+                    equipos= await queryEquipos.query(' EXEC Listar_EquiposPorUsuario @idUsuario = ' + idUs);
+                    return {
+                      equipos:equipos.recordset
                     }
-                  );
-/*-------------------------------*/
-                  sql.close();
+                  })(),
+                  (async()=>{
+                    let queryValores = new sql.Request();
+                    valores = await queryValores.query(' EXEC ConsultarValoresUsuario @idUsuario = ' + idUs);
+                    return {
+                      valores:valores.recordset
+                    }
+                  })(),
+                  (async()=>{
+                    let queryLogros = new sql.Request()
+                    logros = await queryLogros.query(' EXEC ConsultarLogrosDeUnUsuario @idUsuario = ' + idUs);
+                      return {
+                        logros:logros.recordset
+                      }
+                  })(),
+                  (async()=>{
+                    let queryUsuarios = new sql.Request()
+                    usuarios= await queryUsuarios.query(' EXEC Usuarios_Get @idUsuario = ' + idUs)
+                      return{
+                        usuarios:usuarios.recordset
+                      } 
+                  })(),
+                ];
+                let resultado=Promise.all(queries).then(
+                  (result)=>{
+                    sql.close();
+                    console.log("Successssss: ")
+                    let parseResult={
+                      equipos:result[0].equipos,
+                      valores:result[1].valores,
+                      logros:result[2].logros,
+                      usuarios:result[3].usuarios
+                    }
+                    res.send(parseResult)
+                  }
+                );
               });
-            });
           }
           catch(e)
           {
