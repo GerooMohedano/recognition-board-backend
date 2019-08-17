@@ -490,114 +490,122 @@ class EquiposRoutes extends MyRoutes{
 
         //ir al equipo
         router.get('/equipo/:id', function(req, res, next){
-            try
-            {
-              sql.connect(config, err => {
-                  var idEq = req.params.id
-                  let evaluacion, valores , usuarios, equipos, pizarras
-                  console.log('id del equipo: ', idEq);
-                  if(err) console.log("Control de error");
-                  new sql.Request()
-                  .query(' EXEC ConsultarEvaluacionEquipo @idEquipo = ' + idEq, (err, result) => {
-                    console.dir(result.recordset)
-                    console.log(result.recordset)
-                    evaluacion = result.recordset;
-                  });
-                  new sql.Request()
-                  .query(' EXEC ConsultarPizarraEquipo @idEquipo = ' + idEq, (err, result) => {
-                    console.dir(result.recordset)
-                    console.log(result.recordset)
-                    pizarras  = result.recordset;
-                  });
-                  /*new sql.Request()
-                  .query(' EXEC Listar_ValoresDeUnEquipo @idEquipo = ' + idEq, (err, result) => {
-                    console.dir(result.recordset)
-                    console.log(result.recordset)
-                    valores  = result.recordset;
-                  });*/
-                  new sql.Request()
-                  .query(' EXEC Equipos_Get @idEquipo = ' + idEq, (err, result) => {
-                    console.dir(result.recordset)
-                    console.log(result.recordset)
-                    equipos  = result.recordset;
-                  });
-                  new sql.Request()
-                  .query('EXEC Listar_UsuariosPorEquipo @idEquipo = ' + idEq, (err, result) => {
-                      console.dir(result.recordset)
-                      console.log(result.recordset)
-                      usuarios = result.recordset;
-                     res.send(
-                      {
-                          status: "OK",
-                          evaluacion : evaluacion,
-                         // valores: valores,
-                          usuarios: usuarios,
-                          pizarras: pizarras,
-                          equipos: equipos
+          try
+          {
+            sql.connect(config, err => {
+                var idEq = req.params.id
+                let evaluacion, usuarios, equipos, pizarras, result
+                console.log('id del equipo: ', idEq);
+                if(err) console.log("Control de error");
+                let queries=[
+                  (async()=>{
+                    let queryEvaluacion=new sql.Request()
+                    evaluacion= await queryEvaluacion.query(' EXEC ConsultarEvaluacionEquipo @idEquipo =  ' + idEq);
+                    return {
+                      evaluacion:evaluacion.recordset
+                    }
+                  })(),
+                  (async()=>{
+                    let queryPizarra = new sql.Request();
+                    pizarras = await queryPizarra.query(' EXEC ConsultarPizarraEquipo @idEquipo = ' + idEq);
+                    return {
+                      pizarras:pizarras.recordset
+                    }
+                  })(),
+                  (async()=>{
+                    let queryEquipos = new sql.Request()
+                    equipos= await queryEquipos.query('  EXEC Equipos_Get @idEquipo = ' + idEq);
+                      return {
+                        equipos:equipos.recordset
                       }
-                    );
-  /*-------------------------------*/
+                  })(),
+                  (async()=>{
+                    let queryUsuarios = new sql.Request()
+                    usuarios = await queryUsuarios.query(' EXEC Listar_UsuariosPorEquipo @idEquipo = ' + idEq);
+                      return {
+                        usuarios:usuarios.recordset
+                      }
+                  })(),
+                ];
+                let resultado=Promise.all(queries).then(
+                  (result)=>{
                     sql.close();
-                });
+                    console.log("Success: ")
+                    let parseResult={
+                      evaluacion:result[0].evaluacion,
+                      pizarras:result[1].pizarras,
+                      equipos:result[2].equipos,
+                      usuarios:result[3].usuarios
+                    }
+                    res.send(parseResult)
+                  }
+                );
               });
-            }
-            catch(e)
-            {
-            console.log(e);
-            res.send({
-                status: "error",
-                message: e
-            });
-            }
+          }
+          catch(e)
+          {
+          console.log(e);
+          res.send({
+              status: "error",
+              message: e
+          });
+          }
         });
 
       //ir a la configuración de un equipo
         router.get('/equipoConfig/:id', function(req, res, next){
-        try
-        {
-          sql.connect(config, err => {
-              var idEq = req.params.id
-              let valores , usuarios, equipos
-              console.log('id del equipo: ', idEq);
-              if(err) console.log("Control de error");
-              new sql.Request()
-              .query(' EXEC Listar_UsuariosPorEquipo @idEquipo = ' + idEq, (err, result) => {
-                console.dir(result.recordset)
-                console.log(result.recordset)
-                usuarios = result.recordset;
-              });
-              new sql.Request()
-              .query(' EXEC Equipos_Get @idEquipo = ' + idEq, (err, result) => {
-                console.dir(result.recordset)
-                console.log(result.recordset)
-                equipos  = result.recordset;
-              });
-              new sql.Request()
-              .query('EXEC Listar_ValoresDeUnEquipo @idEquipo = ' + idEq, (err, result) => {
-                  console.dir(result.recordset)
-                  console.log(result.recordset)
-                  valores = result.recordset;
-                 res.send(
-                  {
-                      status: "OK",
-                      valores : valores,
-                      usuarios: usuarios,
-                      equipos: equipos
+          try
+          {
+            sql.connect(config, err => {
+                var idEq = req.params.id
+                let valores, usuarios, equipos, result
+                console.log('id del equipo: ', idEq);
+                if(err) console.log("Control de error");
+                let queries=[
+                  (async()=>{
+                    let queryUsuarios=new sql.Request()
+                    usuarios= await queryUsuarios.query(' EXEC Listar_UsuariosPorEquipo @idEquipo = ' + idEq);
+                    return {
+                      usuarios:usuarios.recordset
+                    }
+                  })(),
+                  (async()=>{
+                    let queryEquipos = new sql.Request();
+                    equipos = await queryEquipos.query('  EXEC Equipos_Get @idEquipo = ' + idEq);
+                    return {
+                      equipos:equipos.recordset
+                    }
+                  })(),
+                  (async()=>{
+                    let queryValores = new sql.Request()
+                    valores= await queryValores.query(' EXEC Listar_ValoresDeUnEquipo @idEquipo = ' + idEq);
+                      return {
+                        valores:valores.recordset
+                      }
+                  })(),
+                  ];
+                let resultado=Promise.all(queries).then(
+                  (result)=>{
+                    sql.close();
+                    console.log("Success: ")
+                    let parseResult={
+                      usuarios:result[0].usuarios,
+                      equipos:result[1].equipos,
+                      valores:result[2].valores
+                    }
+                    res.send(parseResult)
                   }
                 );
-/*-------------------------------*/
-                sql.close();
-            });
+              });
+          }
+          catch(e)
+          {
+          console.log(e);
+          res.send({
+              status: "error",
+              message: e
           });
-        }
-        catch(e)
-        {
-        console.log(e);
-        res.send({
-            status: "error",
-            message: e
-        });
-        }
+          }
         });
 
         //Consultar Histórico sobre el valor de un equipo
