@@ -50,7 +50,6 @@ class PizarrasRoutes extends MyRoutes{
                           .query(' EXEC Pizarras_Update '
                           + ' @idPizarra = "' + req.body.idPizarra
                           + '", @titulo = "' + req.body.titulo
-                          + '", @idEquipo = "' + req.body.idEquipo
                           + '", @fechaInicio = "' + req.body.fechaInicio
                           + '", @fechaFin = "' + req.body.fechaFin + '"', (err, result) => {
                             console.dir(result.recordset)

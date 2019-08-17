@@ -756,7 +756,6 @@ GO
 CREATE PROCEDURE [dbo].[Pizarras_Update]
 	@idPizarra int,
 	@titulo nvarchar(30),
-	@idEquipo int,
 	@fechaInicio datetime,
 	@fechaFin datetime
 
@@ -775,7 +774,6 @@ BEGIN
 		UPDATE dbo.Pizarras
 		SET 
 		titulo = @titulo,
-		idEquipo= @idEquipo,
 		fechaInicio= @fechaInicio,
 		fechaFin= @fechaFin	
 		WHERE idPizarra= @idPizarra
