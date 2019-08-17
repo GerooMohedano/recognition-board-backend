@@ -301,59 +301,69 @@ class EmpresasRoutes extends MyRoutes{
           {
             sql.connect(config, err => {
                 var idEmp = req.params.id
-                let evaluacion, equipos , usuarios, valores, logros, empresas
+                let evaluacion, equipos , usuarios, valores, logros, empresas,result
                 console.log('id de la empresa: ', idEmp);
                 if(err) console.log("Control de error");
-                new sql.Request()
-                .query(' EXEC ConsultarEvaluacionEmpresa @idEmpresa = ' + idEmp, (err, result) => {
-                  console.dir(result.recordset)
-                  console.log(result.recordset)
-                  evaluacion = result.recordset;
-                });
-                new sql.Request()
-                .query(' EXEC Empresas_Get @idEmpresa = ' + idEmp, (err, result) => {
-                  console.dir(result.recordset)
-                  console.log(result.recordset)
-                  empresas  = result.recordset;
-                });
-                new sql.Request()
-                .query(' EXEC Listar_EquiposPorEmpresa @idEmpresa = ' + idEmp, (err, result) => {
-                  console.dir(result.recordset)
-                  console.log(result.recordset)
-                  equipos  = result.recordset;
-                });
-                new sql.Request()
-                .query(' EXEC Listar_ValoresEmpresa @idEmpresa = ' + idEmp, (err, result) => {
-                  console.dir(result.recordset)
-                  console.log(result.recordset)
-                  valores  = result.recordset;
-                });
-                new sql.Request()
-                .query(' EXEC Listar_LogrosEmpresas @idEmpresa = ' + idEmp, (err, result) => {
-                  console.dir(result.recordset)
-                  console.log(result.recordset)
-                  logros  = result.recordset;
-                });
-                new sql.Request()
-                .query('EXEC Listar_UsuariosPorEmpresa @idEmpresa = ' + idEmp, (err, result) => {
-                    console.dir(result.recordset)
-                    console.log(result.recordset)
-                    usuarios = result.recordset;
-                   res.send(
-                    {
-                        status: "OK",
-                        empresas: empresas,
-                        evaluacion : evaluacion,
-                        equipos: equipos,
-                        usuarios: usuarios,
-                        valores: valores,
-                        logros: logros
+                let queries=[
+                  (async()=>{
+                    let queryEvaluacion=new sql.Request()
+                    evaluacion= await queryEvaluacion.query(' EXEC ConsultarEvaluacionEmpresa @idEmpresa = ' + idEmp);
+                    return {
+                      evaluacion:evaluacion.recordset
                     }
-                  );
-/*-------------------------------*/
-                  sql.close();
+                  })(),
+                  (async()=>{
+                    let queryEmpresas = new sql.Request();
+                    empresas = await queryEmpresas.query(' EXEC Empresas_Get @idEmpresa = ' + idEmp);
+                    return {
+                      empresas:empresas.recordset
+                    }
+                  })(),
+                  (async()=>{
+                    let queryEquipos = new sql.Request()
+                    equipos= await queryEquipos.query(' EXEC Listar_EquiposPorEmpresa @idEmpresa = ' + idEmp);
+                      return {
+                        equipos:equipos.recordset
+                      }
+                  })(),
+                  (async()=>{
+                    let queryValores = new sql.Request()
+                    valores = await queryValores.query(' EXEC Listar_ValoresEmpresa @idEmpresa = ' + idEmp);
+                      return {
+                        valores:valores.recordset
+                      }
+                  })(),
+                  (async()=>{
+                    let queryLogros = new sql.Request()
+                    logros= await queryLogros.query(' EXEC Listar_LogrosEmpresas @idEmpresa = ' + idEmp)
+                      return{
+                        logros:logros.recordset
+                      } 
+                  })(),
+                  (async()=>{
+                    let queryUsuarios = new sql.Request();
+                    usuarios = await queryUsuarios.query('EXEC Listar_UsuariosPorEmpresa @idEmpresa = ' + idEmp)
+                        return {
+                          usuarios:usuarios.recordset
+                        }
+                  })(),
+                ];
+                let resultado=Promise.all(queries).then(
+                  (result)=>{
+                    sql.close();
+                    console.log("Succes: ")
+                    let parseResult={
+                      evaluacion:result[0].evaluacion,
+                      empresas:result[1].empresas,
+                      equipos:result[2].equipos,
+                      valores:result[3].valores,
+                      logros:result[4].logros,
+                      usuarios:result[5].usuarios
+                    }
+                    res.send(parseResult)
+                  }
+                );
               });
-            });
           }
           catch(e)
           {
