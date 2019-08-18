@@ -388,6 +388,33 @@ BEGIN
 END
 go
 
+IF EXISTS(select * from sys.procedures where name='Equipos_Update_Name')
+DROP PROCEDURE Equipos_Update_Name
+GO
+CREATE PROCEDURE [dbo].[Equipos_Update_Name]
+	@idEquipo int,
+	@nombre nvarchar(50)
+AS
+BEGIN
+
+
+	BEGIN TRY
+			IF(LEN(@nombre) > 30)
+				RAISERROR('Excediste el n�mero de caracteres permitido',11,1)
+
+			UPDATE dbo.Equipos
+			SET 
+			nombre= @nombre
+		
+			WHERE idEquipo = @idEquipo 
+	END TRY
+	BEGIN CATCH
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1) 
+	END CATCH
+END
+go
+
 IF EXISTS(select * from sys.procedures where name='Valores_Insert')
 DROP PROCEDURE Valores_Insert
 GO
@@ -718,6 +745,35 @@ BEGIN
 		estado = @estado
 
 		WHERE 	idEquipo = @idEquipo and idUsuario = @idUsuario
+	END TRY
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+END
+go
+
+IF EXISTS(select * from sys.procedures where name='CambiarAdminEquipo')
+DROP PROCEDURE CambiarAdminEquipo
+GO
+CREATE PROCEDURE [dbo].CambiarAdminEquipo
+	@idEquipo int,
+	@idViejoAdmin int,
+	@idNuevoAdmin int
+	
+AS
+BEGIN
+	BEGIN TRY
+		UPDATE dbo.UsuariosEquipos
+		SET 
+		rol= 0
+		WHERE 	idEquipo = @idEquipo and idUsuario = @idViejoAdmin
+		
+		UPDATE dbo.UsuariosEquipos
+		SET 
+		rol= 1
+		WHERE 	idEquipo = @idEquipo and idUsuario = @idNuevoAdmin
+		
 	END TRY
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()
@@ -2157,7 +2213,7 @@ create procedure [Listar_ValoresDeUnEquipo]
 as
 begin
 	BEGIN TRY
-		Select Valores.nombre as nombre_valor, eq.nombre as nombre_equipo 
+		Select Valores.idValor, Valores.nombre as nombre_valor, eq.nombre as nombre_equipo 
 		from EquiposValores E inner join Equipos EQ on e.idEquipo = EQ.idEquipo
 		inner join Valores on e.idValor = Valores.idValor
 	    where e.idEquipo = @idEquipo
