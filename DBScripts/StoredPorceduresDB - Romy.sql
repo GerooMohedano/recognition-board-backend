@@ -479,22 +479,16 @@ IF EXISTS(select * from sys.procedures where name='Valores_Delete')
 DROP PROCEDURE Valores_Delete
 GO
 CREATE PROCEDURE [dbo].[Valores_Delete]
-	@idValor int,
-	@nombre nvarchar(30)
+	@idValor int
 AS
 BEGIN
 
 	BEGIN TRY
-	
-		IF EXISTS(Select * from Valores where idValor = @idValor)
-			RAISERROR('Ya existe este Valor',@idValor,11,1)
-
-		IF(LEN(@nombre) > 30)
-			RAISERROR('Excediste el n�mero de caracteres permitido',11,1)
-
-		UPDATE dbo.Valores
-		SET 
-		nombre= @nombre	
+		DELETE dbo.Notas
+		WHERE idValor = @idValor
+		DELETE dbo.EquiposValores
+		WHERE idValor = @idValor
+		DELETE dbo.Valores
 		WHERE idValor = @idValor 
 	END TRY
 	BEGIN CATCH
@@ -503,6 +497,7 @@ BEGIN
 	END CATCH
 END
 go
+
 IF EXISTS(select * from sys.procedures where name='EquiposValores_Insert')
 DROP PROCEDURE EquiposValores_Insert
 GO
@@ -2221,7 +2216,7 @@ create procedure [Listar_ValoresDeUnEquipo]
 as
 begin
 	BEGIN TRY
-		Select Valores.idValor, Valores.nombre as nombre_valor, eq.nombre as nombre_equipo 
+		Select Valores.idValor, Valores.nombre as nombre_valor, E.estado, eq.nombre as nombre_equipo 
 		from EquiposValores E inner join Equipos EQ on e.idEquipo = EQ.idEquipo
 		inner join Valores on e.idValor = Valores.idValor
 	    where e.idEquipo = @idEquipo
