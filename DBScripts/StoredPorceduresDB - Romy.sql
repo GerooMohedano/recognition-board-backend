@@ -419,17 +419,25 @@ IF EXISTS(select * from sys.procedures where name='Valores_Insert')
 DROP PROCEDURE Valores_Insert
 GO
 CREATE PROCEDURE [dbo].[Valores_Insert]
-	@nombre nvarchar(30)
+	@nombre nvarchar(30),
+	@idEquipo int
 
 AS
 BEGIN
+DECLARE @v_idValor int, @v_activo nvarchar(10)
+set @v_activo = 'Activo'
 
 	BEGIN TRY
 		IF(LEN(@nombre) > 30)
 			RAISERROR('Excediste el n�mero de caracteres permitido',11,1)
 
 		INSERT INTO dbo.Valores(nombre)
-		VALUES(@nombre)
+		VALUES(@nombre);
+
+		set @v_idValor = SCOPE_IDENTITY()
+
+		INSERT INTO dbo.EquiposValores(idValor,idEquipo,estado)
+		VALUES(@v_idValor,@idEquipo,@v_activo)
 	END TRY
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()
