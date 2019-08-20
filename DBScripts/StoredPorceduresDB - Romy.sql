@@ -425,7 +425,7 @@ CREATE PROCEDURE [dbo].[Valores_Insert]
 AS
 BEGIN
 DECLARE @v_idValor int, @v_activo nvarchar(10)
-set @v_activo = 'Activo'
+set @v_activo = 'activo'
 
 	BEGIN TRY
 		IF(LEN(@nombre) > 30)

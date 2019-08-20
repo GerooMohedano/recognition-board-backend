@@ -12,7 +12,8 @@ class LogrosRoutes extends MyRoutes{
               sql.connect(config, err => {
                   if(err) console.log("Control de error");
                   new sql.Request()
-                  .query(' EXEC Valores_Insert @nombre = ' + req.body.nombre, (err, result) => {
+                  .query(' EXEC Valores_Insert @nombre = "' + req.body.nombre
+                  + '", @idEquipo = "' + req.body.idEquipo + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
                     let datos = result.recordset;
