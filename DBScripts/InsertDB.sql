@@ -54,6 +54,10 @@ INSERT [dbo].[Valores] ([nombre]) VALUES ('Be MalaLeche')
 INSERT [dbo].[Valores] ([nombre]) VALUES ('Amistoso')
 INSERT [dbo].[Valores] ([nombre]) VALUES ('Puntualidad')
 INSERT [dbo].[Valores] ([nombre]) VALUES ('Creativo')
+INSERT [dbo].[Valores] ([nombre]) VALUES ('Para borrar 1')
+INSERT [dbo].[Valores] ([nombre]) VALUES ('Para borrar 2')
+INSERT [dbo].[Valores] ([nombre]) VALUES ('Para borrar 3')
+INSERT [dbo].[Valores] ([nombre]) VALUES ('Para borrar 4')
 GO
 
 INSERT [dbo].[Condiciones] ([idValor], [puntuacion]) VALUES (5, 100)
