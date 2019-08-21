@@ -6,14 +6,14 @@ const secret = 'secret';
 class UsuariosRoutes extends MyRoutes{
 
     constructor(express, router, sql, bodyParser, config) {
-        super(express, router, sql, bodyParser, config); 
+        super(express, router, sql, bodyParser, config);
         /*
         const user = {
           nombre : 'romina',
-          contrasenia : 1234 
+          contrasenia : 1234
         }
         //Login with token
-        /* GET function. 
+        /* GET function.
         router.get('/home', jwlVerifer({secret:secret}), function(req, res, next) {
           res.send('Principal Page');
         });
@@ -39,7 +39,7 @@ class UsuariosRoutes extends MyRoutes{
           }
         });
         */
-       
+
        function createToken(){
         let expirationDate = Math.floor(Date.now()/1000) + 30
         var token = jwt.sign({userID: user.nombre, exp:expirationDate }, secret);
@@ -49,11 +49,11 @@ class UsuariosRoutes extends MyRoutes{
 
           try{
               sql.connect(config,  err => {
-                  if(err) console.log("Control de error"); 
+                  if(err) console.log("Control de error");
                   new sql.Request()
                   .query(' EXEC get_user '
-                  + ' @nombre = "' + req.body.nombre 
-                  + '", @contrasenia = "' + req.body.contrasenia 
+                  + ' @nombre = "' + req.body.nombre
+                  + '", @contrasenia = "' + req.body.contrasenia
                   + '"', (err, result) => {
                     console.log(result.recordset)
                     let user = result.recordset;
@@ -81,12 +81,12 @@ class UsuariosRoutes extends MyRoutes{
                     sql.close();
                 });
               });
-    
+
             });
           }
           catch(e){
             console.log("ERROR",e);
-          }        
+          }
         })
 /*
        router.use('/', async (req, res, next) => {
@@ -119,11 +119,11 @@ class UsuariosRoutes extends MyRoutes{
               const token = authHeader.split(' ')[1];
               const payload = await validateToken(token);
               sql.connect(config,  err => {
-                  if(err) console.log("Control de error"); 
+                  if(err) console.log("Control de error");
                   const dbToken = new sql.Request()
                       .query(' EXEC get_token '
-                      + ' @nombre = "' + payload.nombre 
-                      + '", @valorToken = "' + token 
+                      + ' @nombre = "' + payload.nombre
+                      + '", @valorToken = "' + token
                       + '"', (err, result) => {
                         if(!dbToken){
                           throw new Error();
@@ -136,7 +136,7 @@ class UsuariosRoutes extends MyRoutes{
           }
           catch(e){
             console.log("ERROR",e);
-          } 
+          }
        });
 */
         //Logueo
@@ -145,12 +145,12 @@ class UsuariosRoutes extends MyRoutes{
           {
             sql.connect(config, err => {
                 if(err) console.log("Control de error");
-                //const query = 'EXEC Usuarios_Insert ' 
+                //const query = 'EXEC Usuarios_Insert '
                 new sql.Request()
                 .query(' EXEC Logeo '
-                + ' @nombre = "' + req.body.nombre 
-                + '", @contrasenia = "' + req.body.contrasenia 
-                + '", @logeado = "' + req.body.logeado 
+                + ' @nombre = "' + req.body.nombre
+                + '", @contrasenia = "' + req.body.contrasenia
+                + '", @logeado = "' + req.body.logeado
                 + '", @mensaje = "' + req.body.mensaje + '"', (err, result) => {
                   console.dir(result.recordset)
                   console.log(result.recordset)
@@ -173,7 +173,7 @@ class UsuariosRoutes extends MyRoutes{
               message: e
           });
           }
-        });        
+        });
         //Buscar Usuario
         router.post('/buscarUsuario', function(req, res, next){
                 try
@@ -203,7 +203,7 @@ class UsuariosRoutes extends MyRoutes{
                     message: e
                 });
                 }
-        });       
+        });
         //Buscar Usuario por empresa
         router.post('/buscarUsuarioPorEmpresa', function(req, res, next){
           try
@@ -212,7 +212,7 @@ class UsuariosRoutes extends MyRoutes{
                 if(err) console.log("Control de error");
                 new sql.Request()
                 .query(' EXEC Buscar_UsuarioPorEmpresa'
-                +' @idEmpresa = "' + req.body.idEmpresa 
+                +' @idEmpresa = "' + req.body.idEmpresa
                 +'", @idUsuario = "'+ req.body.idUsuario + '"', (err, result) => {
                   console.dir(result.recordset)
                   console.log(result.recordset)
@@ -235,7 +235,7 @@ class UsuariosRoutes extends MyRoutes{
               message: e
           });
           }
-        });    
+        });
         //Buscar Usuario por mail
         router.post('/buscarUsuarioPorMail', function(req, res, next){
           try
@@ -265,7 +265,7 @@ class UsuariosRoutes extends MyRoutes{
               message: e
           });
           }
-        }); 
+        });
         //Buscar perfil
         router.post('/buscarPerfil', function(req, res, next){
           try
@@ -295,7 +295,7 @@ class UsuariosRoutes extends MyRoutes{
               message: e
           });
           }
-        });  
+        });
          //ir al perfil
          router.get('/perfil/:id', function(req, res, next){
           try
@@ -333,14 +333,14 @@ class UsuariosRoutes extends MyRoutes{
                     usuarios= await queryUsuarios.query(' EXEC Usuarios_Get @idUsuario = ' + idUs)
                       return{
                         usuarios:usuarios.recordset
-                      } 
+                      }
                   })(),
                   (async()=>{
                     let queryLogros = new sql.Request()
                     logros= await queryLogros.query(' EXEC Logros_EmpresaUsuario @idUsuario = ' + idUs)
                       return{
                         logros:logros.recordset
-                      } 
+                      }
                   })(),
                 ];
                 let resultado=Promise.all(queries).then(
@@ -367,7 +367,7 @@ class UsuariosRoutes extends MyRoutes{
               message: e
           });
           }
-        });  
+        });
 
         //Cambiar contraseña
         router.post('/cambioContraseña', function(req, res, next){
@@ -377,8 +377,8 @@ class UsuariosRoutes extends MyRoutes{
                 if(err) console.log("Control de error");
                 new sql.Request()
                 .query(' EXEC Cambiar_Contraseña '
-                + ' @idUsuario = "' + req.body.idUsuario 
-                + '", @contraseniaactual = "' + req.body.contraseniaactual 
+                + ' @idUsuario = "' + req.body.idUsuario
+                + '", @contraseniaactual = "' + req.body.contraseniaactual
                 + '", @contrasenianueva = "' + req.body.contrasenianueva + '"', (err, result) => {
                   console.dir(result.recordset)
                   console.log(result.recordset)
@@ -408,13 +408,13 @@ class UsuariosRoutes extends MyRoutes{
           {
             sql.connect(config, err => {
                 if(err) console.log("Control de error");
-                //const query = 'EXEC Usuarios_Insert ' 
+                //const query = 'EXEC Usuarios_Insert '
                 new sql.Request()
                 .query(' EXEC Usuarios_Insert '
-                + ' @nombre = "' + req.body.nombre 
-                + '", @contraseña = "' + req.body.contraseña 
-                + '", @mail = "' + req.body.mail 
-                + '", @fotoPerfil = "' + req.body.fotoPerfil 
+                + ' @nombre = "' + req.body.nombre
+                + '", @contraseña = "' + req.body.contraseña
+                + '", @mail = "' + req.body.mail
+                + '", @fotoPerfil = "' + req.body.fotoPerfil
                 + '", @adminGeneral = "' + req.body.adminGeneral + '"', (err, result) => {
                   console.dir(result.recordset)
                   console.log(result.recordset)
@@ -444,7 +444,7 @@ class UsuariosRoutes extends MyRoutes{
                 {
                   sql.connect(config, err => {
                       if(err) console.log("Control de error");
-                      //const query = 'EXEC Usuarios_Insert ' 
+                      //const query = 'EXEC Usuarios_Insert '
                       new sql.Request()
                       .query('EXEC Listar_UsuariosPorEmpresa @idEmpresa = ' + req.body.idEmpresa, (err, result) => {
                         console.dir(result.recordset)
@@ -468,6 +468,37 @@ class UsuariosRoutes extends MyRoutes{
                 });
                 }
         });
+
+        //Listar usuarios por empresa
+         router.post('/usuariosPorEmpresaPorEquipo', function(req, res, next){
+                try
+                {
+                  sql.connect(config, err => {
+                      if(err) console.log("Control de error");
+                      new sql.Request()
+                      .query('EXEC Listar_UsuariosPorEmpresaPorEquipo @idEquipo = ' + req.body.idEquipo, (err, result) => {
+                        console.dir(result.recordset)
+                        let datos = result.recordset;
+                        res.send(
+                          {
+                            status: "OK",
+                            data : datos
+                          }
+                        );
+                        sql.close();
+                    });
+                  });
+                }
+                catch(e)
+                {
+                console.log(e);
+                res.send({
+                    status: "error",
+                    message: e
+                });
+                }
+        });
+
          //Listar usuarios por equipo
          router.post('/usuariosPorEquipo', function(req, res, next){
           try
@@ -563,11 +594,11 @@ class UsuariosRoutes extends MyRoutes{
               if(err) console.log("Control de error");
               new sql.Request()
               .query(' EXEC Usuarios_Update '
-              + ' @idUsuario = "' + req.body.idUsuario 
-              + '", @nombre = "' + req.body.nombre 
-              + '", @contraseña = "' + req.body.contraseña 
-              + '", @mail = "' + req.body.mail 
-              + '", @fotoPerfil = "' + req.body.fotoPerfil 
+              + ' @idUsuario = "' + req.body.idUsuario
+              + '", @nombre = "' + req.body.nombre
+              + '", @contraseña = "' + req.body.contraseña
+              + '", @mail = "' + req.body.mail
+              + '", @fotoPerfil = "' + req.body.fotoPerfil
               + '", @adminGeneral = "' + req.body.adminGeneral + '"', (err, result) => {
                 console.dir(result.recordset)
                 console.log(result.recordset)
@@ -600,7 +631,7 @@ class UsuariosRoutes extends MyRoutes{
                 if(err) console.log("Control de error");
                 new sql.Request()
                 .query(' EXEC Usuarios_MailUpdate '
-                + ' @idUsuario = "' + req.body.idUsuario 
+                + ' @idUsuario = "' + req.body.idUsuario
                 + '", @mail = "' + req.body.mail + '"', (err, result) => {
                   console.dir(result.recordset)
                   console.log(result.recordset)
@@ -634,7 +665,7 @@ class UsuariosRoutes extends MyRoutes{
                 if(err) console.log("Control de error");
                 new sql.Request()
                 .query(' EXEC Usuarios_fotoPerfilUpdate '
-                + ' @idUsuario = "' + req.body.idUsuario 
+                + ' @idUsuario = "' + req.body.idUsuario
                 + '", @fotoPerfil = "' + req.body.fotoPerfil + '"', (err, result) => {
                   console.dir(result.recordset)
                   console.log(result.recordset)
@@ -659,7 +690,7 @@ class UsuariosRoutes extends MyRoutes{
           }
           });
 
-  
+
         //Eliminar usuario
          router.post('/eliminarUsuario', function(req, res, next){
         try
@@ -690,8 +721,8 @@ class UsuariosRoutes extends MyRoutes{
         }
         });
 
-        
-  
+
+
         //Logros que puede obtener un usuario
         router.post('/logrosUsuario', function(req, res, next){
           try
@@ -730,9 +761,9 @@ class UsuariosRoutes extends MyRoutes{
             new sql.Request()
             new sql.Request()
             .query(' EXEC UsuariosEquipos_Insert '
-            + ' @idEquipo = "' + req.body.idEquipo 
-            + '", @idUsuario = "' + req.body.idUsuario 
-            + '", @rol = "' + req.body.rol 
+            + ' @idEquipo = "' + req.body.idEquipo
+            + '", @idUsuario = "' + req.body.idUsuario
+            + '", @rol = "' + req.body.rol
             + '", @estado = "' + req.body.estado + '"', (err, result) => {
               console.dir(result.recordset)
               console.log(result.recordset)
@@ -756,6 +787,41 @@ class UsuariosRoutes extends MyRoutes{
       });
       }
         });
+
+        // Desligar un usuario de un equipo
+         router.post('/borrarUsuarioDelEquipo', function(req, res, next){
+      try
+      {
+        sql.connect(config, err => {
+            if(err) console.log("Control de error");
+            new sql.Request()
+            new sql.Request()
+            .query(' EXEC UsuariosEquipos_Delete '
+            + ' @idEquipo = "' + req.body.idEquipo
+            + '", @idUsuario = "' + req.body.idUsuario + '"', (err, result) => {
+              console.dir(result.recordset)
+              console.log(result.recordset)
+              let datos = result.recordset;
+              res.send(
+                {
+                  status: "OK",
+                  data : datos
+                }
+               );
+               sql.close();
+          });
+        });
+      }
+      catch(e)
+      {
+      console.log(e);
+      res.send({
+          status: "error",
+          message: e
+      });
+      }
+        });
+
         //ListarUsuarios
         router.get('/usuarios', function(req, res, next){
             try
@@ -782,8 +848,8 @@ class UsuariosRoutes extends MyRoutes{
             }
         });
     }
-    
-    
+
+
 }
 
 module.exports = UsuariosRoutes;

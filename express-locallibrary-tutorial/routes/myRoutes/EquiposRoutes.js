@@ -493,7 +493,7 @@ class EquiposRoutes extends MyRoutes{
           {
             sql.connect(config, err => {
                 var idEq = req.params.id
-                let evaluacion, usuarios, equipos, pizarras, result
+                let evaluacion, usuarios, equipos, pizarras, valoresEmpresa, result
                 console.log('id del equipo: ', idEq);
                 if(err) console.log("Control de error");
                 let queries=[
@@ -525,6 +525,13 @@ class EquiposRoutes extends MyRoutes{
                         usuarios:usuarios.recordset
                       }
                   })(),
+                  (async()=>{
+                    let queryValoresEmpresa = new sql.Request()
+                    valoresEmpresa = await queryValoresEmpresa.query(' EXEC Listar_ValoresEmpresaPorEquipo @idEquipo = ' + idEq);
+                      return {
+                        valoresEmpresa:valoresEmpresa.recordset
+                      }
+                  })(),
                 ];
                 let resultado=Promise.all(queries).then(
                   (result)=>{
@@ -534,7 +541,8 @@ class EquiposRoutes extends MyRoutes{
                       evaluacion:result[0].evaluacion,
                       pizarras:result[1].pizarras,
                       equipos:result[2].equipos,
-                      usuarios:result[3].usuarios
+                      usuarios:result[3].usuarios,
+                      valoresEmpresa:result[4].valoresEmpresa
                     }
                     res.send(parseResult)
                   }
@@ -557,7 +565,7 @@ class EquiposRoutes extends MyRoutes{
           {
             sql.connect(config, err => {
                 var idEq = req.params.id
-                let valores, usuarios, equipos, result
+                let valores, usuarios, usuariosEmpresa, equipos, result
                 console.log('id del equipo: ', idEq);
                 if(err) console.log("Control de error");
                 let queries=[
@@ -566,6 +574,13 @@ class EquiposRoutes extends MyRoutes{
                     usuarios= await queryUsuarios.query(' EXEC Listar_UsuariosPorEquipo @idEquipo = ' + idEq);
                     return {
                       usuarios:usuarios.recordset
+                    }
+                  })(),
+                  (async()=>{
+                    let queryUsuariosEmpresa=new sql.Request()
+                    usuariosEmpresa= await queryUsuariosEmpresa.query(' EXEC Listar_UsuariosPorEmpresaPorEquipo @idEquipo = ' + idEq);
+                    return {
+                      usuariosEmpresa:usuariosEmpresa.recordset
                     }
                   })(),
                   (async()=>{
@@ -589,8 +604,9 @@ class EquiposRoutes extends MyRoutes{
                     console.log("Success: ")
                     let parseResult={
                       usuarios:result[0].usuarios,
-                      equipos:result[1].equipos,
-                      valores:result[2].valores
+                      usuariosEmpresa:result[1].usuariosEmpresa,
+                      equipos:result[2].equipos,
+                      valores:result[3].valores
                     }
                     res.send(parseResult)
                   }

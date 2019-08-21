@@ -756,6 +756,27 @@ BEGIN
 END
 go
 
+IF EXISTS(select * from sys.procedures where name='UsuariosEquipos_Delete')
+DROP PROCEDURE UsuariosEquipos_Delete
+GO
+CREATE PROCEDURE [dbo].[UsuariosEquipos_Delete]
+	@idEquipo int,
+	@idUsuario int
+AS
+BEGIN
+
+	BEGIN TRY
+		DELETE FROM dbo.UsuariosEquipos
+		WHERE dbo.UsuariosEquipos.idEquipo = @idEquipo AND dbo.UsuariosEquipos.idUsuario = @idUsuario
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+
+END
+go
+
 IF EXISTS(select * from sys.procedures where name='CambiarAdminEquipo')
 DROP PROCEDURE CambiarAdminEquipo
 GO
@@ -1967,6 +1988,27 @@ begin
 end 
 go
 
+IF EXISTS(select * from sys.procedures where name='Listar_ValoresEmpresaPorEquipo')
+DROP PROCEDURE Listar_ValoresEmpresaPorEquipo
+GO
+create procedure Listar_ValoresEmpresaPorEquipo
+@idEquipo int
+as
+begin
+		BEGIN TRY
+			Select EV.idValor, V.nombre as Valor
+			from EmpresasValores EV inner join Empresas E on EV.idEmpresa = E.idEmpresa
+									inner join Valores V on EV.idValor = V.idValor
+									inner join Equipos on Equipos.idEmpresa = E.idEmpresa
+			where Equipos.idEquipo = @idEquipo
+		END TRY	
+		BEGIN CATCH
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)
+		END CATCH 
+end 
+go
+
 IF EXISTS(select * from sys.procedures where name='Buscar_Empresa')
 DROP PROCEDURE Buscar_Empresa
 GO
@@ -2063,6 +2105,26 @@ begin
 		Select u.idUsuario, Usuarios.nombre as nombre_usuario
 		from UsuariosEmpresas U inner join Usuarios on u.idUsuario = Usuarios.idUsuario
 	    where u.idEmpresa = @idEmpresa
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
+IF EXISTS(select * from sys.procedures where name='Listar_UsuariosPorEmpresaPorEquipo')
+DROP PROCEDURE Listar_UsuariosPorEmpresaPorEquipo
+GO
+create procedure [Listar_UsuariosPorEmpresaPorEquipo]
+@idEquipo int
+as
+begin
+	BEGIN TRY
+		Select u.idUsuario, Usuarios.nombre as nombre_usuario
+		from UsuariosEmpresas U inner join Usuarios on u.idUsuario = Usuarios.idUsuario
+		inner join Equipos E on U.idEmpresa = E.idEmpresa
+	    where E.idEquipo = @idEquipo
 	END TRY	
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()
