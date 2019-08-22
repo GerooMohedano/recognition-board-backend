@@ -295,6 +295,96 @@ class EmpresasRoutes extends MyRoutes{
                 });
                 }
         });
+        //Desactivar Usuario de una Empresa
+        router.post('/desactivarUsuarioEmpresa', function(req, res, next){
+          try
+          {
+            sql.connect(config, err => {
+                if(err) console.log("Control de error");
+                new sql.Request()
+                .query(' EXEC UsuarioEmpresa_Desactivate @idUsuario= ' + req.body.idUsuario, (err, result) => {
+                  console.dir(result.recordset)
+                  console.log(result.recordset)
+                  let datos = result.recordset;
+                  res.send(
+                    {
+                      status: "OK",
+                      data : datos
+                    }
+                  );
+                  sql.close();
+              });
+            });
+          }
+          catch(e)
+          {
+          console.log(e);
+          res.send({
+              status: "error",
+              message: e
+          });
+          }
+        });
+        //Activar Usuario de una Empresa
+        router.post('/activarUsuarioEmpresa', function(req, res, next){
+          try
+          {
+            sql.connect(config, err => {
+                if(err) console.log("Control de error");
+                new sql.Request()
+                .query(' EXEC UsuarioEmpresa_Activate @idUsuario= ' + req.body.idUsuario, (err, result) => {
+                  console.dir(result.recordset)
+                  console.log(result.recordset)
+                  let datos = result.recordset;
+                  res.send(
+                    {
+                      status: "OK",
+                      data : datos
+                    }
+                  );
+                  sql.close();
+              });
+            });
+          }
+          catch(e)
+          {
+          console.log(e);
+          res.send({
+              status: "error",
+              message: e
+          });
+          }
+      });
+      //Eliminar Usuario de una Empresa
+      router.post('/eliminarUsuarioEmpresa', function(req, res, next){
+        try
+        {
+          sql.connect(config, err => {
+              if(err) console.log("Control de error");
+              new sql.Request()
+              .query(' EXEC UsuarioEmpresa_Delete @idUsuario= ' + req.body.idUsuario, (err, result) => {
+                console.dir(result.recordset)
+                console.log(result.recordset)
+                let datos = result.recordset;
+                res.send(
+                  {
+                    status: "OK",
+                    data : datos
+                  }
+                );
+                sql.close();
+            });
+          });
+        }
+        catch(e)
+        {
+        console.log(e);
+        res.send({
+            status: "error",
+            message: e
+        });
+        }
+      });
         //ir a la configuracion de empresa
         router.get('/empresaConfig/:id', function(req, res, next){
           try

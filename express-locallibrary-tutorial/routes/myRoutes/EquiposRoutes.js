@@ -208,7 +208,7 @@ class EquiposRoutes extends MyRoutes{
               sql.connect(config, err => {
                   if(err) console.log("Control de error");
                   new sql.Request()
-                  .query(' EXEC Listar_ValoresDeUnEquipo @idEquipo = "' + req.body.idEquipo , (err, result) => {
+                  .query(' EXEC Listar_ValoresDeUnEquipo @idEquipo = ' + req.body.idEquipo , (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
                     let datos = result.recordset;
@@ -239,7 +239,7 @@ class EquiposRoutes extends MyRoutes{
               sql.connect(config, err => {
                   if(err) console.log("Control de error");
                   new sql.Request()
-                  .query(' EXEC Listar_PizarrasDeUnEquipo @idEquipo = "' + req.body.idEquipo , (err, result) => {
+                  .query(' EXEC Listar_PizarrasDeUnEquipo @idEquipo = ' + req.body.idEquipo , (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
                     let datos = result.recordset;
@@ -295,6 +295,69 @@ class EquiposRoutes extends MyRoutes{
             });
             }
         });
+
+        //ACTIVAR EQUIPO
+        router.post('/activarEquipo', function(req, res, next){
+          try
+          {
+          sql.connect(config, err => {
+              if(err) console.log("Control de error");
+              new sql.Request()
+              .query(' EXEC Equipos_Activate @idEquipo = ' + req.body.idEquipo, (err, result) => {
+                  console.dir(result.recordset)
+                  console.log(result.recordset)
+                  let datos = result.recordset;
+                  res.send(
+                  {
+                      status: "OK",
+                      data : datos
+                  }
+                  );
+                  sql.close();
+              });
+          });
+          }
+          catch(e)
+          {
+          console.log(e);
+          res.send({
+              status: "error",
+              message: e
+          });
+          }
+      });
+
+      
+        //DESACTIVAR EQUIPO
+        router.post('/desactivarEquipo', function(req, res, next){
+          try
+          {
+          sql.connect(config, err => {
+              if(err) console.log("Control de error");
+              new sql.Request()
+              .query(' EXEC Equipos_Desactivate @idEquipo = ' + req.body.idEquipo, (err, result) => {
+                  console.dir(result.recordset)
+                  console.log(result.recordset)
+                  let datos = result.recordset;
+                  res.send(
+                  {
+                      status: "OK",
+                      data : datos
+                  }
+                  );
+                  sql.close();
+              });
+          });
+          }
+          catch(e)
+          {
+          console.log(e);
+          res.send({
+              status: "error",
+              message: e
+          });
+          }
+      });
 
      //Modificar valor a un Equipo: ACTIVAR
         router.post('/activarValor', function(req, res, next){

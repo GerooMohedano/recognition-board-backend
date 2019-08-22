@@ -7,9 +7,9 @@ DROP DATABASE OnBoardDataBase
 /****** Object:  Database [OnBoardDataBase] ******/
 CREATE DATABASE [OnBoardDataBase]
  ON  PRIMARY 
-( NAME = N'OnBoardDataBase', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL14.MSSQLSERVER\MSSQL\DATA\OnBoardDataBase.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+( NAME = N'OnBoardDataBase', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL14.SQLEXPRESS\MSSQL\DATA\OnBoardDataBase.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
  LOG ON 
-( NAME = N'OnBoardDataBase_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL14.MSSQLSERVER\MSSQL\DATA\OnBoardDataBase_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+( NAME = N'OnBoardDataBase_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL14.SQLEXPRESS\MSSQL\DATA\OnBoardDataBase_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
 GO
 ALTER DATABASE [OnBoardDataBase] SET COMPATIBILITY_LEVEL = 100
 GO
@@ -21,11 +21,6 @@ GO
 
 USE [OnBoardDataBase]
 GO
-
-
-USE [OnBoardDataBase]
-GO
-
 /****** Object:  Table TOKEN ******/
 SET ANSI_NULLS ON
 GO
@@ -130,7 +125,7 @@ CREATE TABLE [dbo].[Equipos](
 	[nombre] [varchar](30) NOT NULL,
 	[imagen] [image] NULL,
 	[estado] [varchar](30) NOT NULL,
-	[idEmpresa] [int] NOT NULL,
+	[idEmpresa] [int] NULL,
  CONSTRAINT [PK_Equipos] PRIMARY KEY CLUSTERED 
 (
 	[idEquipo] ASC
@@ -277,6 +272,7 @@ CREATE TABLE [dbo].[UsuariosEmpresas](
 	[idEmpresa] [int] NOT NULL,
 	[idUsuario] [int] NOT NULL,
 	[rol] [bit] NOT NULL,
+	[estado] [varchar](30) NOT NULL,
 	CONSTRAINT [PK_UsuariosEmpresas] PRIMARY KEY CLUSTERED 
 (
 	[idEmpresa] ASC,

@@ -938,13 +938,14 @@ GO
 CREATE PROCEDURE [dbo].[UsuariosEmpresas_Insert]
 	@idUsuario int,
 	@idEmpresa int,
-	@rol nvarchar(50)
+	@rol nvarchar(50),
+	@estado nvarchar(10)
 
 AS
 BEGIN
 	BEGIN TRY
-		INSERT INTO dbo.UsuariosEmpresas(idUsuario, idEmpresa, rol)
-		VALUES(@idUsuario,@idEmpresa,@rol)
+		INSERT INTO dbo.UsuariosEmpresas(idUsuario, idEmpresa, rol, estado)
+		VALUES(@idUsuario,@idEmpresa,@rol,@estado)
 	END TRY	
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()
@@ -991,7 +992,7 @@ as
 begin
 	BEGIN TRY
 		delete from dbo.Usuarios where idUsuario = @idUsuario
-		delete from dbo.LogrosUsuarios where idUsuario = @idUsuario
+		--delete from dbo.LogrosUsuarios where idUsuario = @idUsuario
 		delete from dbo.UsuariosEmpresas where idUsuario = @idUsuario
 		delete from dbo.UsuariosEquipos where idUsuario = @idUsuario
 	END TRY
@@ -1029,9 +1030,10 @@ create procedure [Equipos_Delete]
 as
 begin
 	BEGIN TRY
-		delete from dbo.Equipos where idEquipo = @idEquipo
-		delete from dbo.EquiposValores where idEquipo = @idEquipo
-		delete from dbo.UsuariosEquipos where idEquipo = @idEquipo
+		--delete from dbo.Equipos where idEquipo = @idEquipo
+		--delete from dbo.EquiposValores where idEquipo = @idEquipo
+		--delete from dbo.UsuariosEquipos where idEquipo = @idEquipo
+		update Equipos set idEmpresa = null where idEquipo = @idEquipo
 	END TRY	
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()
@@ -2165,7 +2167,7 @@ create procedure [Listar_UsuariosPorEmpresa]
 as
 begin
 	BEGIN TRY
-		Select u.idUsuario, Usuarios.nombre as nombre_usuario
+		Select u.idUsuario, Usuarios.nombre as nombre_usuario, u.estado
 		from UsuariosEmpresas U inner join Usuarios on u.idUsuario = Usuarios.idUsuario
 	    where u.idEmpresa = @idEmpresa
 	END TRY	
