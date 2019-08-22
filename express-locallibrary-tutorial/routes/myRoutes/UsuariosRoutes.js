@@ -376,7 +376,7 @@ class UsuariosRoutes extends MyRoutes{
            sql.close();
            sql.connect(config, err => {
                var idUs = req.body.idUsuario
-               let equipos, empresas, result
+               let equipos, empresas, equiposDeEmpresa, usuariosEmpresa, result
                console.log('id de usuario: ', idUs);
                if(err) console.log("Control de error");
                let queries=[
@@ -394,14 +394,29 @@ class UsuariosRoutes extends MyRoutes{
                      empresas:empresas.recordset
                    }
                  })(),
+                 (async()=>{
+                   let queryEquiposDeEmpresa = new sql.Request();
+                   equiposDeEmpresa = await queryEquiposDeEmpresa.query(' EXEC Listar_EquiposDeEmpresaPorUsuario @idUsuario = ' + idUs);
+                   return {
+                     equiposDeEmpresa:equiposDeEmpresa.recordset
+                   }
+                 })(),
+                 (async()=>{
+                   let queryUsuariosEmpresa = new sql.Request();
+                   usuariosEmpresa = await queryUsuariosEmpresa.query(' EXEC Listar_UsuariosDeEmpresaPorUsuario @idUsuario = ' + idUs);
+                   return {
+                     usuariosEmpresa:usuariosEmpresa.recordset
+                   }
+                 })(),
                ];
                let resultado=Promise.all(queries).then(
                  (result)=>{
                    sql.close();
-                   console.log("Successssss: ")
                    let parseResult={
                      equipos:result[0].equipos,
-                     empresas:result[1].empresas
+                     empresas:result[1].empresas,
+                     equiposDeEmpresa:result[2].equiposDeEmpresa,
+                     usuariosEmpresa:result[3].usuariosEmpresa
                    }
                    res.send(parseResult)
                  }

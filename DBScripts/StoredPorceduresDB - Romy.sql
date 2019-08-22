@@ -1932,6 +1932,49 @@ begin
 end 
 GO
 
+IF EXISTS(select * from sys.procedures where name='Listar_EquiposDeEmpresaPorUsuario')
+DROP PROCEDURE Listar_EquiposDeEmpresaPorUsuario
+GO
+create procedure [Listar_EquiposDeEmpresaPorUsuario]
+@idUsuario int
+as
+begin
+	BEGIN TRY
+		Select U.idUsuario, UE.idEmpresa, Q.idEquipo, Q.nombre as nombre_equipo
+		from Usuarios U inner join UsuariosEmpresas UE on U.idUsuario = UE.idUsuario
+						inner join Empresas E on UE.idEmpresa = E.idEmpresa
+						inner join Equipos Q on E.idEmpresa = Q.idEmpresa
+	    where U.idUsuario = @idUsuario
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+GO
+
+IF EXISTS(select * from sys.procedures where name='Listar_UsuariosDeEmpresaPorUsuario')
+DROP PROCEDURE Listar_UsuariosDeEmpresaPorUsuario
+GO
+create procedure [Listar_UsuariosDeEmpresaPorUsuario]
+@idUsuario int
+as
+begin
+	BEGIN TRY
+		Select UU.idUsuario, UE.idEmpresa, UU.nombre as nombre_usuario
+		from Usuarios U inner join UsuariosEmpresas UE on U.idUsuario = UE.idUsuario
+						inner join Empresas E on UE.idEmpresa = E.idEmpresa
+						inner join UsuariosEmpresas UEE on E.idEmpresa = UEE.idEmpresa
+						inner join Usuarios UU on UU.idUsuario = UEE.idUsuario
+	    where U.idUsuario = @idUsuario
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+GO
+
 IF EXISTS(select * from sys.procedures where name='Listar_Empresas')
 DROP PROCEDURE Listar_Empresas
 GO
