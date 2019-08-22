@@ -369,6 +369,55 @@ class UsuariosRoutes extends MyRoutes{
           }
         });
 
+        //ir al perfil
+        router.post('/sideMenuInfo', function(req, res, next){
+         try
+         {
+           sql.close();
+           sql.connect(config, err => {
+               var idUs = req.body.idUsuario
+               let equipos, empresas, result
+               console.log('id de usuario: ', idUs);
+               if(err) console.log("Control de error");
+               let queries=[
+                 (async()=>{
+                   let queryEquipos=new sql.Request()
+                   equipos= await queryEquipos.query(' EXEC Listar_EquiposPorUsuario @idUsuario = ' + idUs);
+                   return {
+                     equipos:equipos.recordset
+                   }
+                 })(),
+                 (async()=>{
+                   let queryEmpresas = new sql.Request();
+                   empresas = await queryEmpresas.query(' EXEC Listar_EmpresasUsuario @idUsuario = ' + idUs);
+                   return {
+                     empresas:empresas.recordset
+                   }
+                 })(),
+               ];
+               let resultado=Promise.all(queries).then(
+                 (result)=>{
+                   sql.close();
+                   console.log("Successssss: ")
+                   let parseResult={
+                     equipos:result[0].equipos,
+                     empresas:result[1].empresas
+                   }
+                   res.send(parseResult)
+                 }
+               );
+             });
+         }
+         catch(e)
+         {
+         console.log(e);
+         res.send({
+             status: "error",
+             message: e
+         });
+         }
+       });
+
         //Cambiar contraseña
         router.post('/cambioContraseña', function(req, res, next){
           try

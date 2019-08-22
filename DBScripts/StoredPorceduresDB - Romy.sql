@@ -1920,7 +1920,7 @@ create procedure [Listar_EquiposPorUsuario]
 as
 begin
 	BEGIN TRY
-		Select U.idUsuario, U.nombre as nombre_usuario, UE.idEquipo, E.nombre as nombre_equipo
+		Select U.idUsuario, U.nombre as nombre_usuario, UE.idEquipo, E.nombre as nombre_equipo, E.idEmpresa as idEmpresa
 		from Usuarios U inner join UsuariosEquipos UE on U.idUsuario = UE.idUsuario
 						inner join Equipos E on UE.idEquipo = E.idEquipo
 	    where U.idUsuario = @idUsuario
@@ -1940,6 +1940,26 @@ as
 begin
 	BEGIN TRY
 		Select E.idEmpresa, E.nombre from Empresas E
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
+IF EXISTS(select * from sys.procedures where name='Listar_EmpresasUsuario')
+DROP PROCEDURE Listar_EmpresasUsuario
+GO
+create procedure [Listar_EmpresasUsuario]
+@idUsuario int
+as
+begin
+	BEGIN TRY
+		Select E.idEmpresa, E.nombre from Empresas E
+		inner join UsuariosEmpresas UE on E.idEmpresa = UE.idEmpresa
+		inner join Usuarios U on U.idUsuario = UE.idUsuario
+		where U.idUsuario = @idUsuario
 	END TRY	
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()
