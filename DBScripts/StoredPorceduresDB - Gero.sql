@@ -45,6 +45,74 @@ BEGIN
 END
 GO
 
+/***** Desactivar UsuariosEmpresas *****/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF EXISTS(select * from sys.procedures where name='UsuarioEmpresa_Desactivate')
+DROP PROCEDURE UsuarioEmpresa_Desactivate
+GO
+CREATE PROCEDURE [UsuarioEmpresa_Desactivate]
+	@idUsuario int
+AS
+BEGIN
+	SET NOCOUNT ON;
+		begin try
+			UPDATE [dbo].[UsuariosEmpresas] SET [estado] = 'inactivo' WHERE [idUsuario] = @idUsuario
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
+END
+GO
+
+/***** Activar UsuariosEmpresas *****/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF EXISTS(select * from sys.procedures where name='UsuarioEmpresa_Activate')
+DROP PROCEDURE UsuarioEmpresa_Activate
+GO
+CREATE PROCEDURE [UsuarioEmpresa_Activate]
+	@idUsuario int
+AS
+BEGIN
+	SET NOCOUNT ON;
+		begin try
+			UPDATE [dbo].[UsuariosEmpresas] SET [estado] = 'activo' WHERE [idUsuario] = @idUsuario
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
+END
+GO
+
+/***** Eliminar UsuarioEmpresa *****/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF EXISTS(select * from sys.procedures where name='UsuarioEmpresa_Delete')
+DROP PROCEDURE UsuarioEmpresa_Delete
+GO
+CREATE PROCEDURE [UsuarioEmpresa_Delete]
+	@idUsuario int
+AS
+BEGIN
+	SET NOCOUNT ON;
+		begin try
+			delete from dbo.UsuariosEmpresas where idUsuario = @idUsuario
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
+END
+GO
 /***** Activar miembro de equipo *****/
 SET ANSI_NULLS ON
 GO
@@ -134,6 +202,52 @@ BEGIN
 	SET NOCOUNT ON;
 		begin try
 			UPDATE [dbo].[EquiposValores] SET [estado] = 'inactivo' WHERE [idValor] = @idValor AND [idEquipo] = @idEquipo
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
+END
+GO
+
+/***** Activar Equipo *****/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF EXISTS(select * from sys.procedures where name='Equipos_Activate')
+DROP PROCEDURE Equipos_Activate
+GO
+CREATE PROCEDURE [Equipos_Activate]
+	@idEquipo int
+AS
+BEGIN
+	SET NOCOUNT ON;
+		begin try
+			 UPDATE [dbo].[Equipos] SET [estado] = 'activo' WHERE [idEquipo] = @idEquipo
+	    end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
+END
+GO
+
+/***** Desactivar equipo *****/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF EXISTS(select * from sys.procedures where name='Equipos_Desactivate')
+DROP PROCEDURE Equipos_Desactivate
+GO
+CREATE PROCEDURE [Equipos_Desactivate]
+	@idEquipo int
+AS
+BEGIN
+	SET NOCOUNT ON;
+		begin try
+			UPDATE [dbo].[Equipos] SET [estado] = 'inactivo' WHERE [idEquipo] = @idEquipo
 		end try
 		begin catch
 			declare @error varchar(100)= ERROR_MESSAGE()

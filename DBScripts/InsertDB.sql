@@ -135,15 +135,15 @@ INSERT [dbo].[Notas] ([idPizarra], [idAutor], [idDestinatario], [idValor], [desc
 INSERT [dbo].[Notas] ([idPizarra], [idAutor], [idDestinatario], [idValor], [descripcion], [puntuacion]) VALUES (10, 10, 8, 7, 'Nah mentira, muy buena idea. Idolo!', 1)
 GO
 
-INSERT [dbo].[UsuariosEmpresas] ([idEmpresa], [idUsuario], [rol]) VALUES (2, 2, 1)
-INSERT [dbo].[UsuariosEmpresas] ([idEmpresa], [idUsuario], [rol]) VALUES (1, 3, 1)
-INSERT [dbo].[UsuariosEmpresas] ([idEmpresa], [idUsuario], [rol]) VALUES (1, 4, 0)
-INSERT [dbo].[UsuariosEmpresas] ([idEmpresa], [idUsuario], [rol]) VALUES (1, 5, 0)
-INSERT [dbo].[UsuariosEmpresas] ([idEmpresa], [idUsuario], [rol]) VALUES (1, 6, 0)
-INSERT [dbo].[UsuariosEmpresas] ([idEmpresa], [idUsuario], [rol]) VALUES (2, 7, 0)
-INSERT [dbo].[UsuariosEmpresas] ([idEmpresa], [idUsuario], [rol]) VALUES (2, 8, 0)
-INSERT [dbo].[UsuariosEmpresas] ([idEmpresa], [idUsuario], [rol]) VALUES (2, 9, 0)
-INSERT [dbo].[UsuariosEmpresas] ([idEmpresa], [idUsuario], [rol]) VALUES (2, 10, 0)
+INSERT [dbo].[UsuariosEmpresas] ([idEmpresa], [idUsuario], [rol], [estado]) VALUES (2, 2, 1, 'activo')
+INSERT [dbo].[UsuariosEmpresas] ([idEmpresa], [idUsuario], [rol], [estado]) VALUES (1, 3, 1, 'inactivo')
+INSERT [dbo].[UsuariosEmpresas] ([idEmpresa], [idUsuario], [rol], [estado]) VALUES (1, 4, 0, 'activo')
+INSERT [dbo].[UsuariosEmpresas] ([idEmpresa], [idUsuario], [rol], [estado]) VALUES (1, 5, 0, 'activo')
+INSERT [dbo].[UsuariosEmpresas] ([idEmpresa], [idUsuario], [rol], [estado]) VALUES (1, 6, 0, 'inactivo')
+INSERT [dbo].[UsuariosEmpresas] ([idEmpresa], [idUsuario], [rol], [estado]) VALUES (2, 7, 0, 'activo')
+INSERT [dbo].[UsuariosEmpresas] ([idEmpresa], [idUsuario], [rol], [estado]) VALUES (2, 8, 0, 'inactivo')
+INSERT [dbo].[UsuariosEmpresas] ([idEmpresa], [idUsuario], [rol], [estado]) VALUES (2, 9, 0, 'activo')
+INSERT [dbo].[UsuariosEmpresas] ([idEmpresa], [idUsuario], [rol], [estado]) VALUES (2, 10, 0, 'activo')
 GO
 
 INSERT [dbo].[EmpresasValores] ([idEmpresa], [idValor]) VALUES (1, 1)
