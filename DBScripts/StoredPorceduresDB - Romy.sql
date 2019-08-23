@@ -1963,7 +1963,7 @@ create procedure [Listar_UsuariosDeEmpresaPorUsuario]
 as
 begin
 	BEGIN TRY
-		Select UU.idUsuario, UE.idEmpresa, UU.nombre as nombre_usuario
+		Select UU.idUsuario, UE.idEmpresa, UU.nombre as nombre_usuario, UU.mail
 		from Usuarios U inner join UsuariosEmpresas UE on U.idUsuario = UE.idUsuario
 						inner join Empresas E on UE.idEmpresa = E.idEmpresa
 						inner join UsuariosEmpresas UEE on E.idEmpresa = UEE.idEmpresa
