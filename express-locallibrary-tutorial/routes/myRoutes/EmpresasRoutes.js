@@ -385,6 +385,36 @@ class EmpresasRoutes extends MyRoutes{
         });
         }
       });
+      //Eliminar valor por defecto de una Empresa
+      router.post('/eliminarEmpresaValor', function(req, res, next){
+        try
+        {
+          sql.connect(config, err => {
+              if(err) console.log("Control de error");
+              new sql.Request()
+              .query(' EXEC EmpresaValor_Delete @idValor= ' + req.body.idValor, (err, result) => {
+                console.dir(result.recordset)
+                console.log(result.recordset)
+                let datos = result.recordset;
+                res.send(
+                  {
+                    status: "OK",
+                    data : datos
+                  }
+                );
+                sql.close();
+            });
+          });
+        }
+        catch(e)
+        {
+        console.log(e);
+        res.send({
+            status: "error",
+            message: e
+        });
+        }
+      });
         //ir a la configuracion de empresa
         router.get('/empresaConfig/:id', function(req, res, next){
           try
