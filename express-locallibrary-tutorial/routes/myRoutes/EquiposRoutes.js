@@ -43,10 +43,9 @@ class EquiposRoutes extends MyRoutes{
               sql.connect(config, err => {
                   if(err) console.log("Control de error");
                   new sql.Request()
-                  .query(' EXEC Equipos_Insert '
+                  .query(' EXEC Equipos_Insert ' 
                   + ' @nombre = "' + req.body.nombre
-                  + '", @imagen = "' + req.body.imagen
-                  + '", @estado = "' + req.body.estado + '"', (err, result) => {
+                  + '", @imagen = "' + req.body.imagen + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
                     let datos = result.recordset;

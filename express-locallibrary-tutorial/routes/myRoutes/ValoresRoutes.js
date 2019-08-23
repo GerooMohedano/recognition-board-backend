@@ -5,7 +5,7 @@ class LogrosRoutes extends MyRoutes{
     constructor(express, router, sql, bodyParser, config){
         super(express, router, sql, bodyParser, config);
 
-         //Alta Valor
+         //Alta Valor mas asociación con Equipo
          router.post('/altaValor', function(req, res, next){
             try
             {
@@ -36,6 +36,37 @@ class LogrosRoutes extends MyRoutes{
             });
             }
         });
+        //Alta Valor solamente
+        router.post('/altaValorSolo', function(req, res, next){
+          try
+          {
+            sql.connect(config, err => {
+                if(err) console.log("Control de error");
+                new sql.Request()
+                  .query('EXEC ValoresOnly_Insert @nombre ="' + req.body.nombre
+                  + '", @idEmpresa = "' + req.body.idEmpresa + '"', (err, result) => {
+                  console.dir(result.recordset)
+                  console.log(result.recordset)
+                  let datos = result.recordset;
+                  res.send(
+                    {
+                      status: "OK",
+                      data : datos
+                    }
+                   );
+                   sql.close();
+              });
+            });
+          }
+          catch(e)
+          {
+          console.log(e);
+          res.send({
+              status: "error",
+              message: e
+          });
+          }
+      });
          //Modificar Valor
          router.post('/modificarValor', function(req, res, next){
             try

@@ -322,24 +322,25 @@ begin
 			RAISERROR(@error,11,1)  
 		end catch
 end
+go
 
 IF EXISTS(select * from sys.procedures where name='Equipos_Insert')
 DROP PROCEDURE Equipos_Insert
 GO
 CREATE PROCEDURE [dbo].[Equipos_Insert]
 	@nombre varchar(30),
-	@imagen image,
-	@estado varchar(10)
+	@imagen image
 
 AS
 BEGIN
-
+Declare @v_estadodefault varchar(10)
+set @v_estadodefault = 'activo'
 	BEGIN TRY
-		IF(LEN(@nombre) > 30 OR LEN(@estado) > 10)
+		IF(LEN(@nombre) > 30)
 			RAISERROR('Excediste el n�mero de caracteres permitido',11,1)
 
 		INSERT INTO dbo.Equipos(nombre,imagen,estado)
-		VALUES(@nombre,@imagen,@estado)
+		VALUES(@nombre,@imagen,@v_estadodefault)
 	END TRY
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()
@@ -440,6 +441,35 @@ set @v_activo = 'activo'
 	END CATCH;
 END
 go
+
+
+IF EXISTS(select * from sys.procedures where name='ValoresOnly_Insert')
+DROP PROCEDURE ValoresOnly_Insert
+GO
+CREATE PROCEDURE [dbo].[ValoresOnly_Insert]
+	@nombre nvarchar(30),
+	@idEmpresa int
+
+AS
+BEGIN
+declare @v_idValor int
+	BEGIN TRY
+		IF(LEN(@nombre) > 30)
+			RAISERROR('Excediste el n�mero de caracteres permitido',11,1)
+		INSERT INTO dbo.Valores(nombre)
+		VALUES(@nombre)
+		set @v_idValor = SCOPE_IDENTITY()
+		INSERT INTO dbo.EmpresasValores(idValor,idEmpresa)
+		VALUES(@v_idValor,@idEmpresa)
+
+	END TRY
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1) 
+	END CATCH;
+END
+go
+
 
 IF EXISTS(select * from sys.procedures where name='Valores_Update')
 DROP PROCEDURE Valores_Update
