@@ -199,7 +199,7 @@ as
 begin
 
 		begin try
-			select E.nombre as nombre_empresa, E.direccion, E.telefono, E.estado, E.logo from Empresas E where @idEmpresa = E.idEmpresa
+			select E.idEmpresa, E.nombre as nombre_empresa, E.direccion, E.telefono, E.estado, E.logo from Empresas E where @idEmpresa = E.idEmpresa
 		end try
 		begin catch
 			declare @error varchar(100)= ERROR_MESSAGE()
@@ -1045,9 +1045,9 @@ create procedure [Logros_Delete]
 as
 begin
 	BEGIN TRY
-		delete from dbo.Logros where idLogro = @idLogro
 		delete from dbo.LogrosCondiciones where idLogro = @idLogro
 		delete from dbo.LogrosUsuarios where idLogro = @idLogro
+		delete from dbo.Logros where idLogro = @idLogro
 	END TRY
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()

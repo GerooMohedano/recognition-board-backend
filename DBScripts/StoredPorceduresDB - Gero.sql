@@ -113,6 +113,30 @@ BEGIN
 		end catch
 END
 GO
+
+/***** Eliminar EmpresaValor *****/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF EXISTS(select * from sys.procedures where name='EmpresaValor_Delete')
+DROP PROCEDURE EmpresaValor_Delete
+GO
+CREATE PROCEDURE [EmpresaValor_Delete]
+	@idValor int
+AS
+BEGIN
+	SET NOCOUNT ON;
+		begin try
+			delete from dbo.EmpresasValores where idValor = @idValor
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
+END
+GO
+
 /***** Activar miembro de equipo *****/
 SET ANSI_NULLS ON
 GO
