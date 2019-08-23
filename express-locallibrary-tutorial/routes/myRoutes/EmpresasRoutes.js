@@ -46,9 +46,7 @@ class EmpresasRoutes extends MyRoutes{
                   .query(' EXEC Empresas_Insert '
                   + ' @nombre = "' + req.body.nombre
                   + '", @direccion = "' + req.body.direccion
-                  + '", @telefono = "' + req.body.telefono
-                  + '", @logo = "' + req.body.logo
-                  + '", @estado = "' + req.body.estado + '"', (err, result) => {
+                  + '", @telefono = "' + req.body.telefono + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
                     let datos = result.recordset;
@@ -428,7 +426,7 @@ class EmpresasRoutes extends MyRoutes{
                     logros= await queryLogros.query(' EXEC Listar_LogrosEmpresas @idEmpresa = ' + idEmp)
                       return{
                         logros:logros.recordset
-                      } 
+                      }
                   })(),
                   (async()=>{
                     let queryUsuarios = new sql.Request();

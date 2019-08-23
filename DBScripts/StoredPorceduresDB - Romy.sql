@@ -213,20 +213,15 @@ GO
 CREATE PROCEDURE [dbo].[Empresas_Insert]
 	@nombre nvarchar(50),
 	@direccion nvarchar(50),
-   	@telefono int,
-	@logo image,
-	@estado nvarchar(10)
+   	@telefono int
 
 AS
 BEGIN
 
 	BEGIN TRY
 	
-		if(LEN(@nombre) > 50 OR LEN(@direccion) > 50 OR LEN(@estado) > 10)
-			RAISERROR('Excediste el n�mero de caracteres permitido',11,1)
-
-		INSERT INTO dbo.Empresas(nombre,direccion,telefono,logo,estado)
-		VALUES(@nombre,@direccion, @telefono, @logo, @estado)
+		INSERT INTO dbo.Empresas(nombre,direccion,telefono)
+		VALUES(@nombre,@direccion, @telefono)
 	END TRY
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()
