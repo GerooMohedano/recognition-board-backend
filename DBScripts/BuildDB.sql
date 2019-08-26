@@ -32,7 +32,7 @@ GO
 CREATE TABLE [dbo].[Token](
 	[idToken] [int] IDENTITY(1,1) NOT NULL,
 	[valorToken] [varchar](MAX) NOT NULL,
-	[nombre] [varchar](30) NOT NULL,
+	[idUsuario] [int] NOT NULL,
  CONSTRAINT [PK_Token] PRIMARY KEY CLUSTERED 
 (
 	[idToken] ASC
@@ -65,7 +65,7 @@ GO
 ALTER TABLE Usuarios WITH CHECK ADD CONSTRAINT[
 
 ERROR:
-Debe ingresar sólo caracteres alfabéticos
+Debe ingresar sï¿½lo caracteres alfabï¿½ticos
 
 ]CHECK (Usuarios.nombre NOT LIKE '%[^A-Z]%') 
 GO 
@@ -258,7 +258,7 @@ GO
 ALTER TABLE Empresas WITH CHECK ADD CONSTRAINT[
 
 ERROR:
-Debe ingresar sólo números
+Debe ingresar sï¿½lo nï¿½meros
 
 ]CHECK (Empresas.telefono NOT LIKE '%[^0-9]%') 
 GO 

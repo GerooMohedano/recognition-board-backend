@@ -66,11 +66,11 @@ class UsuariosRoutes extends MyRoutes{
                     var token = generateToken(user);
                     token = token.slice(0,20);
 
-                    console.log(user[0].nombre,typeof(user[0].nombre));
+                    console.log(user[0].idUsuario,typeof(user[0].idUsuario));
                     console.log("token",token,typeof(token));
                     new sql.Request()
                     .query(' EXEC insert_token '
-                    + ' @nombre = "' + user[0].nombre
+                    + ' @idUsuario = "' + user[0].idUsuario
                     + '", @valorToken = "' + token
                     + '"', (err, result) => {
                       res.send(

@@ -5,14 +5,14 @@ IF EXISTS(select * from sys.procedures where name='insert_token')
 DROP PROCEDURE insert_token
 GO
 CREATE PROCEDURE [dbo].[insert_token]
-@nombre varchar(30),
+@idUsuario int,
 @valorToken varchar(50)
 as
 begin
 
 		begin try
 			Insert dbo.Token(valorToken, nombre)
-			values (@valorToken, @nombre)
+			values (@valorToken, @idUsuario)
 		end try
 		begin catch
 			declare @error varchar(100)= ERROR_MESSAGE()
@@ -25,14 +25,14 @@ IF EXISTS(select * from sys.procedures where name='get_token')
 DROP PROCEDURE get_token
 GO
 CREATE PROCEDURE [dbo].[get_token]
-@nombre varchar(50),
+@idUsuario int,
 @valorToken varchar(50)
 as
 
 begin
 
 		begin try
-			select Token.valorToken, Token.nombre from Token where @valorToken = valorToken and @nombre = nombre
+			select Token.valorToken, Token.idUsuario from Token where @valorToken = valorToken and @idUsuario = idUsuario
 		end try
 		begin catch
 			declare @error varchar(100)= ERROR_MESSAGE()
@@ -49,12 +49,12 @@ CREATE PROCEDURE [dbo].[get_user]
 @contrasenia varchar(50)
 
 as
-declare @returnData varchar(30)
-set @returnData = null
+declare @returnData int
+set @returnData = 0
 begin
 
 		begin try
-			select @returnData= u.nombre from Usuarios u WHERE @nombre = u.nombre and @contrasenia = u.contrasenia
+			select @returnData = u.idUsuario from Usuarios u WHERE @nombre = u.nombre and @contrasenia = u.contrasenia
 		end try
 		begin catch
 			declare @error varchar(100)= ERROR_MESSAGE()
