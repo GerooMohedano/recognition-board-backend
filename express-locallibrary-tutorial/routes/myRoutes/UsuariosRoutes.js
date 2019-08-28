@@ -45,6 +45,72 @@ class UsuariosRoutes extends MyRoutes{
         var token = jwt.sign({userID: user.nombre, exp:expirationDate }, secret);
         return token;
       }
+
+      router.post('/tercerLogin', function(req, res, next){
+                  try
+                  {
+                    sql.connect(config, err => {
+                        if(err) console.log("Control de error");
+                        new sql.Request()
+                        .query(' EXEC get_user '
+                        + ' @nombre = "' + req.body.nombre
+                        + '", @contrasenia = "' + req.body.contrasenia + '"', (err, result) => {
+                          console.dir(result.recordset)
+                          console.log(result.recordset)
+                          let datos = result.recordset;
+                          res.send(
+                            {
+                              status: "OK",
+                              data : datos
+                            }
+                           );
+                           sql.close();
+                      });
+                    });
+                  }
+                  catch(e)
+                  {
+                  console.log(e);
+                  res.send({
+                      status: "error",
+                      message: e
+                  });
+                  }
+      });
+
+      router.post('/otroLogin', function (req, res, next) {
+        try {
+          let userInfo;
+          sql.connect(config, err => {
+            if(err) console.log("Control de error");
+            let queries = [
+              (async() => {
+                let queryLogin = new sql.Request();
+                userInfo = await queryLogin.query(' EXEC get_user '
+                  + ' @nombre = "' + req.body.nombre
+                  + '", @contrasenia = "' + req.body.contrasenia
+                  + '"');
+                  return { userInfo: userInfo.recordset }
+              })()
+            ];
+            let resultado = Promise.all(queries).then(
+              (result) => {
+                sql.close();
+                console.log("Success: ");
+                let parseResult = { userInfo: result[0].userInfo };
+                res.send(parseResult);
+              }
+            );
+          })
+        } catch (e) {
+          console.log(e);
+          res.send({
+            status: "error",
+            message: e
+          })
+        }
+      })
+
        router.post('/login', async (req, res) => {
 
           try{
@@ -61,25 +127,29 @@ class UsuariosRoutes extends MyRoutes{
                     if(user === undefined){
                       const error = new Error('Usuario y/o contraseña incorrectos');
                       error.code = 'EREQUEST';
-                      throw error;
-                    }
-                    var token = generateToken(user);
-                    token = token.slice(0,20);
+                      res.send({
+                          status: "error",
+                          message: error
+                      });
+                    } else {
+                      var token = generateToken(user);
+                      token = token.slice(0,20);
 
-                    console.log(user[0].idUsuario,typeof(user[0].idUsuario));
-                    console.log("token",token,typeof(token));
-                    new sql.Request()
-                    .query(' EXEC insert_token '
-                    + ' @idUsuario = "' + user[0].idUsuario
-                    + '", @valorToken = "' + token
-                    + '"', (err, result) => {
-                      res.send(
-                        {
-                          status: "OK",
-                        }
-                      );
+                      console.log(user[0].idUsuario,typeof(user[0].idUsuario));
+                      console.log("token",token,typeof(token));
+                      new sql.Request()
+                      .query(' EXEC insert_token '
+                      + ' @idUsuario = "' + user[0].idUsuario
+                      + '", @valorToken = "' + token
+                      + '"', (err, result) => {
+                        res.send(
+                          {
+                            status: "OK",
+                          }
+                        );
+                      });
+                    }
                     sql.close();
-                });
               });
 
             });
@@ -433,14 +503,76 @@ class UsuariosRoutes extends MyRoutes{
          }
        });
 
+       //cosas de adminGeneral
+       router.get('/sideMenuAdminInfo', function(req, res, next){
+        try
+        {
+          sql.close();
+          sql.connect(config, err => {
+              let equipos, empresas, equiposDeEmpresa, usuariosEmpresa, result
+              if(err) console.log("Control de error");
+              let queries=[
+                (async()=>{
+                  let queryEquipos=new sql.Request()
+                  equipos= await queryEquipos.query(' EXEC Listar_Equipos');
+                  return {
+                    equipos:equipos.recordset
+                  }
+                })(),
+                (async()=>{
+                  let queryEmpresas = new sql.Request();
+                  empresas = await queryEmpresas.query(' EXEC Listar_Empresas');
+                  return {
+                    empresas:empresas.recordset
+                  }
+                })(),
+                (async()=>{
+                  let queryEquiposDeEmpresa = new sql.Request();
+                  equiposDeEmpresa = await queryEquiposDeEmpresa.query(' EXEC Listar_Equipos');
+                  return {
+                    equiposDeEmpresa:equiposDeEmpresa.recordset
+                  }
+                })(),
+                (async()=>{
+                  let queryUsuariosEmpresa = new sql.Request();
+                  usuariosEmpresa = await queryUsuariosEmpresa.query(' EXEC Listar_Usuarios');
+                  return {
+                    usuariosEmpresa:usuariosEmpresa.recordset
+                  }
+                })(),
+              ];
+              let resultado=Promise.all(queries).then(
+                (result)=>{
+                  sql.close();
+                  let parseResult={
+                    equipos:result[0].equipos,
+                    empresas:result[1].empresas,
+                    equiposDeEmpresa:result[2].equiposDeEmpresa,
+                    usuariosEmpresa:result[3].usuariosEmpresa
+                  }
+                  res.send(parseResult)
+                }
+              );
+            });
+        }
+        catch(e)
+        {
+        console.log(e);
+        res.send({
+            status: "error",
+            message: e
+        });
+        }
+      });
+
         //Cambiar contraseña
-        router.post('/cambioContraseña', function(req, res, next){
+        router.post('/cambioContrasenia', function(req, res, next){
           try
           {
             sql.connect(config, err => {
                 if(err) console.log("Control de error");
                 new sql.Request()
-                .query(' EXEC Cambiar_Contraseña '
+                .query(' EXEC Cambiar_Contrasenia '
                 + ' @idUsuario = "' + req.body.idUsuario
                 + '", @contraseniaactual = "' + req.body.contraseniaactual
                 + '", @contrasenianueva = "' + req.body.contrasenianueva + '"', (err, result) => {

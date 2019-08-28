@@ -49,19 +49,15 @@ CREATE PROCEDURE [dbo].[get_user]
 @contrasenia varchar(50)
 
 as
-declare @returnData int
-set @returnData = 0
 begin
 
 		begin try
-			select @returnData = u.idUsuario from Usuarios u WHERE @nombre = u.nombre and @contrasenia = u.contrasenia
+			select u.idUsuario, u.adminGeneral from Usuarios u WHERE @nombre = u.nombre and @contrasenia = u.contrasenia
 		end try
 		begin catch
 			declare @error varchar(100)= ERROR_MESSAGE()
 			RAISERROR(@error,11,1)  
 		end catch
-		print @returnData
-return @returnData
 END
 GO
 
@@ -1139,7 +1135,7 @@ begin
 end
 go
 
-IF EXISTS(select * from sys.procedures where name='Cambiar_Contrase�a')
+IF EXISTS(select * from sys.procedures where name='Cambiar_Contrasenia')
 DROP PROCEDURE Cambiar_Contrasenia
 GO
 create procedure Cambiar_Contrasenia
@@ -2123,7 +2119,7 @@ create procedure [Listar_Equipos]
 as
 begin
 	BEGIN TRY
-		Select E.idEquipo, E.nombre from Equipos E
+		Select E.idEquipo, E.nombre as nombre_equipo, E.idEmpresa from Equipos E
 	END TRY	
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()
@@ -2175,7 +2171,9 @@ create procedure [Listar_Usuarios]
 as
 begin
 	BEGIN TRY
-		Select u.idUsuario,u.nombre from Usuarios U
+		Select u.idUsuario, u.nombre as nombre_usuario, u.mail, E.idEmpresa from Usuarios U
+		inner join UsuariosEmpresas UE on UE.idUsuario = U.idUsuario
+		inner join Empresas E on E.idEmpresa = UE.idEmpresa
 	END TRY	
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()
@@ -2396,6 +2394,48 @@ begin
 		inner join Valores on n.idValor = Valores.idValor
 		inner join Pizarras on n.idPizarra = Pizarras.idPizarra
 	    where n.idDestinatario = @idUsuario and Pizarras.idPizarra = @idPizarra and Valores.idValor = @idValor
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
+IF EXISTS(select * from sys.procedures where name='Listar_TodasNotasDeUnUsuario')
+DROP PROCEDURE Listar_TodasNotasDeUnUsuario
+GO
+create procedure [Listar_TodasNotasDeUnUsuario]
+@idUsuario int
+as
+begin
+	BEGIN TRY
+		Select n.idNota, n.descripcion, n.puntuacion, ua.idUsuario, ua.nombre as autor
+		from Notas N inner join Usuarios ud on n.idDestinatario = ud.idUsuario
+		inner join Usuarios ua on n.idAutor = ua.idUsuario
+		inner join Valores on n.idValor = Valores.idValor
+		inner join Pizarras on n.idPizarra = Pizarras.idPizarra
+	    where n.idDestinatario = @idUsuario
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
+IF EXISTS(select * from sys.procedures where name='Listar_TodasNotasDeUnEquipo')
+DROP PROCEDURE Listar_TodasNotasDeUnEquipo
+GO
+create procedure [Listar_TodasNotasDeUnEquipo]
+@idEquipo int
+as
+begin
+	BEGIN TRY
+		Select n.idNota, n.descripcion, n.puntuacion as autor
+		from Notas N inner join Pizarras p on n.idPizarra = p.idPizarra
+		inner join Equipos eq on p.idEquipo = eq.idEquipo
+	    where eq.idEquipo = @idEquipo
 	END TRY	
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()
