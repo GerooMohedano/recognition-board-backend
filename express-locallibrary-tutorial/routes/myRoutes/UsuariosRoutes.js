@@ -149,6 +149,21 @@ class UsuariosRoutes extends MyRoutes{
                         );
                       });
                     }
+                    var token = generateToken(user);
+                    token = token.slice(0,20);
+
+                    console.log(user[0].nombre,typeof(user[0].nombre));
+                    console.log("token",token,typeof(token));
+                    new sql.Request()
+                    .query(' EXEC insert_token '
+                    + ' @nombre = "' + user[0].nombre
+                    + '", @valorToken = "' + token
+                    + '"', (err, result) => {
+                      res.send(
+                        {
+                          status: "OK",
+                        }
+                      );
                     sql.close();
               });
 

@@ -26,13 +26,14 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+
 IF EXISTS(select * from sys.tables where name='Token')
 DROP TABLE Token
 GO
 CREATE TABLE [dbo].[Token](
 	[idToken] [int] IDENTITY(1,1) NOT NULL,
 	[valorToken] [varchar](MAX) NOT NULL,
-	[idUsuario] [int] NOT NULL,
+	[nombre] [varchar](30) NOT NULL,
  CONSTRAINT [PK_Token] PRIMARY KEY CLUSTERED 
 (
 	[idToken] ASC
@@ -53,7 +54,7 @@ CREATE TABLE [dbo].[Usuarios](
 	[nombre] [varchar](50) NOT NULL,
 	[contrasenia] [varchar](30) NOT NULL,
 	[mail] [varchar](50) NOT NULL,
-	[fotoPerfil] [image] NULL,
+	[fotoPerfil] [varchar](30) NULL,
 	[adminGeneral] [bit] NOT NULL,
  CONSTRAINT [PK_Usuarios] PRIMARY KEY CLUSTERED 
 (
@@ -84,7 +85,7 @@ CREATE TABLE [dbo].[Logros](
 	[idEmpresa] [int] NOT NULL,
 	[nombre] [varchar](50) NOT NULL,
 	[descripcion] [varchar](150) NOT NULL,
-	[foto] [image] NULL,
+	[foto] [varchar](30) NULL,
  CONSTRAINT [PK_Logros] PRIMARY KEY CLUSTERED 
 (
 	[idLogro] ASC
@@ -123,7 +124,7 @@ GO
 CREATE TABLE [dbo].[Equipos](
 	[idEquipo] [int] IDENTITY(1,1) NOT NULL,
 	[nombre] [varchar](30) NOT NULL,
-	[imagen] [image] NULL,
+	[imagen] [varchar](30) NULL,
 	[estado] [varchar](30) NOT NULL,
 	[idEmpresa] [int] NULL,
  CONSTRAINT [PK_Equipos] PRIMARY KEY CLUSTERED 
@@ -248,7 +249,7 @@ CREATE TABLE [dbo].[Empresas](
 	[direccion] [varchar](50) NOT NULL,
 	[telefono] [int] NULL,
 	[estado] [varchar](30) NOT NULL,
-	[logo] [image] NULL, CONSTRAINT [PK_Empresas] PRIMARY KEY CLUSTERED 
+	[logo] [varchar](30) NULL, CONSTRAINT [PK_Empresas] PRIMARY KEY CLUSTERED 
 (
 	[idEmpresa] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]

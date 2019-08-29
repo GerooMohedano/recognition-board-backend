@@ -5,14 +5,14 @@ IF EXISTS(select * from sys.procedures where name='insert_token')
 DROP PROCEDURE insert_token
 GO
 CREATE PROCEDURE [dbo].[insert_token]
-@idUsuario int,
+@nombre varchar(50),
 @valorToken varchar(50)
 as
 begin
 
 		begin try
 			Insert dbo.Token(valorToken, nombre)
-			values (@valorToken, @idUsuario)
+			values (@valorToken, @nombre)
 		end try
 		begin catch
 			declare @error varchar(100)= ERROR_MESSAGE()
@@ -25,14 +25,14 @@ IF EXISTS(select * from sys.procedures where name='get_token')
 DROP PROCEDURE get_token
 GO
 CREATE PROCEDURE [dbo].[get_token]
-@idUsuario int,
+@nombre varchar(50),
 @valorToken varchar(50)
 as
 
 begin
 
 		begin try
-			select Token.valorToken, Token.idUsuario from Token where @valorToken = valorToken and @idUsuario = idUsuario
+			select Token.valorToken, Token.nombre from Token where @valorToken = valorToken and @nombre = nombre
 		end try
 		begin catch
 			declare @error varchar(100)= ERROR_MESSAGE()
@@ -60,17 +60,18 @@ begin
 		end catch
 END
 GO
-
+use OnBoardDataBase
+go
 IF EXISTS(select * from sys.procedures where name='Usuarios_Get')
 DROP PROCEDURE Usuarios_Get
 GO
 CREATE procedure [Usuarios_Get]
-@idUsuario int
+@nombre nvarchar(30)
 as
 begin
 
 		begin try
-			select U.nombre, U.mail, U.fotoPerfil, U.adminGeneral from Usuarios U where @idUsuario = U.idUsuario
+			select U.nombre, U.mail, U.fotoPerfil, U.adminGeneral from Usuarios U where @nombre = U.nombre
 		end try
 		begin catch
 			declare @error varchar(100)= ERROR_MESSAGE()
