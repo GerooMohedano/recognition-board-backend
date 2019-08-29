@@ -87,7 +87,7 @@ CREATE procedure [Usuarios_Insert]
 @nombre varchar(50),
 @contrasenia varchar(30),
 @mail varchar(30),
-@fotoPerfil image,
+@fotoPerfil varchar(50),
 @adminGeneral bit
 as
 begin
@@ -116,7 +116,7 @@ CREATE procedure [Usuarios_Update]
 @nombre varchar(50),
 @contrasenia varchar(30),
 @mail varchar(30),
-@fotoPerfil image,
+@fotoPerfil varchar(50),
 @adminGeneral bit
 as
 begin
@@ -171,7 +171,7 @@ DROP PROCEDURE Usuarios_fotoPerfilUpdate
 GO
 CREATE procedure [Usuarios_fotoPerfilUpdate]
 @idUsuario int,
-@fotoPerfil image
+@fotoPerfil varchar(50)
 as
 begin
 		begin try
@@ -262,7 +262,7 @@ DROP PROCEDURE Empresas_ImageUpdate
 GO
 CREATE PROCEDURE [dbo].[Empresas_ImageUpdate]
 	@idEmpresa int,
-	@logo image
+	@logo varchar(50)
 AS
 BEGIN
 
@@ -326,7 +326,7 @@ DROP PROCEDURE Equipos_Insert
 GO
 CREATE PROCEDURE [dbo].[Equipos_Insert]
 	@nombre varchar(30),
-	@imagen image
+	@imagen varchar(50)
 
 AS
 BEGIN
@@ -353,7 +353,7 @@ GO
 CREATE PROCEDURE [dbo].[Equipos_Update]
 	@idEquipo int,
 	@nombre nvarchar(50),
-	@imagen image,
+	@imagen varchar(50),
 	@estado nvarchar(50)
 AS
 BEGIN
@@ -643,7 +643,7 @@ GO
 CREATE PROCEDURE [dbo].[Logros_Insert]
 	@nombre nvarchar(30),
 	@descripcion nvarchar(50),
-	@foto image
+	@foto varchar(50)
 
 AS
 BEGIN
@@ -669,7 +669,7 @@ CREATE PROCEDURE [dbo].[Logros_Update]
 	@idLogro int,
 	@nombre nvarchar(50),
 	@descripcion nvarchar(50),
-	@foto image
+	@foto varchar(50)
 	
 AS
 BEGIN
