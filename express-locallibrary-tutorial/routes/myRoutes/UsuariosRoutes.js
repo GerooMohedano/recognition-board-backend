@@ -1,7 +1,8 @@
 var MyRoutes = require('./MyRoutes.js');
 const jwt = require ('jsonwebtoken');
 const jwlVerifer = require('express-jwt');
-const {generateToken,validateToken} =require('./jwt.js')
+const {generateToken,validateToken} = require('./jwt.js')
+const IncomingForm = require('formidable').IncomingForm;
 const secret = 'secret';
 class UsuariosRoutes extends MyRoutes{
 
@@ -166,7 +167,7 @@ class UsuariosRoutes extends MyRoutes{
                       );
                     sql.close();
               });
-
+            });
             });
           }
           catch(e){
@@ -867,6 +868,20 @@ class UsuariosRoutes extends MyRoutes{
           }
           });
 
+        router.post('/uploadFile', function(req, res, next){
+          console.log("llega algo aca", req);
+          var form = new IncomingForm();
+          form.on('file', (field, file) => {
+            console.log(field, file);
+          });
+          form.on('end', () => {
+            console.log("HOLAAAAAA")
+            res.send({
+              status: "OK"
+            });
+          });
+          form.parse(req)
+        });
 
         //Modificar foto perfil de un Usuario
         router.post('/modificarFotoPerfilUsuario', function(req, res, next){

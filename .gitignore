@@ -2,3 +2,7 @@
 package-lock\.json
 
 express-locallibrary-tutorial/node_modules/cors/
+
+express-locallibrary-tutorial/node_modules/formidable/lib/
+
+express-locallibrary-tutorial/node_modules/formidable/
