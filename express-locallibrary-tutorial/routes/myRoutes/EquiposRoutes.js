@@ -43,7 +43,7 @@ class EquiposRoutes extends MyRoutes{
               sql.connect(config, err => {
                   if(err) console.log("Control de error");
                   new sql.Request()
-                  .query(' EXEC Equipos_Insert ' 
+                  .query(' EXEC Equipos_Insert '
                   + ' @nombre = "' + req.body.nombre
                   + '", @imagen = "' + req.body.imagen + '"', (err, result) => {
                     console.dir(result.recordset)
@@ -326,7 +326,7 @@ class EquiposRoutes extends MyRoutes{
           }
       });
 
-      
+
         //DESACTIVAR EQUIPO
         router.post('/desactivarEquipo', function(req, res, next){
           try
@@ -555,7 +555,7 @@ class EquiposRoutes extends MyRoutes{
           {
             sql.connect(config, err => {
                 var idEq = req.params.id
-                let evaluacion, usuarios, equipos, pizarras, valoresEmpresa, result
+                let evaluacion, usuarios, equipos, pizarras, valoresEmpresa, valoresEquipo, result
                 console.log('id del equipo: ', idEq);
                 if(err) console.log("Control de error");
                 let queries=[
@@ -594,6 +594,13 @@ class EquiposRoutes extends MyRoutes{
                         valoresEmpresa:valoresEmpresa.recordset
                       }
                   })(),
+                  (async()=>{
+                    let queryValoresEquipo = new sql.Request()
+                    valoresEquipo = await queryValoresEquipo.query(' EXEC Listar_ValoresDeUnEquipo @idEquipo = ' + idEq);
+                      return {
+                        valoresEquipo:valoresEquipo.recordset
+                      }
+                  })(),
                 ];
                 let resultado=Promise.all(queries).then(
                   (result)=>{
@@ -604,7 +611,8 @@ class EquiposRoutes extends MyRoutes{
                       pizarras:result[1].pizarras,
                       equipos:result[2].equipos,
                       usuarios:result[3].usuarios,
-                      valoresEmpresa:result[4].valoresEmpresa
+                      valoresEmpresa:result[4].valoresEmpresa,
+                      valoresEquipo:result[5].valoresEquipo
                     }
                     res.send(parseResult)
                   }

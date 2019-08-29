@@ -851,6 +851,32 @@ BEGIN
 END
 go
 
+IF EXISTS(select * from sys.procedures where name='Buscar_PizarrasCoincidentes')
+DROP PROCEDURE Buscar_PizarrasCoincidentes
+GO
+CREATE PROCEDURE [dbo].[Buscar_PizarrasCoincidentes]
+	@idPizarra int,
+	@fechaInicio datetime,
+	@fechaFin datetime
+
+AS
+BEGIN
+	BEGIN TRY
+		IF @fechaFin<@fechaInicio
+			RAISERROR('La fecha no de inicio de no puede ser mayor a la fecha de fin',11,1)
+		SELECT * FROM Pizarras
+		WHERE ((fechaInicio BETWEEN @fechaInicio And @fechaFin)
+		OR (fechaFin BETWEEN @fechaInicio And @fechaFin)
+		OR (@fechaInicio BETWEEN fechaInicio AND fechaFin))
+		AND idPizarra != @idPizarra
+	END TRY
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+END
+go
+
 IF EXISTS(select * from sys.procedures where name='Pizarras_Update')
 DROP PROCEDURE Pizarras_Update
 GO
@@ -867,8 +893,6 @@ BEGIN
 	BEGIN TRY
 		IF @fechaFin<@fechaInicio
 			RAISERROR('La fecha no de inicio de no puede ser mayor a la fecha de fin',11,1)
-		IF EXISTS(Select * from Pizarras where idPizarra = @idPizarra)
-			RAISERROR('Ya existe esta pizarra',@idPizarra,11,1)
 		IF(LEN(@titulo) > 30)
 			RAISERROR('Excediste el n�mero de caracteres permitido',11,1)
 
@@ -1943,7 +1967,7 @@ create procedure [Listar_EquiposPorUsuario]
 as
 begin
 	BEGIN TRY
-		Select U.idUsuario, U.nombre as nombre_usuario, UE.idEquipo, E.nombre as nombre_equipo, E.idEmpresa as idEmpresa
+		Select U.idUsuario, U.nombre as nombre_usuario, UE.idEquipo, E.nombre as nombre_equipo, E.idEmpresa as idEmpresa, E.estado
 		from Usuarios U inner join UsuariosEquipos UE on U.idUsuario = UE.idUsuario
 						inner join Equipos E on UE.idEquipo = E.idEquipo
 	    where U.idUsuario = @idUsuario
@@ -1963,7 +1987,7 @@ create procedure [Listar_EquiposDeEmpresaPorUsuario]
 as
 begin
 	BEGIN TRY
-		Select U.idUsuario, UE.idEmpresa, Q.idEquipo, Q.nombre as nombre_equipo
+		Select U.idUsuario, UE.idEmpresa, Q.idEquipo, Q.nombre as nombre_equipo, Q.estado
 		from Usuarios U inner join UsuariosEmpresas UE on U.idUsuario = UE.idUsuario
 						inner join Empresas E on UE.idEmpresa = E.idEmpresa
 						inner join Equipos Q on E.idEmpresa = Q.idEmpresa
@@ -1984,7 +2008,7 @@ create procedure [Listar_UsuariosDeEmpresaPorUsuario]
 as
 begin
 	BEGIN TRY
-		Select UU.idUsuario, UE.idEmpresa, UU.nombre as nombre_usuario, UU.mail
+		Select UU.idUsuario, UE.idEmpresa, UU.nombre as nombre_usuario, UU.mail, UEE.estado
 		from Usuarios U inner join UsuariosEmpresas UE on U.idUsuario = UE.idUsuario
 						inner join Empresas E on UE.idEmpresa = E.idEmpresa
 						inner join UsuariosEmpresas UEE on E.idEmpresa = UEE.idEmpresa
@@ -2190,7 +2214,7 @@ create procedure [Listar_UsuariosPorEmpresa]
 as
 begin
 	BEGIN TRY
-		Select u.idUsuario, Usuarios.nombre as nombre_usuario, u.estado
+		Select u.idUsuario, Usuarios.nombre as nombre_usuario, u.estado, u.rol
 		from UsuariosEmpresas U inner join Usuarios on u.idUsuario = Usuarios.idUsuario
 	    where u.idEmpresa = @idEmpresa
 	END TRY	
@@ -2272,8 +2296,10 @@ create procedure [Listar_UsuariosPorEquipo](@idEquipo int)
 as
 begin
 	BEGIN TRY
-		Select u.idUsuario, Usuarios.nombre as nombre_usuario, u.rol 
+		Select u.idUsuario, Usuarios.nombre as nombre_usuario, u.rol, ue.estado
 		from UsuariosEquipos U inner join Usuarios on u.idUsuario = Usuarios.idUsuario
+		inner join UsuariosEmpresas UE ON ue.idUsuario = u.idUsuario
+		inner join Empresas E ON E.idEmpresa = UE.idEmpresa
 	    where u.idEquipo = @idEquipo
 	END TRY	
 	BEGIN CATCH
