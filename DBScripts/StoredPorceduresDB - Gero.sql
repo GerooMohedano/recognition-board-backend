@@ -536,13 +536,13 @@ BEGIN
 	SET NOCOUNT ON;
 
 		begin try
-			SELECT Empresas.nombre, SUM(Notas.puntuacion) AS 'Total', Valores.nombre
+			SELECT Valores.idValor, SUM(Notas.puntuacion) AS 'Total', Valores.nombre
 			FROM Equipos INNER JOIN Pizarras ON Equipos.idEquipo = Pizarras.idEquipo
 			INNER JOIN Notas ON Pizarras.idPizarra = Notas.idPizarra
 			INNER JOIN Valores ON Notas.idValor = Valores.idValor
 			INNER JOIN Empresas ON Equipos.idEmpresa = Empresas.idEmpresa
 			WHERE Empresas.idEmpresa = @idEmpresa
-			GROUP BY Valores.nombre, Empresas.nombre
+			GROUP BY Valores.idValor, Valores.nombre
 		end try
 		begin catch
 			declare @error varchar(100)= ERROR_MESSAGE()
