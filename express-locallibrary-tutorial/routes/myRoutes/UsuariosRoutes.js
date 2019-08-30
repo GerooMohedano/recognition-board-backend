@@ -624,10 +624,10 @@ class UsuariosRoutes extends MyRoutes{
                 new sql.Request()
                 .query(' EXEC Usuarios_Insert '
                 + ' @nombre = "' + req.body.nombre
-                + '", @contraseña = "' + req.body.contraseña
                 + '", @mail = "' + req.body.mail
                 + '", @fotoPerfil = "' + req.body.fotoPerfil
-                + '", @adminGeneral = "' + req.body.adminGeneral + '"', (err, result) => {
+                + '", @idEmpresa = "' + req.body.idEmpresa
+                + '", @rol = "' + req.body.rol + '"', (err, result) => {
                   console.dir(result.recordset)
                   console.log(result.recordset)
                   let datos = result.recordset;
@@ -808,10 +808,10 @@ class UsuariosRoutes extends MyRoutes{
               .query(' EXEC Usuarios_Update '
               + ' @idUsuario = "' + req.body.idUsuario
               + '", @nombre = "' + req.body.nombre
-              + '", @contraseña = "' + req.body.contraseña
               + '", @mail = "' + req.body.mail
               + '", @fotoPerfil = "' + req.body.fotoPerfil
-              + '", @adminGeneral = "' + req.body.adminGeneral + '"', (err, result) => {
+              + '", @rol = "' + req.body.rol
+              + '", @idEmpresa = "' + req.body.idEmpresa + '"', (err, result) => {
                 console.dir(result.recordset)
                 console.log(result.recordset)
                 let datos = result.recordset;

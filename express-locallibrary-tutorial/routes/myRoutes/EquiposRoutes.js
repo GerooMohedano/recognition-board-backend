@@ -45,6 +45,7 @@ class EquiposRoutes extends MyRoutes{
                   new sql.Request()
                   .query(' EXEC Equipos_Insert '
                   + ' @nombre = "' + req.body.nombre
+                  + '", @idEmpresa = "' + req.body.idEmpresa
                   + '", @imagen = "' + req.body.imagen + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
@@ -79,8 +80,7 @@ class EquiposRoutes extends MyRoutes{
                   .query(' EXEC Equipos_Update '
                   + ' @idEquipo = "' + req.body.idEquipo
                   + '", @nombre = "' + req.body.nombre
-                  + '", @imagen = "' + req.body.imagen
-                  + '", @estado = "' + req.body.estado + '"', (err, result) => {
+                  + '", @imagen = "' + req.body.imagen + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
                     let datos = result.recordset;

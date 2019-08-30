@@ -66,12 +66,12 @@ IF EXISTS(select * from sys.procedures where name='Usuarios_Get')
 DROP PROCEDURE Usuarios_Get
 GO
 CREATE procedure [Usuarios_Get]
-@nombre nvarchar(30)
+@idUsuario int
 as
 begin
 
 		begin try
-			select U.nombre, U.mail, U.fotoPerfil, U.adminGeneral from Usuarios U where @nombre = U.nombre
+			select U.nombre, U.mail, U.fotoPerfil, U.adminGeneral from Usuarios U where @idUsuario = U.idUsuario
 		end try
 		begin catch
 			declare @error varchar(100)= ERROR_MESSAGE()
@@ -85,20 +85,25 @@ DROP PROCEDURE Usuarios_Insert
 GO
 CREATE procedure [Usuarios_Insert]
 @nombre varchar(50),
-@contrasenia varchar(30),
 @mail varchar(30),
 @fotoPerfil varchar(50),
-@adminGeneral bit
+@idEmpresa int,
+@rol bit
 as
 begin
-
+declare @v_idUsuario int
 		begin try
 		
-		if(LEN(@nombre) > 3 OR LEN(@contrasenia) > 30 OR LEN(@mail) > 30)
+		if(LEN(@nombre) > 30 OR LEN(@mail) > 30)
 			RAISERROR('Excediste el número de caracteres permitido',11,1)
 
 			Insert dbo.Usuarios(nombre,contrasenia,mail,fotoPerfil,adminGeneral)
-			values (@nombre,@contrasenia,@mail,@fotoPerfil,@adminGeneral)
+			values (@nombre,'123',@mail,@fotoPerfil,0)
+			
+			set @v_idUsuario = SCOPE_IDENTITY()
+			
+			Insert dbo.UsuariosEmpresas(idUsuario,idEmpresa,rol,estado)
+			values(@v_idUsuario,@idEmpresa,@rol,'activo')
 		end try
 		begin catch
 			declare @error varchar(100)= ERROR_MESSAGE()
@@ -114,25 +119,27 @@ GO
 CREATE procedure [Usuarios_Update]
 @idUsuario int,
 @nombre varchar(50),
-@contrasenia varchar(30),
 @mail varchar(30),
 @fotoPerfil varchar(50),
-@adminGeneral bit
+@rol bit,
+@idEmpresa int
 as
 begin
 		begin try
 		
-		if(LEN(@nombre) > 50 OR LEN(@contrasenia) > 30 OR LEN(@mail) > 30)
+		if(LEN(@nombre) > 50 OR LEN(@mail) > 30)
 			RAISERROR('Excediste el n�mero de caracteres permitido',11,1)
 
 			update dbo.Usuarios
 			set
 			 nombre=@nombre,
-			 contrasenia= @contrasenia,
 			 mail= @mail,
-			 fotoPerfil= @fotoPerfil,
-			 adminGeneral = @adminGeneral
+			 fotoPerfil= @fotoPerfil
 			where idUsuario = @idUsuario
+			update dbo.UsuariosEmpresas
+			set
+				rol=@rol
+			where idUsuario = @idUsuario and idEmpresa = @idEmpresa
 		end try
 		begin catch
 			declare @error varchar(100)= ERROR_MESSAGE()
@@ -326,6 +333,7 @@ DROP PROCEDURE Equipos_Insert
 GO
 CREATE PROCEDURE [dbo].[Equipos_Insert]
 	@nombre varchar(30),
+	@idEmpresa int,
 	@imagen varchar(50)
 
 AS
@@ -336,8 +344,9 @@ set @v_estadodefault = 'activo'
 		IF(LEN(@nombre) > 30)
 			RAISERROR('Excediste el n�mero de caracteres permitido',11,1)
 
-		INSERT INTO dbo.Equipos(nombre,imagen,estado)
-		VALUES(@nombre,@imagen,@v_estadodefault)
+		INSERT INTO dbo.Equipos(nombre,imagen,estado, idEmpresa)
+		VALUES(@nombre,@imagen,@v_estadodefault, @idEmpresa)
+		
 	END TRY
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()
@@ -353,8 +362,7 @@ GO
 CREATE PROCEDURE [dbo].[Equipos_Update]
 	@idEquipo int,
 	@nombre nvarchar(50),
-	@imagen varchar(50),
-	@estado nvarchar(50)
+	@imagen varchar(50)
 AS
 BEGIN
 
@@ -363,14 +371,14 @@ BEGIN
 			IF EXISTS(Select * from Equipos where idEquipo = @idEquipo)
 				RAISERROR('Ya existe este equipo',@idEquipo,11,1)
 
-			IF(LEN(@nombre) > 30 OR LEN(@estado) > 10)
+			IF(LEN(@nombre) > 30)
 				RAISERROR('Excediste el n�mero de caracteres permitido',11,1)
 
 			UPDATE dbo.Equipos
 			SET 
 			nombre= @nombre,
 			imagen= @imagen,
-			estado= @estado	
+			estado= 'activo'
 		
 			WHERE idEquipo = @idEquipo 
 	END TRY
@@ -1968,7 +1976,7 @@ create procedure [Listar_EquiposPorUsuario]
 as
 begin
 	BEGIN TRY
-		Select U.idUsuario, U.nombre as nombre_usuario, UE.idEquipo, E.nombre as nombre_equipo, E.idEmpresa as idEmpresa, E.estado
+		Select U.idUsuario, U.nombre as nombre_usuario, UE.idEquipo, E.nombre as nombre_equipo, E.imagen, E.idEmpresa as idEmpresa, E.estado
 		from Usuarios U inner join UsuariosEquipos UE on U.idUsuario = UE.idUsuario
 						inner join Equipos E on UE.idEquipo = E.idEquipo
 	    where U.idUsuario = @idUsuario
@@ -1988,7 +1996,7 @@ create procedure [Listar_EquiposDeEmpresaPorUsuario]
 as
 begin
 	BEGIN TRY
-		Select U.idUsuario, UE.idEmpresa, Q.idEquipo, Q.nombre as nombre_equipo, Q.estado
+		Select U.idUsuario, UE.idEmpresa, Q.idEquipo, Q.nombre as nombre_equipo, Q.estado, Q.imagen
 		from Usuarios U inner join UsuariosEmpresas UE on U.idUsuario = UE.idUsuario
 						inner join Empresas E on UE.idEmpresa = E.idEmpresa
 						inner join Equipos Q on E.idEmpresa = Q.idEmpresa
@@ -2009,7 +2017,7 @@ create procedure [Listar_UsuariosDeEmpresaPorUsuario]
 as
 begin
 	BEGIN TRY
-		Select UU.idUsuario, UE.idEmpresa, UU.nombre as nombre_usuario, UU.mail, UEE.estado
+		Select UU.idUsuario, UE.idEmpresa, UU.nombre as nombre_usuario, UU.mail, UEE.estado, UU.fotoPerfil
 		from Usuarios U inner join UsuariosEmpresas UE on U.idUsuario = UE.idUsuario
 						inner join Empresas E on UE.idEmpresa = E.idEmpresa
 						inner join UsuariosEmpresas UEE on E.idEmpresa = UEE.idEmpresa
@@ -2144,7 +2152,7 @@ create procedure [Listar_Equipos]
 as
 begin
 	BEGIN TRY
-		Select E.idEquipo, E.nombre as nombre_equipo, E.idEmpresa from Equipos E
+		Select E.idEquipo, E.nombre as nombre_equipo, E.idEmpresa, E.imagen from Equipos E
 	END TRY	
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()
@@ -2161,7 +2169,7 @@ create procedure [Listar_EquiposPorEmpresa]
 as
 begin
 	BEGIN TRY
-		Select E.idEquipo, E.nombre as nombre_equipo, E.estado 
+		Select E.idEquipo, E.nombre as nombre_equipo, E.estado, e.imagen
 		from Equipos E inner join Empresas on E.idEmpresa = Empresas.idEmpresa
 	    where E.idEmpresa = @idEmpresa
 	END TRY	
@@ -2196,7 +2204,7 @@ create procedure [Listar_Usuarios]
 as
 begin
 	BEGIN TRY
-		Select u.idUsuario, u.nombre as nombre_usuario, u.mail, E.idEmpresa from Usuarios U
+		Select u.idUsuario, u.nombre as nombre_usuario, u.mail, E.idEmpresa, u.fotoPerfil from Usuarios U
 		inner join UsuariosEmpresas UE on UE.idUsuario = U.idUsuario
 		inner join Empresas E on E.idEmpresa = UE.idEmpresa
 	END TRY	
@@ -2215,7 +2223,7 @@ create procedure [Listar_UsuariosPorEmpresa]
 as
 begin
 	BEGIN TRY
-		Select u.idUsuario, Usuarios.nombre as nombre_usuario, u.estado, u.rol
+		Select u.idUsuario, Usuarios.nombre as nombre_usuario, u.estado, Usuarios.mail, u.rol, Usuarios.fotoPerfil
 		from UsuariosEmpresas U inner join Usuarios on u.idUsuario = Usuarios.idUsuario
 	    where u.idEmpresa = @idEmpresa
 	END TRY	
@@ -2297,7 +2305,7 @@ create procedure [Listar_UsuariosPorEquipo](@idEquipo int)
 as
 begin
 	BEGIN TRY
-		Select u.idUsuario, Usuarios.nombre as nombre_usuario, u.rol, ue.estado
+		Select u.idUsuario, Usuarios.nombre as nombre_usuario, u.rol, ue.estado, Usuarios.fotoPerfil
 		from UsuariosEquipos U inner join Usuarios on u.idUsuario = Usuarios.idUsuario
 		inner join UsuariosEmpresas UE ON ue.idUsuario = u.idUsuario
 		inner join Empresas E ON E.idEmpresa = UE.idEmpresa
