@@ -629,6 +629,68 @@ class EquiposRoutes extends MyRoutes{
           }
         });
 
+        //evaluacion de usuario
+        router.post('/checkeoLogros', function(req, res, next){
+          try
+          {
+            sql.connect(config, err => {
+                var idUsuario = req.body.idUsuario
+                var idEmpresa = req.body.idEmpresa
+                var idEquipo = req.body.idEquipo
+                let evaluacion, evaluacionExcluyente, logrosNoGanados, result
+                console.log('id del equipo: ', idUsuario);
+                if(err) console.log("Control de error");
+                let queries=[
+                  (async()=>{
+                    let queryEvaluacion=new sql.Request()
+                    evaluacion= await queryEvaluacion.query(' EXEC ConsultarValoresUsuario @idUsuario =  ' + idUsuario);
+                    return {
+                      evaluacion:evaluacion.recordset
+                    }
+                  })(),
+                  (async()=>{
+                    let queryEvaluacionExcluyente = new sql.Request();
+                    evaluacionExcluyente = await queryEvaluacionExcluyente
+                    .query(' EXEC ConsultarValoresUsuarioExcluyente @idUsuario = ' + idUsuario
+                    + ', @idEquipo = ' + idEquipo);
+                    return {
+                      evaluacionExcluyente:evaluacionExcluyente.recordset
+                    }
+                  })(),
+                  (async()=>{
+                    let queryLogrosNoGanados = new sql.Request()
+                    logrosNoGanados= await queryLogrosNoGanados
+                    .query('  EXEC ConsultarPremiosNoGanados @idEmpresa = ' + idEmpresa
+                    + ', @idUsuario = ' + idUsuario);
+                      return {
+                        logrosNoGanados:logrosNoGanados.recordset
+                      }
+                  })(),
+                ];
+                let resultado=Promise.all(queries).then(
+                  (result)=>{
+                    sql.close();
+                    console.log("Success: ")
+                    let parseResult={
+                      evaluacion:result[0].evaluacion,
+                      evaluacionExcluyente:result[1].evaluacionExcluyente,
+                      logrosNoGanados:result[2].logrosNoGanados
+                    }
+                    res.send(parseResult)
+                  }
+                );
+              });
+          }
+          catch(e)
+          {
+          console.log(e);
+          res.send({
+              status: "error",
+              message: e
+          });
+          }
+        });
+
       //ir a la configuración de un equipo
         router.get('/equipoConfig/:id', function(req, res, next){
           try

@@ -13,7 +13,7 @@ class LogrosRoutes extends MyRoutes{
                   new sql.Request()
                   .query(' EXEC Logros_Insert '
                   + ' @nombre = "' + req.body.nombre
-                  + '", @descripcion = "' + req.body.descripcion 
+                  + '", @descripcion = "' + req.body.descripcion
                   + '", @foto = "' + req.body.nombre + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
@@ -38,6 +38,39 @@ class LogrosRoutes extends MyRoutes{
             }
         });
 
+        router.post('/ganarLogro', function(req, res, next){
+           try
+           {
+             sql.connect(config, err => {
+                 if(err) console.log("Control de error");
+                 new sql.Request()
+                 .query(' EXEC GanarPremio '
+                 + ' @idLogro = "' + req.body.idLogro
+                 + '", @idUsuario = "' + req.body.idUsuario
+                 + '", @fecha = "' + req.body.fecha + '"', (err, result) => {
+                   console.dir(result.recordset)
+                   console.log(result.recordset)
+                   let datos = result.recordset;
+                   res.send(
+                     {
+                       status: "OK",
+                       data : datos
+                     }
+                    );
+                    sql.close();
+               });
+             });
+           }
+           catch(e)
+           {
+           console.log(e);
+           res.send({
+               status: "error",
+               message: e
+           });
+           }
+       });
+
         //Modificar Logro
           router.post('/modificarLogro', function(req, res, next){
             try
@@ -46,9 +79,9 @@ class LogrosRoutes extends MyRoutes{
                   if(err) console.log("Control de error");
                   new sql.Request()
                   .query(' EXEC Logros_Update '
-                  + ' @idLogro = "' + req.body.idLogro 
-                  + '", @nombre = "' + req.body.nombre 
-                  + '", @descripcion = "' + req.body.descripcion 
+                  + ' @idLogro = "' + req.body.idLogro
+                  + '", @nombre = "' + req.body.nombre
+                  + '", @descripcion = "' + req.body.descripcion
                   + '", @foto = "' + req.body.foto + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
@@ -102,7 +135,7 @@ class LogrosRoutes extends MyRoutes{
                 message: e
             });
             }
-        });    
+        });
         //Consultar logros de un usuario
           router.post('/consultarLogrosUsuario', function(req, res, next){
             try
@@ -132,7 +165,7 @@ class LogrosRoutes extends MyRoutes{
                 message: e
             });
             }
-        });            
+        });
 
     }
 }

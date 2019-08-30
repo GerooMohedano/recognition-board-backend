@@ -4,42 +4,114 @@ class NotasRoutes extends MyRoutes{
     constructor(express, router, sql, bodyParser, config){
         super(express, router, sql, bodyParser, config);
 
-    //Crear Nota
-    router.post('/nuevaNota', function(req, res, next){
-        try
-        {
-          sql.connect(config, err => {
-              if(err) console.log("Control de error");
-              new sql.Request()
-              .query(' EXEC Notas_Insert '
-              + ' @idPizarra = "' + req.body.nombre
-              + '", @idAutor = "' + req.body.idAutor
-              + '", @idDestinatario = "' + req.body.idDestinatario
-              + '", @idValor = "' + req.body.idValor
-              + '", @descripcion = "' + req.body.descripcion
-              + '", @puntuacion = "' + req.body.puntuacion + '"', (err, result) => {
-                console.dir(result.recordset)
-                console.log(result.recordset)
-                let datos = result.recordset;
-                res.send(
-                  {
-                    status: "OK",
-                    data : datos
+        router.post('/nuevaNota', function(req, res, next){
+          try
+          {
+            sql.connect(config, err => {
+                let creacionNota, evaluacion, evaluacionExcluyente, logrosNoGanados, result
+                if(err) console.log("Control de error");
+                let queries=[
+                  (async()=>{
+                    let queryCreacion=new sql.Request()
+                    creacionNota= await queryCreacion
+                    .query(' EXEC Notas_Insert '
+                    + ' @idPizarra = "' + req.body.nombre
+                    + '", @idAutor = "' + req.body.idAutor
+                    + '", @idDestinatario = "' + req.body.idDestinatario
+                    + '", @idValor = "' + req.body.idValor
+                    + '", @descripcion = "' + req.body.descripcion
+                    + '", @puntuacion = "' + req.body.puntuacion + '"');
+                    return {
+                      creacionNota:creacionNota.recordset
+                    }
+                  })(),
+                  (async()=>{
+                    let queryEvaluacion=new sql.Request()
+                    evaluacion= await queryEvaluacion.query(' EXEC ConsultarValoresUsuario @idUsuario =  ' + req.body.idDestinatario);
+                    return {
+                      evaluacion:evaluacion.recordset
+                    }
+                  })(),
+                  (async()=>{
+                    let queryEvaluacionExcluyente = new sql.Request();
+                    evaluacionExcluyente = await queryEvaluacionExcluyente
+                    .query(' EXEC ConsultarValoresUsuarioExcluyente @idUsuario = ' + req.body.idDestinatario
+                    + ', @idEquipo = ' + req.body.idEquipo);
+                    return {
+                      evaluacionExcluyente:evaluacionExcluyente.recordset
+                    }
+                  })(),
+                  (async()=>{
+                    let queryLogrosNoGanados = new sql.Request()
+                    logrosNoGanados= await queryLogrosNoGanados
+                    .query('  EXEC ConsultarPremiosNoGanados @idEmpresa = ' + req.body.idEmpresa
+                    + ', @idUsuario = ' + req.body.idDestinatario);
+                      return {
+                        logrosNoGanados:logrosNoGanados.recordset
+                      }
+                  })(),
+                ];
+                let resultado=Promise.all(queries).then(
+                  (result)=>{
+                    sql.close();
+                    console.log("Success: ")
+                    let parseResult={
+                      creacionNota:result[0].creacionNota,
+                      evaluacion:result[1].evaluacion,
+                      evaluacionExcluyente:result[2].evaluacionExcluyente,
+                      logrosNoGanados:result[3].logrosNoGanados,
+                      idUsuario: req.body.idDestinatario
+                    }
+                    res.send(parseResult)
                   }
-                 );
-                 sql.close();
-            });
+                );
+              });
+          }
+          catch(e)
+          {
+          console.log(e);
+          res.send({
+              status: "error",
+              message: e
           });
-        }
-        catch(e)
-        {
-        console.log(e);
-        res.send({
-            status: "error",
-            message: e
+          }
         });
-        }
-    });
+    //Crear Nota
+    // router.post('/nuevaNota', function(req, res, next){
+    //     try
+    //     {
+    //       sql.connect(config, err => {
+    //           if(err) console.log("Control de error");
+    //           new sql.Request()
+    //           .query(' EXEC Notas_Insert '
+    //           + ' @idPizarra = "' + req.body.nombre
+    //           + '", @idAutor = "' + req.body.idAutor
+    //           + '", @idDestinatario = "' + req.body.idDestinatario
+    //           + '", @idValor = "' + req.body.idValor
+    //           + '", @descripcion = "' + req.body.descripcion
+    //           + '", @puntuacion = "' + req.body.puntuacion + '"', (err, result) => {
+    //             console.dir(result.recordset)
+    //             console.log(result.recordset)
+    //             let datos = result.recordset;
+    //             res.send(
+    //               {
+    //                 status: "OK",
+    //                 data : datos
+    //               }
+    //              );
+    //              sql.close();
+    //         });
+    //       });
+    //     }
+    //     catch(e)
+    //     {
+    //     console.log(e);
+    //     res.send({
+    //         status: "error",
+    //         message: e
+    //     });
+    //     }
+    // });
 
     //Modificar Nota
     router.post('/modificarNota', function(req, res, next){

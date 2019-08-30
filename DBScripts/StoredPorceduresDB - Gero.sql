@@ -381,6 +381,37 @@ BEGIN
 END
 GO
 
+/***** Consultar puntuacion de valores de un usuario *****/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF EXISTS(select * from sys.procedures where name='ConsultarValoresUsuarioExcluyente')
+DROP PROCEDURE ConsultarValoresUsuarioExcluyente
+GO
+CREATE PROCEDURE [ConsultarValoresUsuarioExcluyente]
+	@idUsuario int,
+	@idEquipo int
+AS
+BEGIN
+	SET NOCOUNT ON;
+		begin try
+			SELECT  Valores.idValor, Valores.nombre, SUM(Notas.puntuacion) AS 'Total'
+			FROM Usuarios INNER JOIN Notas ON Usuarios.idUsuario = Notas.idDestinatario
+			INNER JOIN Valores ON Notas.idValor = Valores.idValor
+			INNER JOIN Pizarras ON Notas.idPizarra = Pizarras.idPizarra
+			INNER JOIN Equipos ON Equipos.idEquipo = Pizarras.idEquipo
+			WHERE Usuarios.idUsuario = @idUsuario and Equipos.idEquipo != @idEquipo
+			GROUP BY Usuarios.nombre, Valores.nombre, Usuarios.idUsuario, Valores.idValor, Notas.puntuacion
+			ORDER BY Valores.nombre
+		end try
+			begin catch
+				declare @error varchar(100)= ERROR_MESSAGE()
+				RAISERROR(@error,11,1)  
+			end catch
+END
+GO
+
 /***** Consultar historico de un valor para un usuario *****/
 SET ANSI_NULLS ON
 GO
@@ -604,6 +635,49 @@ BEGIN
 			INNER JOIN Valores ON Notas.idValor = Valores.idValor
 			WHERE Empresas.idEmpresa = @idEmpresa AND Valores.idValor = @idValor
 			ORDER BY Pizarras.fechaInicio
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
+END
+GO
+
+IF EXISTS(select * from sys.procedures where name='ConsultarPremiosNoGanados')
+DROP PROCEDURE ConsultarPremiosNoGanados
+GO
+CREATE PROCEDURE [ConsultarPremiosNoGanados]
+	@idEmpresa int,
+	@idUsuario int
+AS
+BEGIN
+	SET NOCOUNT ON;
+		begin try
+			Select L.idLogro, C.idValor, C.puntuacion, C.modificador, C.excluyente from Logros L
+			left join (select idLogro, idUsuario from LogrosUsuarios where idUsuario = @idUsuario) LU on L.idLogro = LU.idLogro
+			inner join LogrosCondiciones LC on LC.idLogro = L.idLogro
+			inner join Condiciones C on C.idCondicion = LC.idCondicion
+			where LU.idLogro is null and L.idEmpresa = @idEmpresa
+		end try
+		begin catch
+			declare @error varchar(100)= ERROR_MESSAGE()
+			RAISERROR(@error,11,1)  
+		end catch
+END
+GO
+
+IF EXISTS(select * from sys.procedures where name='GanarPremio')
+DROP PROCEDURE GanarPremio
+GO
+CREATE PROCEDURE [GanarPremio]
+	@idLogro int,
+	@idUsuario int,
+	@fecha datetime
+AS
+BEGIN
+	SET NOCOUNT ON;
+		begin try
+			insert LogrosUsuarios(idLogro, idUsuario, fecha) values (@idLogro, @idUsuario, @fecha)
 		end try
 		begin catch
 			declare @error varchar(100)= ERROR_MESSAGE()

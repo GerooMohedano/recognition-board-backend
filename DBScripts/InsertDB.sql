@@ -35,11 +35,11 @@ INSERT [dbo].[Equipos] ([nombre], [idEmpresa]) VALUES ('Analistas', 2)
 INSERT [dbo].[Equipos] ([nombre], [idEmpresa]) VALUES ('Mecatrónica', 2)
 GO
 
-INSERT [dbo].[UsuariosEquipos] ([idEquipo], [idUsuario], [rol]) VALUES (1, 1, 1)
+INSERT [dbo].[UsuariosEquipos] ([idEquipo], [idUsuario], [rol]) VALUES (1, 1, 0)
 INSERT [dbo].[UsuariosEquipos] ([idEquipo], [idUsuario], [rol]) VALUES (2, 2, 1)
 INSERT [dbo].[UsuariosEquipos] ([idEquipo], [idUsuario], [rol]) VALUES (3, 3, 1)
 INSERT [dbo].[UsuariosEquipos] ([idEquipo], [idUsuario], [rol]) VALUES (4, 4, 0)
-INSERT [dbo].[UsuariosEquipos] ([idEquipo], [idUsuario], [rol]) VALUES (1, 5, 0)
+INSERT [dbo].[UsuariosEquipos] ([idEquipo], [idUsuario], [rol]) VALUES (1, 5, 1)
 INSERT [dbo].[UsuariosEquipos] ([idEquipo], [idUsuario], [rol]) VALUES (2, 6, 0)
 INSERT [dbo].[UsuariosEquipos] ([idEquipo], [idUsuario], [rol]) VALUES (3, 6, 1)
 INSERT [dbo].[UsuariosEquipos] ([idEquipo], [idUsuario], [rol]) VALUES (4, 6, 1)
