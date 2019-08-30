@@ -2479,6 +2479,25 @@ begin
 end 
 go
 
+IF EXISTS(select * from sys.procedures where name='Listar_TodasNotasDeUnValor')
+DROP PROCEDURE Listar_TodasNotasDeUnValor
+GO
+create procedure [Listar_TodasNotasDeUnValor]
+@idValor int
+as
+begin
+	BEGIN TRY
+		Select n.idNota, n.descripcion, n.puntuacion as autor
+		from Notas N inner join Valores v on N.idValor = v.idValor
+	    where v.idValor = @idValor
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
 IF EXISTS(select * from sys.procedures where name='Listar_PizarrasDeUnEquipo')
 DROP PROCEDURE Listar_PizarrasDeUnEquipo
 GO
