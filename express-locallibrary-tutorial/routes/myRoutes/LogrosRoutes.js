@@ -73,7 +73,7 @@ class LogrosRoutes extends MyRoutes{
             }
         });
 
-        //Borrar Logro
+        //Borrar Logro --> sp borra en la columna de LogroCondicion, LogroUsuario y Logro
          router.post('/borrarLogro', function(req, res, next){
             try
             {
@@ -103,6 +103,7 @@ class LogrosRoutes extends MyRoutes{
             });
             }
         });    
+
         //Consultar logros de un usuario
           router.post('/consultarLogrosUsuario', function(req, res, next){
             try
@@ -133,8 +134,105 @@ class LogrosRoutes extends MyRoutes{
             });
             }
         });            
-
-    }
+              
+        //Listar condiciones de un logro
+        router.post('/condiciones', function(req, res, next){
+          try
+          {
+            sql.connect(config, err => {
+                if(err) console.log("Control de error");
+                new sql.Request()
+                .query(' EXEC Listar_Condiciones @idLogro = ' + req.body.idLogro, (err, result) => {
+                  console.dir(result.recordset)
+                  console.log(result.recordset)
+                  let datos = result.recordset;
+                  res.send(
+                    {
+                      status: "OK",
+                      data : datos
+                    }
+                  );
+                  sql.close();
+              });
+            });
+          }
+          catch(e)
+          {
+          console.log(e);
+          res.send({
+              status: "error",
+              message: e
+          });
+          }
+          });
+            //Borrar La condicion de un logro --> usará el boton delete condicion
+          router.post('/borrarLogroCondicion', function(req, res, next){
+            try
+            {
+              sql.connect(config, err => {
+                  if(err) console.log("Control de error");
+                  new sql.Request()
+                    .query(' EXEC LogrosCondiciones_delete '
+                  + ' @idLogro = "' + req.body.idLogro 
+                  + '", @idCondicion = "' + req.body.idCondicion + '"', (err, result) => {
+                    console.dir(result.recordset)
+                    console.log(result.recordset)
+                    let datos = result.recordset;
+                    res.send(
+                      {
+                        status: "OK",
+                        data : datos
+                      }
+                    );
+                    sql.close();
+                });
+              });
+            }
+            catch(e)
+            {
+            console.log(e);
+            res.send({
+                status: "error",
+                message: e
+            });
+            }
+          });    
+            //Agregar condicion a un Logro
+            router.post('/agregarCondicion', function(req, res, next){
+              try
+              {
+                sql.connect(config, err => {
+                    if(err) console.log("Control de error");
+                    new sql.Request()
+                    .query(' EXEC LogrosCondiciones_Insert '
+                    + ' @idLogro = "' + req.body.idLogro 
+                    + '", @idCondicion = "' + req.body.idCondicion 
+                    + '", @idValor = "' + req.body.idValor 
+                    + '", @puntuacion = "' + req.body.puntuacion 
+                    + '", @excluyente = "' + req.body.excluyente + '"', (err, result) => {
+                      console.dir(result.recordset)
+                      console.log(result.recordset)
+                      let datos = result.recordset;
+                      res.send(
+                        {
+                          status: "OK",
+                          data : datos
+                        }
+                      );
+                      sql.close();
+                  });
+                });
+              }
+              catch(e)
+              {
+              console.log(e);
+              res.send({
+                  status: "error",
+                  message: e
+              });
+              }
+          });
+          }
 }
 
 module.exports = LogrosRoutes;

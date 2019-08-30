@@ -111,7 +111,7 @@ class UsuariosRoutes extends MyRoutes{
         }
       })
 
-       router.post('/login', async (req, res) => {
+      /* router.post('/login', async (req, res) => {
 
           try{
               sql.connect(config,  err => {
@@ -172,7 +172,7 @@ class UsuariosRoutes extends MyRoutes{
           catch(e){
             console.log("ERROR",e);
           }
-        })
+        })*/
 /*
        router.use('/', async (req, res, next) => {
 

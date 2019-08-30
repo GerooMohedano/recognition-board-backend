@@ -451,7 +451,7 @@ AS
 BEGIN
 declare @v_idValor int
 	BEGIN TRY
-		IF(LEN(@nombre) > 30)
+		IF(LEN(@nombre) > 30)l
 			RAISERROR('Excediste el n�mero de caracteres permitido',11,1)
 		INSERT INTO dbo.Valores(nombre)
 		VALUES(@nombre)
@@ -654,6 +654,63 @@ BEGIN
 
 		INSERT INTO dbo.Logros(nombre,descripcion,foto)
 		VALUES(@nombre, @descripcion, @foto)
+	END TRY
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+END
+go
+
+IF EXISTS(select * from sys.procedures where name='LogrosCondiciones_Insert')
+DROP PROCEDURE LogrosCondiciones_Insert
+GO
+CREATE PROCEDURE [dbo].[LogrosCondiciones_Insert]
+	@idLogro int,
+	@idCondicion int,
+	@idValor int,
+	@puntuacion int,
+	@modificador bit,
+	@excluyente bit
+
+
+AS
+BEGIN
+declare @v_idcondicion int, @v_aux int
+set @v_idcondicion = @idCondicion
+	BEGIN TRY
+
+		select @v_aux=COUNT(idCondicion) from Condiciones where Condiciones.idCondicion = @idCondicion
+		if(@v_aux=0) 
+		begin
+			INSERT INTO dbo.Condiciones(idValor, puntuacion, modificador, excluyente)
+			VALUES(@idValor,@puntuacion,@modificador,@excluyente)
+			set @v_idcondicion = SCOPE_IDENTITY()
+		end
+
+		INSERT INTO dbo.LogrosCondiciones(idCondicion,idLogro)
+		VALUES(@v_idcondicion, @idLogro)
+
+	END TRY
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+END
+go
+
+IF EXISTS(select * from sys.procedures where name='LogrosCondiciones_delete')
+DROP PROCEDURE LogrosCondiciones_delete
+GO
+CREATE PROCEDURE [dbo].[LogrosCondiciones_delete]
+	@idLogro int,
+	@idCondicion int
+
+AS
+BEGIN
+
+	BEGIN TRY
+		delete from dbo.LogrosCondiciones where idLogro = @idLogro and idCondicion = @idCondicion
 	END TRY
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()
@@ -2421,6 +2478,29 @@ begin
 		inner join Valores on n.idValor = Valores.idValor
 		inner join Pizarras on n.idPizarra = Pizarras.idPizarra
 	    where n.idDestinatario = @idUsuario and Pizarras.idPizarra = @idPizarra and Valores.idValor = @idValor
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
+IF EXISTS(select * from sys.procedures where name='Listar_Condiciones')
+DROP PROCEDURE Listar_Condiciones
+GO
+create procedure [Listar_Condiciones]
+@idLogro int
+
+as
+begin
+	BEGIN TRY
+		Select c.idCondicion,c.puntuacion,c.modificador,c.excluyente,c.idValor, valores.nombre as nombre_valor, lc.idLogro, logros.nombre as nombre_logro
+		from Condiciones c 
+		inner join LogrosCondiciones lc on c.idCondicion = lc.idCondicion
+		inner join Logros on lc.idLogro = logros.idLogro
+		inner join Valores on c.idValor = valores.idValor
+	    where lc.idLogro = @idLogro
 	END TRY	
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()
