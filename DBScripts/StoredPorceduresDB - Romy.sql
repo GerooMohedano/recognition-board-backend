@@ -459,7 +459,7 @@ AS
 BEGIN
 declare @v_idValor int
 	BEGIN TRY
-		IF(LEN(@nombre) > 30)l
+		IF(LEN(@nombre) > 30)
 			RAISERROR('Excediste el n�mero de caracteres permitido',11,1)
 		INSERT INTO dbo.Valores(nombre)
 		VALUES(@nombre)
