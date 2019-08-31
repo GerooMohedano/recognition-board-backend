@@ -14,7 +14,7 @@ class LogrosRoutes extends MyRoutes{
                   .query(' EXEC Logros_Insert '
                   + ' @nombre = "' + req.body.nombre
                   + '", @descripcion = "' + req.body.descripcion 
-                  + '", @foto = "' + req.body.nombre + '"', (err, result) => {
+                  + '", @idEmpresa = "' + req.body.idEmpresa + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
                     let datos = result.recordset;
@@ -48,8 +48,7 @@ class LogrosRoutes extends MyRoutes{
                   .query(' EXEC Logros_Update '
                   + ' @idLogro = "' + req.body.idLogro 
                   + '", @nombre = "' + req.body.nombre 
-                  + '", @descripcion = "' + req.body.descripcion 
-                  + '", @foto = "' + req.body.foto + '"', (err, result) => {
+                  + '", @descripcion = "' + req.body.descripcion + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
                     let datos = result.recordset;
@@ -208,7 +207,8 @@ class LogrosRoutes extends MyRoutes{
                     + ' @idLogro = "' + req.body.idLogro 
                     + '", @idCondicion = "' + req.body.idCondicion 
                     + '", @idValor = "' + req.body.idValor 
-                    + '", @puntuacion = "' + req.body.puntuacion 
+                    + '", @puntuacion = "' + req.body.puntuacion
+                    + '", @modificador = "' + req.body.modificador  
                     + '", @excluyente = "' + req.body.excluyente + '"', (err, result) => {
                       console.dir(result.recordset)
                       console.log(result.recordset)

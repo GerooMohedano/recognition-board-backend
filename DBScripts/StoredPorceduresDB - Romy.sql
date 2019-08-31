@@ -643,7 +643,7 @@ GO
 CREATE PROCEDURE [dbo].[Logros_Insert]
 	@nombre nvarchar(30),
 	@descripcion nvarchar(50),
-	@foto varchar(50)
+	@idEmpresa int
 
 AS
 BEGIN
@@ -652,8 +652,8 @@ BEGIN
 		IF(LEN(@nombre) > 30 or LEN(@descripcion) > 50)
 			RAISERROR('Excediste el n�mero de caracteres permitido',11,1)
 
-		INSERT INTO dbo.Logros(nombre,descripcion,foto)
-		VALUES(@nombre, @descripcion, @foto)
+		INSERT INTO dbo.Logros(nombre,descripcion,idEmpresa)
+		VALUES(@nombre, @descripcion, @idEmpresa)
 	END TRY
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()
@@ -725,8 +725,7 @@ GO
 CREATE PROCEDURE [dbo].[Logros_Update]
 	@idLogro int,
 	@nombre nvarchar(50),
-	@descripcion nvarchar(50),
-	@foto varchar(50)
+	@descripcion nvarchar(50)
 	
 AS
 BEGIN
@@ -741,8 +740,7 @@ BEGIN
 		UPDATE dbo.Logros
 		SET 
 		nombre= @nombre,
-		descripcion = @descripcion,
-		foto = @foto	
+		descripcion = @descripcion
 		WHERE idLogro = @idLogro
 	END TRY
 	BEGIN CATCH
@@ -2116,7 +2114,6 @@ begin
 end 
 go
 
-
 IF EXISTS(select * from sys.procedures where name='Listar_LogrosEmpresas')
 DROP PROCEDURE Listar_LogrosEmpresas
 GO
@@ -2125,7 +2122,7 @@ create procedure [Listar_LogrosEmpresas]
 as
 begin
 	BEGIN TRY
-		Select L.idLogro, L.nombre as nombre_logro
+		Select L.idLogro, L.nombre as nombre_logro, l.descripcion
 		from Logros L inner join Empresas E on L.idEmpresa = E.idEmpresa
 		where L.idEmpresa = @idEmpresa
 	END TRY	
