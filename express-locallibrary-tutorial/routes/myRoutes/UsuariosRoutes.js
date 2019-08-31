@@ -1,7 +1,8 @@
 var MyRoutes = require('./MyRoutes.js');
 const jwt = require ('jsonwebtoken');
 const jwlVerifer = require('express-jwt');
-const {generateToken,validateToken} =require('./jwt.js')
+const {generateToken,validateToken} = require('./jwt.js')
+const IncomingForm = require('formidable').IncomingForm;
 const secret = 'secret';
 class UsuariosRoutes extends MyRoutes{
 
@@ -166,7 +167,7 @@ class UsuariosRoutes extends MyRoutes{
                       );
                     sql.close();
               });
-
+            });
             });
           }
           catch(e){
@@ -623,10 +624,10 @@ class UsuariosRoutes extends MyRoutes{
                 new sql.Request()
                 .query(' EXEC Usuarios_Insert '
                 + ' @nombre = "' + req.body.nombre
-                + '", @contraseña = "' + req.body.contraseña
                 + '", @mail = "' + req.body.mail
                 + '", @fotoPerfil = "' + req.body.fotoPerfil
-                + '", @adminGeneral = "' + req.body.adminGeneral + '"', (err, result) => {
+                + '", @idEmpresa = "' + req.body.idEmpresa
+                + '", @rol = "' + req.body.rol + '"', (err, result) => {
                   console.dir(result.recordset)
                   console.log(result.recordset)
                   let datos = result.recordset;
@@ -807,10 +808,10 @@ class UsuariosRoutes extends MyRoutes{
               .query(' EXEC Usuarios_Update '
               + ' @idUsuario = "' + req.body.idUsuario
               + '", @nombre = "' + req.body.nombre
-              + '", @contraseña = "' + req.body.contraseña
               + '", @mail = "' + req.body.mail
               + '", @fotoPerfil = "' + req.body.fotoPerfil
-              + '", @adminGeneral = "' + req.body.adminGeneral + '"', (err, result) => {
+              + '", @rol = "' + req.body.rol
+              + '", @idEmpresa = "' + req.body.idEmpresa + '"', (err, result) => {
                 console.dir(result.recordset)
                 console.log(result.recordset)
                 let datos = result.recordset;
@@ -867,6 +868,20 @@ class UsuariosRoutes extends MyRoutes{
           }
           });
 
+        router.post('/uploadFile', function(req, res, next){
+          console.log("llega algo aca", req);
+          var form = new IncomingForm();
+          form.on('file', (field, file) => {
+            console.log(field, file);
+          });
+          form.on('end', () => {
+            console.log("HOLAAAAAA")
+            res.send({
+              status: "OK"
+            });
+          });
+          form.parse(req)
+        });
 
         //Modificar foto perfil de un Usuario
         router.post('/modificarFotoPerfilUsuario', function(req, res, next){
