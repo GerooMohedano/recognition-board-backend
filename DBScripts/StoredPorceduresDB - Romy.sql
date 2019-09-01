@@ -1122,8 +1122,6 @@ as
 begin
 	BEGIN TRY
 		delete from dbo.Empresas where idEmpresa = @idEmpresa
-		delete from dbo.EmpresasValores where idEmpresa = @idEmpresa
-		delete from dbo.UsuariosEmpresas where idEmpresa = @idEmpresa
 	END TRY
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()
@@ -2549,6 +2547,26 @@ begin
 		from Notas N inner join Pizarras p on n.idPizarra = p.idPizarra
 		inner join Equipos eq on p.idEquipo = eq.idEquipo
 	    where eq.idEquipo = @idEquipo
+	END TRY	
+	BEGIN CATCH
+		declare @error varchar(100)= ERROR_MESSAGE()
+		RAISERROR(@error,11,1)
+	END CATCH 
+end 
+go
+
+IF EXISTS(select * from sys.procedures where name='Listar_TodasNotasDeUnEmpresa')
+DROP PROCEDURE Listar_TodasNotasDeUnEmpresa
+GO
+create procedure [Listar_TodasNotasDeUnEmpresa]
+@idEmpresa int
+as
+begin
+	BEGIN TRY
+		Select * from Notas n
+		inner join Pizarras p on n.idPizarra = p.idPizarra
+		inner join Equipos q on q.idEquipo = p.idEquipo
+		where q.idEmpresa = @idEmpresa
 	END TRY	
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()

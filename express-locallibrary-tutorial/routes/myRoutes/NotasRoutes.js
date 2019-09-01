@@ -279,6 +279,38 @@ class NotasRoutes extends MyRoutes{
       }
       });
 
+      //Listar TODAS las Notas de un equipo
+      router.post('/todasNotasEmpresa', function(req, res, next){
+       try
+       {
+         sql.connect(config, err => {
+             if(err) console.log("Control de error");
+             new sql.Request()
+             .query(' EXEC Listar_TodasNotasDeUnEmpresa @idEmpresa = "' + req.body.idEmpresa
+             + '"', (err, result) => {
+               console.dir(result.recordset)
+               console.log(result.recordset)
+               let datos = result.recordset;
+               res.send(
+                 {
+                   status: "OK",
+                   data : datos
+                 }
+                );
+                sql.close();
+           });
+         });
+       }
+       catch(e)
+       {
+       console.log(e);
+       res.send({
+           status: "error",
+           message: e
+       });
+       }
+       });
+
       //Listar TODAS las Notas de un valors
       router.post('/todasNotasValor', function(req, res, next){
        try

@@ -46,7 +46,7 @@ class EmpresasRoutes extends MyRoutes{
                   .query(' EXEC Empresas_Insert '
                   + ' @nombre = "' + req.body.nombre
                   + '", @direccion = "' + req.body.direccion
-                  + '", @telefono = "' + req.body.telefono + '"', (err, result) => {
+                  + '", @telefono = ' + req.body.telefono, (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
                     let datos = result.recordset;
