@@ -921,7 +921,8 @@ GO
 CREATE PROCEDURE [dbo].[Buscar_PizarrasCoincidentes]
 	@idPizarra int,
 	@fechaInicio datetime,
-	@fechaFin datetime
+	@fechaFin datetime,
+	@idEquipo int
 
 AS
 BEGIN
@@ -932,7 +933,7 @@ BEGIN
 		WHERE ((fechaInicio BETWEEN @fechaInicio And @fechaFin)
 		OR (fechaFin BETWEEN @fechaInicio And @fechaFin)
 		OR (@fechaInicio BETWEEN fechaInicio AND fechaFin))
-		AND idPizarra != @idPizarra
+		AND idPizarra != @idPizarra AND idEquipo = @idEquipo
 	END TRY
 	BEGIN CATCH
 		declare @error varchar(100)= ERROR_MESSAGE()

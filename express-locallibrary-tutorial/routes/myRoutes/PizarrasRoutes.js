@@ -147,7 +147,8 @@ class PizarrasRoutes extends MyRoutes{
                   .query(' EXEC Buscar_PizarrasCoincidentes'
                   +' @idPizarra = "' + req.body.idPizarra
                   +'", @fechaInicio = "' + req.body.fechaInicio
-                  +'", @fechaFin = "'+ req.body.fechaFin + '"', (err, result) => {
+                  +'", @fechaFin = "' + req.body.fechaFin
+                  +'", @idEquipo = "'+ req.body.idEquipo + '"', (err, result) => {
                     console.dir(result.recordset)
                     console.log(result.recordset)
                     let datos = result.recordset;
