@@ -381,6 +381,30 @@ BEGIN
 END
 GO
 
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF EXISTS(select * from sys.procedures where name='ConsultarNotasPizarra')
+DROP PROCEDURE ConsultarNotasPizarra
+GO
+CREATE PROCEDURE [ConsultarNotasPizarra]
+	@idPizarra int
+AS
+BEGIN
+	SET NOCOUNT ON;
+		begin try
+			select Notas.idNota from Notas
+			inner join Pizarras ON Notas.idPizarra = Pizarras.idPizarra
+			where Pizarras.idPizarra = @idPizarra
+		end try
+			begin catch
+				declare @error varchar(100)= ERROR_MESSAGE()
+				RAISERROR(@error,11,1)  
+			end catch
+END
+GO
+
 /***** Consultar puntuacion de valores de un usuario *****/
 SET ANSI_NULLS ON
 GO

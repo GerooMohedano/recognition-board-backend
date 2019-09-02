@@ -210,6 +210,7 @@ begin
 			RAISERROR(@error,11,1)  
 		end catch
 end
+go
 
 IF EXISTS(select * from sys.procedures where name='Empresas_Insert')
 DROP PROCEDURE Empresas_Insert
